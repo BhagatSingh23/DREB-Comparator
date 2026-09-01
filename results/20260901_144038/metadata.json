@@ -1,0 +1,19 @@
+{
+  "timestamp" : "2026-09-01T09:10:38.859729Z",
+  "gitCommit" : "13cb4ea",
+  "javaVersion" : "21.0.9",
+  "jvmVendor" : "Oracle Corporation",
+  "jvmName" : "Java HotSpot(TM) 64-Bit Server VM",
+  "os" : "Mac OS X 26.5.2 aarch64",
+  "cpuModel" : "Apple M3",
+  "cpuCores" : 8,
+  "totalMemoryMb" : 8192,
+  "jvmMaxMemoryMb" : 2048,
+  "rateLimit" : 50000,
+  "windowSize" : 1000,
+  "clientCount" : 2000,
+  "workloads" : [ "constant", "burst", "periodic_burst", "random", "spike", "multi_client", "adversarial", "idle_then_burst", "chronic_edge_rider", "repeated_burst_abuser" ],
+  "randomSeed" : 98765,
+  "warmupRuns" : 3,
+  "measurementRuns" : 5
+}

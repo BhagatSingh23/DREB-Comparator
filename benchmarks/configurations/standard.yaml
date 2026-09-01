@@ -1,0 +1,38 @@
+# Standard profile: full comparison across all workloads (~5-10 minutes)
+# Use this for the primary benchmark comparison.
+
+profileName: standard
+
+# Rate limiting parameters
+rateLimit: 1000
+windowSizeMs: 1000
+bucketCapacity: 1000
+refillRate: 1000.0
+
+# Execution parameters
+clients: 10
+durationSeconds: 30
+warmupSeconds: 10
+warmupRuns: 3
+measurementRuns: 5
+seed: 12345
+
+# Workloads to run
+workloadTypes:
+  - constant
+  - burst
+  - periodic_burst
+  - random
+  - spike
+  - multi_client
+  - adversarial
+  - idle_then_burst
+  - chronic_edge_rider
+  - repeated_burst_abuser
+
+# Algorithms to benchmark
+algorithms:
+  - all
+
+# DREB mapping strategy: proportional | burst_ceiling_matched | both
+drebMappingStrategy: both

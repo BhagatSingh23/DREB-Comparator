@@ -1,0 +1,33 @@
+# Smoke profile: quick validation run (~30 seconds)
+# Use this to verify the framework works end-to-end before longer runs.
+
+profileName: smoke
+
+# Rate limiting parameters
+rateLimit: 100
+windowSizeMs: 1000
+bucketCapacity: 100
+refillRate: 100.0
+
+# Execution parameters
+clients: 2
+durationSeconds: 5
+warmupSeconds: 2
+warmupRuns: 3
+measurementRuns: 5
+seed: 42
+
+# Workloads to run (subset for speed)
+workloadTypes:
+  - constant
+  - burst
+  - idle_then_burst
+  - chronic_edge_rider
+  - repeated_burst_abuser
+
+# Algorithms to benchmark ("all" = all registered algorithms)
+algorithms:
+  - all
+
+# DREB mapping strategy: proportional | burst_ceiling_matched | both
+drebMappingStrategy: both

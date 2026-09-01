@@ -1,0 +1,19 @@
+{
+  "timestamp" : "2026-09-01T21:33:33.460917Z",
+  "gitCommit" : "13cb4ea",
+  "javaVersion" : "26.0.2",
+  "jvmVendor" : "Homebrew",
+  "jvmName" : "OpenJDK 64-Bit Server VM",
+  "os" : "Mac OS X 26.5.2 aarch64",
+  "cpuModel" : "Apple M3",
+  "cpuCores" : 8,
+  "totalMemoryMb" : 8192,
+  "jvmMaxMemoryMb" : 2048,
+  "rateLimit" : 1000,
+  "windowSize" : 1000,
+  "clientCount" : 10,
+  "workloads" : [ "constant", "burst", "periodic_burst", "random", "spike", "multi_client", "adversarial", "idle_then_burst", "chronic_edge_rider", "repeated_burst_abuser" ],
+  "randomSeed" : 12345,
+  "warmupRuns" : 3,
+  "measurementRuns" : 5
+}

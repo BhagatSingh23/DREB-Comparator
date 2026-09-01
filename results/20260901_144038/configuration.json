@@ -1,0 +1,16 @@
+{
+  "profileName" : "stress",
+  "rateLimit" : 50000,
+  "windowSizeMs" : 1000,
+  "bucketCapacity" : 50000,
+  "refillRate" : 50000.0,
+  "clients" : 2000,
+  "durationSeconds" : 30,
+  "warmupSeconds" : 10,
+  "warmupRuns" : 3,
+  "measurementRuns" : 5,
+  "seed" : 98765,
+  "workloadTypes" : [ "constant", "burst", "periodic_burst", "random", "spike", "multi_client", "adversarial", "idle_then_burst", "chronic_edge_rider", "repeated_burst_abuser" ],
+  "algorithms" : [ "all" ],
+  "drebMappingStrategy" : "both"
+}

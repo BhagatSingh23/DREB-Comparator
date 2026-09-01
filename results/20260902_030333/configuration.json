@@ -1,0 +1,16 @@
+{
+  "profileName" : "standard",
+  "rateLimit" : 1000,
+  "windowSizeMs" : 1000,
+  "bucketCapacity" : 1000,
+  "refillRate" : 1000.0,
+  "clients" : 10,
+  "durationSeconds" : 30,
+  "warmupSeconds" : 10,
+  "warmupRuns" : 3,
+  "measurementRuns" : 5,
+  "seed" : 12345,
+  "workloadTypes" : [ "constant", "burst", "periodic_burst", "random", "spike", "multi_client", "adversarial", "idle_then_burst", "chronic_edge_rider", "repeated_burst_abuser" ],
+  "algorithms" : [ "all" ],
+  "drebMappingStrategy" : "both"
+}

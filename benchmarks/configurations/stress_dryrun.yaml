@@ -1,0 +1,40 @@
+# Stress profile: high-load comparison
+# Memory-safe bounds for 8GB RAM machine (target heap: -Xmx4g).
+# See Part C of the final-round spec for rationale.
+
+profileName: stress
+
+# Rate limiting parameters — capped at 50,000 req/s to keep
+# per-request object overhead manageable in the workload simulator
+rateLimit: 50000
+windowSizeMs: 1000
+bucketCapacity: 50000
+refillRate: 50000.0
+
+# Execution parameters
+clients: 2000
+durationSeconds: 5
+warmupSeconds: 10
+warmupRuns: 3
+measurementRuns: 5
+seed: 98765
+
+# Workloads to run
+workloadTypes:
+  - constant
+  - burst
+  - periodic_burst
+  - random
+  - spike
+  - multi_client
+  - adversarial
+  - idle_then_burst
+  - chronic_edge_rider
+  - repeated_burst_abuser
+
+# Algorithms to benchmark
+algorithms:
+  - all
+
+# DREB mapping strategy: proportional | burst_ceiling_matched | both
+drebMappingStrategy: both
