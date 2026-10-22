@@ -36,4 +36,16 @@ public interface RateLimiter {
      * a clean starting point.
      */
     void reset();
+
+    /**
+     * Initializes the state for a client to support explicit starting conditions
+     * (e.g. "coldStart", "preWarmed", "drainedFirst").
+     *
+     * @param clientId     client identifier
+     * @param initialState "coldStart", "preWarmed", or "drainedFirst"
+     * @param timestampSec starting timestamp in seconds
+     */
+    default void initializeState(String clientId, String initialState, double timestampSec) {
+        // default no-op
+    }
 }

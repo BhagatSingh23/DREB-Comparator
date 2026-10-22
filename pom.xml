@@ -38,8 +38,22 @@
         <jmh-maven-plugin.version>0.2.0</jmh-maven-plugin.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <!-- ==================== Production ==================== -->
+
+        <!-- DREB Rate Limiter Library (pinned tag) -->
+        <dependency>
+            <groupId>com.github.BhagatSingh23</groupId>
+            <artifactId>dreb-ratelimiter</artifactId>
+            <version>v1.0.2-phase1</version>
+        </dependency>
 
         <!-- XChart for graph generation -->
         <dependency>
@@ -134,9 +148,11 @@
                 <version>${surefire.version}</version>
                 <configuration>
                     <includes>
+                        <include>**/algorithms/**Test.java</include>
+                        <include>**/core/**Test.java</include>
                         <include>**/correctness/**Test.java</include>
                         <include>**/correctness/**Tests.java</include>
-                        <include>**/correctness/**Properties.java</include>
+                        <include>**/correctness/**/*Properties.java</include>
                         <include>**/edgecases/**Test.java</include>
                         <include>**/edgecases/**Tests.java</include>
                     </includes>
@@ -158,6 +174,14 @@
                     </includes>
                     <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Exec plugin for running benchmarks and report generation -->

@@ -16,29 +16,6 @@ import com.dreb.ratelimit.ManualClock;
 /**
  * Adapter wiring the DREB algorithm (Dual-Rate Elastic Bucket) into the
  * benchmark framework's {@link RateLimiter} contract.
- *
- * <p>Two config-to-DREB parameter mappings are supported, selectable via
- * {@code drebMappingStrategy} in the YAML config:
- *
- * <h3>{@code proportional} (default)</h3>
- * Anchors {@code sustainedMax = capacity}. The paper's original ratios
- * scale every other parameter from there. This means DREB's effective
- * instantaneous burst ceiling ({@code burstMax + idleCap/idleDecay}) is
- * strictly less than {@code capacity}, so DREB will always accept fewer
- * burst requests than a standard Token Bucket with the same capacity.
- *
- * <h3>{@code burst_ceiling_matched}</h3>
- * Anchors the decay-adjusted effective burst ceiling to {@code capacity}:
- * {@code burstMax + idleCap/idleDecay = capacity}. This means after a
- * full idle period, DREB can absorb the same total burst as a Token
- * Bucket with the same capacity. {@code sustainedMax} is intentionally
- * set above capacity (128.6% of it) to preserve the paper's ratios.
- *
- * <p>Both mappings exist because "same rate limit" is ambiguous for a
- * dual-bucket design: does it mean the same sustained ceiling (proportional)
- * or the same maximum instantaneous burst capacity (burst_ceiling_matched)?
- * Reporting results under both makes that sensitivity visible rather
- * than hidden behind a single arbitrary choice.
  */
 public final class CustomRateLimiter implements RateLimiter {
 
@@ -50,6 +27,7 @@ public final class CustomRateLimiter implements RateLimiter {
     private final ManualClock clock;
     private final InMemoryStateStore store;
     private final String mappingStrategy;
+    private final DrebParameters params;
 
     /**
      * Constructs a DREB limiter using the {@code proportional} mapping.
@@ -66,39 +44,12 @@ public final class CustomRateLimiter implements RateLimiter {
      */
     public CustomRateLimiter(RateLimiterConfig config, String strategy) {
         this.mappingStrategy = strategy;
-
-        double capacity = config.getBucketCapacity();
-        double refillRate = config.getRefillRate();
-
-        double burstMax, burstRate, sustainedMax, sustainedRate, idleGain, idleCap, idleDecay;
-
-        if (BURST_CEILING_MATCHED.equals(strategy)) {
-            // Anchor: burstMax + idleCap/idleDecay = capacity
-            burstMax      = capacity * 3.0 / 7.0;
-            idleCap       = capacity * 6.0 / 7.0;    // = 2 * burstMax
-            sustainedMax  = capacity * 9.0 / 7.0;    // = 3 * burstMax
-            sustainedRate = refillRate;
-            burstRate     = sustainedRate * 5.0 / 3.0;
-            idleGain      = sustainedRate * 2.0 / 3.0;
-            idleDecay     = 1.5;
-        } else {
-            // "proportional" — anchor: sustainedMax = capacity
-            sustainedMax  = capacity;
-            sustainedRate = refillRate;
-            burstMax      = sustainedMax / 3.0;
-            burstRate     = sustainedRate * 5.0 / 3.0;
-            idleGain      = sustainedRate * 2.0 / 3.0;
-            idleCap       = sustainedMax * 2.0 / 3.0;
-            idleDecay     = 1.5;
-        }
+        DrebParameters.Strategy strat = DrebParameters.Strategy.fromString(strategy);
+        this.params = DrebParameters.fromConfig(config, strat);
 
         this.clock = new ManualClock(0.0);
         this.store = new InMemoryStateStore();
-        ConstantRateRefillStrategy refillStrategy =
-                new ConstantRateRefillStrategy(burstMax, burstRate, sustainedMax, sustainedRate);
-        LinearIdleCreditPolicy idlePolicy =
-                new LinearIdleCreditPolicy(idleGain, idleCap, idleDecay);
-        this.dreb = new DREBLimiter(store, clock, refillStrategy, idlePolicy, sustainedMax);
+        this.dreb = new DREBLimiter(store, clock, params.createRefillStrategy(), params.createIdlePolicy(), params.sustainedMax());
     }
 
     /**
@@ -109,6 +60,7 @@ public final class CustomRateLimiter implements RateLimiter {
                               double sustainedMax, double sustainedRate,
                               double idleGain, double idleCap, double idleDecay) {
         this.mappingStrategy = "raw";
+        this.params = null;
         this.clock = new ManualClock(0.0);
         this.store = new InMemoryStateStore();
         ConstantRateRefillStrategy refillStrategy =
@@ -127,8 +79,9 @@ public final class CustomRateLimiter implements RateLimiter {
 
         if (decision == Decision.ALLOW) {
             ClientState after = dreb.peekState(request.getClientId());
-            long remaining = (long) Math.floor(
-                    Math.min(after.sustainedTokens, after.burstTokens + after.idleCredit));
+            double effDecay = (params != null) ? params.idleDecay() : 1.5;
+            double effBurst = after.burstTokens + (effDecay > 0 ? (after.idleCredit / effDecay) : after.idleCredit);
+            long remaining = (long) Math.floor(Math.min(after.sustainedTokens, effBurst));
             return new RateLimitResponse(true, remaining, -1, null);
         }
 
@@ -155,9 +108,32 @@ public final class CustomRateLimiter implements RateLimiter {
         return mappingStrategy;
     }
 
+    public DrebParameters getParameters() {
+        return params;
+    }
+
     @Override
     public void reset() {
-        // The benchmark creates a new instance per run via the Supplier
-        // in the registry, so state is effectively fresh each time.
+        store.clear();
+    }
+
+    @Override
+    public void initializeState(String clientId, String initialState, double timestampSec) {
+        if ("preWarmed".equalsIgnoreCase(initialState) || "pre-warmed".equalsIgnoreCase(initialState)) {
+            double bMax = (params != null) ? params.burstMax() : 33.333;
+            double sMax = (params != null) ? params.sustainedMax() : 100.0;
+            double idCap = (params != null) ? params.idleCap() : 66.667;
+            ClientState s = new ClientState(bMax, sMax, idCap, timestampSec);
+            store.save(clientId, s);
+        } else if ("drainedFirst".equalsIgnoreCase(initialState) || "drained-first".equalsIgnoreCase(initialState) || "drained".equalsIgnoreCase(initialState)) {
+            ClientState s = new ClientState(0.0, 0.0, 0.0, timestampSec);
+            store.save(clientId, s);
+        } else {
+            // coldStart: full burst bucket, zero idle credit
+            double bMax = (params != null) ? params.burstMax() : 33.333;
+            double sMax = (params != null) ? params.sustainedMax() : 100.0;
+            ClientState s = new ClientState(bMax, sMax, 0.0, timestampSec);
+            store.save(clientId, s);
+        }
     }
 }

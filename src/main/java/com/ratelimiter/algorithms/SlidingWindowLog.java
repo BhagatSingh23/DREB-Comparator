@@ -78,6 +78,20 @@ public class SlidingWindowLog implements RateLimiter {
     public void reset() {
         states.clear();
     }
+
+    @Override
+    public void initializeState(String clientId, String initialState, double timestampSec) {
+        long tsMs = (long) (timestampSec * 1000.0);
+        if ("drainedFirst".equalsIgnoreCase(initialState) || "drained-first".equalsIgnoreCase(initialState) || "drained".equalsIgnoreCase(initialState)) {
+            ClientState s = new ClientState();
+            for (int i = 0; i < maxRequests; i++) {
+                s.log.addLast(tsMs);
+            }
+            states.put(clientId, s);
+        } else {
+            states.remove(clientId);
+        }
+    }
     
     private static class ClientState {
         final LinkedList<Long> log = new LinkedList<>();

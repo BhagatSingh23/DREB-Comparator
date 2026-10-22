@@ -32,6 +32,21 @@ public class BenchmarkResult {
     private double throughputStdDev;
     private double latencyStdDev;
     
+    // Provenance and factorial fields
+    private String commitHash = "unknown";
+    private String libraryTag = "v1.0.2-phase1";
+    private String libraryCommitHash = "53a5c9e";
+    private String configHash = "unknown";
+    private boolean isDirty = false;
+    private String initialState = "coldStart";
+    private long seed;
+    private String jdkVersion = System.getProperty("java.version");
+    private String hardware = System.getProperty("os.name") + " " + System.getProperty("os.arch");
+    private String family = "equal_capacity_and_rate";
+    private int clients;
+    private double capacity;
+    private double refillRate;
+
     // Computed fields
     private double meanThroughput;
     private double medianThroughput;
@@ -72,6 +87,19 @@ public class BenchmarkResult {
 
     public Map<String, Object> toMap() {
         Map<String, Object> map = new LinkedHashMap<>();
+        map.put("commitHash", commitHash);
+        map.put("libraryTag", libraryTag);
+        map.put("libraryCommitHash", libraryCommitHash);
+        map.put("configHash", configHash);
+        map.put("isDirty", isDirty);
+        map.put("initialState", initialState);
+        map.put("seed", seed);
+        map.put("jdkVersion", jdkVersion);
+        map.put("hardware", hardware);
+        map.put("family", family);
+        map.put("clients", clients);
+        map.put("capacity", capacity);
+        map.put("refillRate", refillRate);
         map.put("algorithmName", algorithmName);
         map.put("workloadName", workloadName);
         map.put("totalRequests", totalRequests);
@@ -98,6 +126,45 @@ public class BenchmarkResult {
         map.put("maxThroughput", maxThroughput);
         return map;
     }
+
+    public String getCommitHash() { return commitHash; }
+    public void setCommitHash(String commitHash) { this.commitHash = commitHash; }
+
+    public String getLibraryTag() { return libraryTag; }
+    public void setLibraryTag(String libraryTag) { this.libraryTag = libraryTag; }
+
+    public String getLibraryCommitHash() { return libraryCommitHash; }
+    public void setLibraryCommitHash(String libraryCommitHash) { this.libraryCommitHash = libraryCommitHash; }
+
+    public boolean isDirty() { return isDirty; }
+    public void setDirty(boolean dirty) { isDirty = dirty; }
+
+    public String getInitialState() { return initialState; }
+    public void setInitialState(String initialState) { this.initialState = initialState; }
+
+    public String getConfigHash() { return configHash; }
+    public void setConfigHash(String configHash) { this.configHash = configHash; }
+
+    public long getSeed() { return seed; }
+    public void setSeed(long seed) { this.seed = seed; }
+
+    public String getJdkVersion() { return jdkVersion; }
+    public void setJdkVersion(String jdkVersion) { this.jdkVersion = jdkVersion; }
+
+    public String getHardware() { return hardware; }
+    public void setHardware(String hardware) { this.hardware = hardware; }
+
+    public String getFamily() { return family; }
+    public void setFamily(String family) { this.family = family; }
+
+    public int getClients() { return clients; }
+    public void setClients(int clients) { this.clients = clients; }
+
+    public double getCapacity() { return capacity; }
+    public void setCapacity(double capacity) { this.capacity = capacity; }
+
+    public double getRefillRate() { return refillRate; }
+    public void setRefillRate(double refillRate) { this.refillRate = refillRate; }
 
     // Getters and setters
     public String getAlgorithmName() { return algorithmName; }

@@ -64,6 +64,20 @@ public class TokenBucket implements RateLimiter {
     public void reset() {
         states.clear();
     }
+
+    @Override
+    public void initializeState(String clientId, String initialState, double timestampSec) {
+        long tsMs = (long) (timestampSec * 1000.0);
+        if ("drainedFirst".equalsIgnoreCase(initialState) || "drained-first".equalsIgnoreCase(initialState) || "drained".equalsIgnoreCase(initialState)) {
+            ClientState s = new ClientState(0, tsMs);
+            s.tokens = 0.0;
+            states.put(clientId, s);
+        } else {
+            // coldStart and preWarmed: starts with full bucket
+            ClientState s = new ClientState(bucketCapacity, tsMs);
+            states.put(clientId, s);
+        }
+    }
     
     private static class ClientState {
         double tokens;

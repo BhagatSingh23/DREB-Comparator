@@ -24,9 +24,42 @@ public class BenchmarkConfig {
     private long seed;
     private List<String> workloadTypes;
     private List<String> algorithms;
-    private String drebMappingStrategy = "proportional";  // "proportional" or "burst_ceiling_matched"
+    private String drebMappingStrategy = "proportional";  // "proportional", "burst_ceiling_matched", "v2_adaptive_base_1_0", "v2_adaptive_base_1_5", "both"
+    private String libraryTag = "v1.0.2-phase1";
+    private String libraryCommitHash = "53a5c9e";
+    private String initialState = "coldStart";
+    private boolean smoke = false;
+    private String family = "equal_capacity_and_rate";
+    private String configHash = "unknown";
+    private String gitCommitHash = "unknown";
+    private List<Long> seeds;
+    private List<Integer> clientsGrid;
+    private List<Long> capacityGrid;
+    private List<String> matchingFamilies;
 
     public BenchmarkConfig() {}
+
+    private static Yaml createYamlLoader() {
+        org.yaml.snakeyaml.LoaderOptions loaderOptions = new org.yaml.snakeyaml.LoaderOptions();
+        org.yaml.snakeyaml.constructor.Constructor constructor =
+                new org.yaml.snakeyaml.constructor.Constructor(BenchmarkConfig.class, loaderOptions);
+        constructor.getPropertyUtils().setSkipMissingProperties(true);
+        return new Yaml(constructor);
+    }
+
+    public static String computeSha256(byte[] data) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] digest = md.digest(data);
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.substring(0, 16);
+        } catch (Exception e) {
+            return "unknown";
+        }
+    }
 
     /**
      * Loads the benchmark configuration from a YAML file.
@@ -34,9 +67,11 @@ public class BenchmarkConfig {
      * @return The loaded and validated BenchmarkConfig.
      */
     public static BenchmarkConfig loadFromYaml(String profilePath) {
-        try (InputStream inputStream = new FileInputStream(profilePath)) {
-            Yaml yaml = new Yaml();
-            BenchmarkConfig config = yaml.loadAs(inputStream, BenchmarkConfig.class);
+        try {
+            byte[] fileBytes = java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(profilePath));
+            Yaml yaml = createYamlLoader();
+            BenchmarkConfig config = yaml.loadAs(new java.io.ByteArrayInputStream(fileBytes), BenchmarkConfig.class);
+            config.setConfigHash(computeSha256(fileBytes));
             config.validate();
             return config;
         } catch (Exception e) {
@@ -55,7 +90,7 @@ public class BenchmarkConfig {
             if (inputStream == null) {
                 throw new IllegalArgumentException("Resource not found: " + resourcePath);
             }
-            Yaml yaml = new Yaml();
+            Yaml yaml = createYamlLoader();
             BenchmarkConfig config = yaml.loadAs(inputStream, BenchmarkConfig.class);
             config.validate();
             return config;
@@ -71,10 +106,13 @@ public class BenchmarkConfig {
         if (refillRate <= 0) throw new IllegalArgumentException("refillRate must be > 0");
         if (clients <= 0) throw new IllegalArgumentException("clients must be > 0");
         if (durationSeconds <= 0) throw new IllegalArgumentException("durationSeconds must be > 0");
-        if (warmupSeconds <= 0) throw new IllegalArgumentException("warmupSeconds must be > 0");
-        if (warmupRuns < 3) throw new IllegalArgumentException("warmupRuns must be >= 3");
-        if (measurementRuns < 5) throw new IllegalArgumentException("measurementRuns must be >= 5");
+        if (warmupSeconds < 0) throw new IllegalArgumentException("warmupSeconds must be >= 0");
+        if (warmupRuns < 0) throw new IllegalArgumentException("warmupRuns must be >= 0");
+        if (measurementRuns < 1) throw new IllegalArgumentException("measurementRuns must be >= 1");
     }
+
+    public String getLibraryTag() { return libraryTag; }
+    public void setLibraryTag(String libraryTag) { this.libraryTag = libraryTag; }
 
     // Getters and Setters
     public String getProfileName() { return profileName; }
@@ -118,6 +156,36 @@ public class BenchmarkConfig {
 
     public String getDrebMappingStrategy() { return drebMappingStrategy; }
     public void setDrebMappingStrategy(String drebMappingStrategy) { this.drebMappingStrategy = drebMappingStrategy; }
+
+    public String getFamily() { return family; }
+    public void setFamily(String family) { this.family = family; }
+
+    public String getConfigHash() { return configHash; }
+    public void setConfigHash(String configHash) { this.configHash = configHash; }
+
+    public String getGitCommitHash() { return gitCommitHash; }
+    public void setGitCommitHash(String gitCommitHash) { this.gitCommitHash = gitCommitHash; }
+
+    public List<Long> getSeeds() { return seeds; }
+    public void setSeeds(List<Long> seeds) { this.seeds = seeds; }
+
+    public List<Integer> getClientsGrid() { return clientsGrid; }
+    public void setClientsGrid(List<Integer> clientsGrid) { this.clientsGrid = clientsGrid; }
+
+    public List<Long> getCapacityGrid() { return capacityGrid; }
+    public void setCapacityGrid(List<Long> capacityGrid) { this.capacityGrid = capacityGrid; }
+
+    public List<String> getMatchingFamilies() { return matchingFamilies; }
+    public void setMatchingFamilies(List<String> matchingFamilies) { this.matchingFamilies = matchingFamilies; }
+
+    public String getInitialState() { return initialState; }
+    public void setInitialState(String initialState) { this.initialState = initialState; }
+
+    public boolean isSmoke() { return smoke; }
+    public void setSmoke(boolean smoke) { this.smoke = smoke; }
+
+    public String getLibraryCommitHash() { return libraryCommitHash; }
+    public void setLibraryCommitHash(String libraryCommitHash) { this.libraryCommitHash = libraryCommitHash; }
 
     @Override
     public String toString() {

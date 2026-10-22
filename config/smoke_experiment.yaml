@@ -1,0 +1,40 @@
+# Smoke Experiment Configuration
+# Quick validation run (2 seeds, small sizes) to verify end-to-end execution
+profileName: smoke_experiment
+libraryTag: v1.0.1-phase1
+
+matchingFamilies:
+  - equal_capacity_and_rate
+
+clientsGrid:
+  - 2
+
+capacityGrid:
+  - 100
+
+refillRate: 100.0
+windowSizeMs: 1000
+rateLimit: 100
+bucketCapacity: 100
+clients: 2
+
+durationSeconds: 1
+warmupSeconds: 0
+warmupRuns: 0
+measurementRuns: 1
+
+seeds:
+  - 42
+  - 43
+
+workloadTypes:
+  - constant
+  - burst
+  - idle_then_burst
+
+algorithms:
+  - token_bucket
+  - dreb_burst_matched
+  - dreb_v2_base10
+
+drebMappingStrategy: both

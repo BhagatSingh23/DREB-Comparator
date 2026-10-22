@@ -3,6 +3,7 @@ package com.ratelimiter.benchmark;
 import com.ratelimiter.core.RateLimitRequest;
 import com.ratelimiter.core.RateLimitResponse;
 import com.ratelimiter.core.RateLimiter;
+import com.ratelimiter.core.RateLimiterConfig;
 import com.ratelimiter.metrics.CpuMetrics;
 import com.ratelimiter.metrics.FairnessMetrics;
 import com.ratelimiter.metrics.MemoryMetrics;
@@ -83,6 +84,18 @@ public class BenchmarkExecutor {
 
         long durationMs = config.getDurationSeconds() * 1000;
         List<RateLimitRequest> requests = workload.generate(durationMs, config.getSeed());
+
+        String initialState = config.getInitialState();
+        if (initialState != null && requests != null && !requests.isEmpty()) {
+            double startSec = requests.get(0).getTimestampMs() / 1000.0;
+            Set<String> clientIds = new HashSet<>();
+            for (RateLimitRequest req : requests) {
+                clientIds.add(req.getClientId());
+            }
+            for (String clientId : clientIds) {
+                rateLimiter.initializeState(clientId, initialState, startSec);
+            }
+        }
         
         long startMs = System.currentTimeMillis();
 
@@ -111,6 +124,24 @@ public class BenchmarkExecutor {
 
         if (!isWarmup) {
             result.fairnessIndex = FairnessMetrics.jainsIndex(result.clientAccepted);
+
+            // Evaluate algorithm-specific contract violations
+            RateLimiterConfig rlConfig = RateLimiterConfig.builder()
+                    .maxRequests(config.getRateLimit())
+                    .windowSizeMs(config.getWindowSizeMs())
+                    .bucketCapacity(config.getBucketCapacity())
+                    .refillRate(config.getRefillRate())
+                    .build();
+            com.ratelimiter.algorithms.DrebParameters.Strategy drebStrat =
+                    com.ratelimiter.algorithms.DrebParameters.Strategy.fromString(config.getDrebMappingStrategy());
+            com.ratelimiter.core.AlgorithmContract contract =
+                    com.ratelimiter.core.AlgorithmContract.forAlgorithm(algorithmName, rlConfig, drebStrat);
+
+            int totalViolations = 0;
+            for (List<com.ratelimiter.core.AlgorithmContract.RequestEvent> events : result.clientHistories.values()) {
+                totalViolations += contract.evaluateViolations(events);
+            }
+            result.violationCount = totalViolations;
         }
 
         return result;
@@ -134,6 +165,10 @@ public class BenchmarkExecutor {
             } else {
                 result.rejectedRequests++;
             }
+
+            result.clientHistories.computeIfAbsent(req.getClientId(), k -> new ArrayList<>())
+                    .add(new com.ratelimiter.core.AlgorithmContract.RequestEvent(
+                            req.getTimestampMs(), (int) req.getCost(), response.isAllowed()));
         }
         return result;
     }
@@ -159,6 +194,7 @@ public class BenchmarkExecutor {
             executor.submit(() -> {
                 try {
                     latch.await();
+                    List<com.ratelimiter.core.AlgorithmContract.RequestEvent> events = new ArrayList<>();
                     for (RateLimitRequest req : clientRequests) {
                         long startNs = System.nanoTime();
                         RateLimitResponse response = rateLimiter.allow(req);
@@ -173,6 +209,12 @@ public class BenchmarkExecutor {
                         } else {
                             rejected.incrementAndGet();
                         }
+
+                        events.add(new com.ratelimiter.core.AlgorithmContract.RequestEvent(
+                                req.getTimestampMs(), (int) req.getCost(), response.isAllowed()));
+                    }
+                    if (!events.isEmpty()) {
+                        result.clientHistories.put(clientRequests.get(0).getClientId(), events);
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -253,7 +295,28 @@ public class BenchmarkExecutor {
             aggregated.setMaxLatencyNs(allLatencies[allLatencies.length - 1]);
         }
         
-        aggregated.setViolationCount(0);
+        int totalViolations = 0;
+        for (RunResult r : runs) {
+            totalViolations += r.violationCount;
+        }
+        aggregated.setViolationCount(totalViolations);
+
+        // Populate provenance and factorial metadata
+        String commit = (config.getGitCommitHash() != null && !config.getGitCommitHash().equals("unknown"))
+                ? config.getGitCommitHash() : com.ratelimiter.util.HardwareInfo.getGitCommit();
+        aggregated.setCommitHash(commit);
+        aggregated.setLibraryTag(config.getLibraryTag() != null ? config.getLibraryTag() : "v1.0.2-phase1");
+        aggregated.setLibraryCommitHash(config.getLibraryCommitHash() != null ? config.getLibraryCommitHash() : com.ratelimiter.util.HardwareInfo.getLibraryCommitHash());
+        aggregated.setDirty(com.ratelimiter.util.HardwareInfo.isGitDirty());
+        aggregated.setInitialState(config.getInitialState() != null ? config.getInitialState() : "coldStart");
+        aggregated.setConfigHash(config.getConfigHash());
+        aggregated.setSeed(config.getSeed());
+        aggregated.setJdkVersion(System.getProperty("java.version"));
+        aggregated.setHardware(com.ratelimiter.util.HardwareInfo.getHardwareSummary());
+        aggregated.setFamily(config.getFamily() != null ? config.getFamily() : "equal_capacity_and_rate");
+        aggregated.setClients(config.getClients());
+        aggregated.setCapacity(config.getBucketCapacity());
+        aggregated.setRefillRate(config.getRefillRate());
 
         return aggregated;
     }
@@ -264,6 +327,8 @@ public class BenchmarkExecutor {
         long rejectedRequests;
         ReservoirSampler sampler = new ReservoirSampler();
         Map<String, Long> clientAccepted;
+        Map<String, List<com.ratelimiter.core.AlgorithmContract.RequestEvent>> clientHistories = new ConcurrentHashMap<>();
+        int violationCount;
         
         long memoryUsedBytes;
         double cpuLoad;

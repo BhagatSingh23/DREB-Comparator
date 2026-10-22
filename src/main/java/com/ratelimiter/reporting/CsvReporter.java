@@ -17,7 +17,8 @@ import java.util.stream.Collectors;
  */
 public final class CsvReporter {
 
-    private static final String HEADER = "algorithm,workload,totalRequests,accepted,rejected," +
+    private static final String HEADER = "commitHash,libraryTag,libraryCommitHash,configHash,isDirty,initialState,seed,jdkVersion,hardware,family,clients,capacity,refillRate," +
+            "algorithm,workload,totalRequests,accepted,rejected," +
             "acceptanceRate,throughputOps,avgLatencyNs,p50Ns,p90Ns,p95Ns,p99Ns,maxLatencyNs," +
             "memoryBytes,perClientBytes,cpuLoad,fairnessIndex,violations";
 
@@ -60,6 +61,19 @@ public final class CsvReporter {
 
     private static String toCsvRow(BenchmarkResult r) {
         return String.join(",",
+                escape(r.getCommitHash()),
+                escape(r.getLibraryTag()),
+                escape(r.getLibraryCommitHash()),
+                escape(r.getConfigHash()),
+                String.valueOf(r.isDirty()),
+                escape(r.getInitialState()),
+                String.valueOf(r.getSeed()),
+                escape(r.getJdkVersion()),
+                escape(r.getHardware()),
+                escape(r.getFamily()),
+                String.valueOf(r.getClients()),
+                String.format("%.1f", r.getCapacity()),
+                String.format("%.1f", r.getRefillRate()),
                 escape(r.getAlgorithmName()),
                 escape(r.getWorkloadName()),
                 String.valueOf(r.getTotalRequests()),

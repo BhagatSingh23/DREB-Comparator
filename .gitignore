@@ -33,10 +33,11 @@ buildNumber.properties
 
 # === Results (large generated data — commit selectively) ===
 results/*
-!results/20260902_030333/
-!results/20260902_030333/**
-!results/20260901_144038/
-!results/20260901_144038/**
+!results/superseded/
+!results/superseded/**
+
+*.patch
+*.docx
 
 # === Logs ===
 *.log

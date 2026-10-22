@@ -65,6 +65,19 @@ public class FixedWindow implements RateLimiter {
     public void reset() {
         states.clear();
     }
+
+    @Override
+    public void initializeState(String clientId, String initialState, double timestampSec) {
+        long tsMs = (long) (timestampSec * 1000.0);
+        if ("drainedFirst".equalsIgnoreCase(initialState) || "drained-first".equalsIgnoreCase(initialState) || "drained".equalsIgnoreCase(initialState)) {
+            ClientState s = new ClientState();
+            s.windowStart = (tsMs / windowSizeMs) * windowSizeMs;
+            s.count = maxRequests;
+            states.put(clientId, s);
+        } else {
+            states.remove(clientId);
+        }
+    }
     
     private static class ClientState {
         long windowStart = -1;

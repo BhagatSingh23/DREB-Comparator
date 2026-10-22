@@ -5,49 +5,38 @@ import com.ratelimiter.core.RateLimitRequest;
 import com.ratelimiter.core.RateLimitResponse;
 import com.ratelimiter.core.RateLimiterConfig;
 
+import com.dreb.ratelimit.AdaptiveIdleCreditPolicy;
 import com.dreb.ratelimit.ClientState;
 import com.dreb.ratelimit.ConstantRateRefillStrategy;
 import com.dreb.ratelimit.Decision;
 import com.dreb.ratelimit.DREBLimiterV2;
 import com.dreb.ratelimit.InMemoryStateStore;
-import com.dreb.ratelimit.AdaptiveIdleCreditPolicy;
 import com.dreb.ratelimit.ManualClock;
 
+/**
+ * Adapter wiring DREB v2 (abuse-adaptive) into the benchmark framework.
+ */
 public final class CustomRateLimiterV2 implements RateLimiter {
 
     private final DREBLimiterV2 dreb;
     private final ManualClock clock;
     private final InMemoryStateStore store;
+    private final DrebParameters params;
 
     public CustomRateLimiterV2(RateLimiterConfig config) {
-        double capacity = config.getBucketCapacity();
-        double refillRate = config.getRefillRate();
+        this(config, DrebParameters.Strategy.V2_ADAPTIVE_BASE_1_0);
+    }
 
-        // Use the burst_ceiling_matched base logic per instructions
-        double burstMax      = capacity * 3.0 / 7.0;
-        double idleCap       = capacity * 6.0 / 7.0;
-        double sustainedMax  = capacity * 9.0 / 7.0;
-        double sustainedRate = refillRate;
-        double burstRate     = sustainedRate * 5.0 / 3.0;
-        double idleGain      = sustainedRate * 2.0 / 3.0;
-
-        // V2 specific parameters
-        double baseDecay = 1.0;
-        double abuseGain = 0.3;
-        double abuseIncrement = 2.0;
-        double abuseDecayRate = 1.5;
-        double sustainedCostGain = 0.35;
-
+    public CustomRateLimiterV2(RateLimiterConfig config, DrebParameters.Strategy strategy) {
+        this.params = DrebParameters.fromConfig(config, strategy);
         this.clock = new ManualClock(0.0);
         this.store = new InMemoryStateStore();
-        
-        ConstantRateRefillStrategy refillStrategy =
-                new ConstantRateRefillStrategy(burstMax, burstRate, sustainedMax, sustainedRate);
-                
-        AdaptiveIdleCreditPolicy idlePolicy =
-                new AdaptiveIdleCreditPolicy(idleGain, idleCap, baseDecay, abuseGain, abuseIncrement, abuseDecayRate);
-                
-        this.dreb = new DREBLimiterV2(store, clock, refillStrategy, idlePolicy, sustainedMax, sustainedCostGain);
+
+        ConstantRateRefillStrategy refillStrategy = params.createRefillStrategy();
+        AdaptiveIdleCreditPolicy idlePolicy = (AdaptiveIdleCreditPolicy) params.createIdlePolicy();
+
+        this.dreb = new DREBLimiterV2(store, clock, refillStrategy, idlePolicy,
+                params.sustainedMax(), params.sustainedCostGain());
     }
 
     @Override
@@ -59,8 +48,9 @@ public final class CustomRateLimiterV2 implements RateLimiter {
 
         if (decision == Decision.ALLOW) {
             ClientState after = dreb.peekState(request.getClientId());
-            long remaining = (long) Math.floor(
-                    Math.min(after.sustainedTokens, after.burstTokens + after.idleCredit));
+            double effDecay = params.baseDecay() + (params.decayScalingEnabled() ? (params.abuseGain() * after.abuseScore) : 0.0);
+            double effBurst = after.burstTokens + (effDecay > 0 ? (after.idleCredit / effDecay) : after.idleCredit);
+            long remaining = (long) Math.floor(Math.min(after.sustainedTokens, effBurst));
             return new RateLimitResponse(true, remaining, -1, null);
         }
 
@@ -73,10 +63,33 @@ public final class CustomRateLimiterV2 implements RateLimiter {
 
     @Override
     public String name() {
+        if (params.strategy() == DrebParameters.Strategy.V2_ADAPTIVE_BASE_1_5) {
+            return "Custom (v2-adaptive-base1.5)";
+        }
         return "Custom (v2-adaptive)";
+    }
+
+    public DrebParameters getParameters() {
+        return params;
     }
 
     @Override
     public void reset() {
+        store.clear();
+    }
+
+    @Override
+    public void initializeState(String clientId, String initialState, double timestampSec) {
+        if ("preWarmed".equalsIgnoreCase(initialState) || "pre-warmed".equalsIgnoreCase(initialState)) {
+            ClientState s = new ClientState(params.burstMax(), params.sustainedMax(), params.idleCap(), 0.0, timestampSec);
+            store.save(clientId, s);
+        } else if ("drainedFirst".equalsIgnoreCase(initialState) || "drained-first".equalsIgnoreCase(initialState) || "drained".equalsIgnoreCase(initialState)) {
+            ClientState s = new ClientState(0.0, 0.0, 0.0, 0.0, timestampSec);
+            store.save(clientId, s);
+        } else {
+            // coldStart: full burst bucket, zero idle credit, zero abuse
+            ClientState s = new ClientState(params.burstMax(), params.sustainedMax(), 0.0, 0.0, timestampSec);
+            store.save(clientId, s);
+        }
     }
 }

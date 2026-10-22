@@ -74,4 +74,56 @@ public final class HardwareInfo {
         
         return metadata;
     }
+
+    public static String getGitCommit() {
+        try {
+            Process process = Runtime.getRuntime().exec("git rev-parse --short HEAD");
+            if (process.waitFor(2, TimeUnit.SECONDS) && process.exitValue() == 0) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                    String line = reader.readLine();
+                    if (line != null && !line.isBlank()) return line.trim();
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return "unknown";
+    }
+
+    public static String getCpuModel() {
+        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            try {
+                Process process = Runtime.getRuntime().exec("sysctl -n machdep.cpu.brand_string");
+                if (process.waitFor(2, TimeUnit.SECONDS) && process.exitValue() == 0) {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                        String line = reader.readLine();
+                        if (line != null && !line.isBlank()) return line.trim();
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        return System.getProperty("os.arch");
+    }
+
+    public static boolean isGitDirty() {
+        try {
+            Process process = Runtime.getRuntime().exec("git status --porcelain");
+            if (process.waitFor(2, TimeUnit.SECONDS) && process.exitValue() == 0) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                    String line = reader.readLine();
+                    return line != null && !line.isBlank();
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return false;
+    }
+
+    public static String getLibraryCommitHash() {
+        return "53a5c9e";
+    }
+
+    public static String getHardwareSummary() {
+        return getCpuModel() + " | " + System.getProperty("os.name") + " " + System.getProperty("os.arch");
+    }
 }

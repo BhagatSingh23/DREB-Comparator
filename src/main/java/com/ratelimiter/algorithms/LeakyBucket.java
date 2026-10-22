@@ -64,6 +64,19 @@ public class LeakyBucket implements RateLimiter {
     public void reset() {
         states.clear();
     }
+
+    @Override
+    public void initializeState(String clientId, String initialState, double timestampSec) {
+        long tsMs = (long) (timestampSec * 1000.0);
+        if ("drainedFirst".equalsIgnoreCase(initialState) || "drained-first".equalsIgnoreCase(initialState) || "drained".equalsIgnoreCase(initialState)) {
+            ClientState s = new ClientState(0, tsMs);
+            s.allowance = 0.0;
+            states.put(clientId, s);
+        } else {
+            ClientState s = new ClientState(bucketCapacity, tsMs);
+            states.put(clientId, s);
+        }
+    }
     
     private static class ClientState {
         double allowance;
