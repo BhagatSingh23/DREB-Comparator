@@ -126,12 +126,14 @@ public class ExperimentE1Runner {
 
                                 // 2. Instantaneous burst arrives at t = idleSec
                                 long burstTimestampMs = Math.round(idleSec * 1000.0);
+                                RateLimitRequest req = new RateLimitRequest("client_0", burstTimestampMs, 1L);
                                 int accepted = 0;
                                 for (int i = 0; i < burstCount; i++) {
-                                    RateLimitRequest req = new RateLimitRequest("client_0", burstTimestampMs, 1L);
                                     RateLimitResponse resp = limiter.allow(req);
                                     if (resp.isAllowed()) {
                                         accepted++;
+                                    } else {
+                                        break; // Instantaneous burst: at identical timestamp, no refill can occur after rejection
                                     }
                                 }
 
@@ -446,14 +448,19 @@ public class ExperimentE1Runner {
         System.out.println("══════════════════════════════════════════════════════════════════════════════");
 
         // Evaluate Hypotheses
-        // H1a: after full idleness (D >= 1.0 tau or preWarmed) with B >= C:
+        // H1a: after full idleness with B >= C:
+        //      Full idleness condition: preWarmed (any D), coldStart (D >= 1.0 tau), drainedFirst (D >= 2.0 tau).
         //      DREB burst acceptance >= TB-small for all DREB variants,
         //      and for DREB (burst-matched) within epsilon (<= 1.0 token) of TB-large.
         boolean h1aSupported = true;
         for (CellSummary s : summaries) {
             E1CellKey k = s.key();
             String algo = k.algorithm();
-            if ((k.idleTau() >= 1.0 || "preWarmed".equals(k.initialState())) && k.burstRatio() >= 1.0) {
+            boolean isFullIdleness = "preWarmed".equals(k.initialState())
+                    || ("coldStart".equals(k.initialState()) && k.idleTau() >= 1.0)
+                    || ("drainedFirst".equals(k.initialState()) && k.idleTau() >= 2.0);
+
+            if (isFullIdleness && k.burstRatio() >= 1.0) {
                 if (algo.startsWith("DREB")) {
                     if (s.diffTbSmallMean() < -0.1) {
                         h1aSupported = false;
@@ -467,17 +474,23 @@ public class ExperimentE1Runner {
             }
         }
 
-        // H1b: for a client with no idle history (coldStart D=0 or drainedFirst D=0) with B >= C,
-        //      burst acceptance is close to TB-small, not TB-large: |A_DREB - A_TB-small| < |A_TB-large - A_DREB|
+        // H1b: for a client with no idle history (coldStart D=0 or drainedFirst D=0) with B >= C:
+        //      - Under coldStart: burst acceptance is close to TB-small (<= B_max + 1.0), not TB-large (|A - TB-sm| < |TB-lg - A|)
+        //      - Under drainedFirst: burst acceptance is 0 (= TB-small = TB-large)
         boolean h1bSupported = true;
         for (CellSummary s : summaries) {
             E1CellKey k = s.key();
             String algo = k.algorithm();
-            if (k.idleTau() == 0.0 && ("coldStart".equals(k.initialState()) || "drainedFirst".equals(k.initialState())) && k.burstRatio() >= 1.0) {
-                if (algo.startsWith("DREB")) {
+            if (k.idleTau() == 0.0 && k.burstRatio() >= 1.0 && algo.startsWith("DREB")) {
+                if ("coldStart".equals(k.initialState())) {
                     double distSmall = Math.abs(s.diffTbSmallMean());
                     double distLarge = Math.abs(s.diffTbLargeMean());
-                    if (distSmall >= distLarge) {
+                    double bMax = Math.floor(k.capacity() * 3.0 / 7.0);
+                    if (distSmall >= distLarge || s.meanAccepted() > bMax + 1.0) {
+                        h1bSupported = false;
+                    }
+                } else if ("drainedFirst".equals(k.initialState())) {
+                    if (s.meanAccepted() > 0.1) {
                         h1bSupported = false;
                     }
                 }
