@@ -28,7 +28,11 @@ public final class CustomRateLimiterV2 implements RateLimiter {
     }
 
     public CustomRateLimiterV2(RateLimiterConfig config, DrebParameters.Strategy strategy) {
-        this.params = DrebParameters.fromConfig(config, strategy);
+        this(DrebParameters.fromConfig(config, strategy));
+    }
+
+    public CustomRateLimiterV2(DrebParameters params) {
+        this.params = java.util.Objects.requireNonNull(params, "params must not be null");
         this.clock = new ManualClock(0.0);
         this.store = new InMemoryStateStore();
 
@@ -36,7 +40,8 @@ public final class CustomRateLimiterV2 implements RateLimiter {
         AdaptiveIdleCreditPolicy idlePolicy = (AdaptiveIdleCreditPolicy) params.createIdlePolicy();
 
         this.dreb = new DREBLimiterV2(store, clock, refillStrategy, idlePolicy,
-                params.sustainedMax(), params.sustainedCostGain());
+                params.sustainedMax(), params.sustainedCostGain(),
+                params.sustainedCostScalingEnabled(), false);
     }
 
     @Override

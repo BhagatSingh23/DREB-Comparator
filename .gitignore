@@ -41,6 +41,12 @@ results/e1/*
 !results/e2/
 results/e2/*
 !results/e2/README.md
+!results/e2/FULL_TABLES.md
+!results/e3/
+results/e3/*
+!results/e3/README.md
+!results/e3/graphs/
+!results/e3/graphs/*.png
 
 *.patch
 *.docx

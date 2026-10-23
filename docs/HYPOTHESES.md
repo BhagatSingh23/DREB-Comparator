@@ -105,43 +105,54 @@ Experiment E1 measures the instantaneous burst allowance of rate-limiting algori
 ## 4. Formal Hypotheses: Experiment E2 (Mixed Legitimate & Abusive Traffic)
 
 ### Hypothesis H2a: Abusive Traffic Suppression Without Excessive False Rejection
-> **Hypothesis Statement:** DREB variants admit a smaller fraction of abusive traffic than `TB-large` (higher abusive rejection rate) without raising false rejection of legitimate clients above `TB-large`'s false rejection rate.
+> **Original Hypothesis Statement:** DREB variants admit a smaller fraction of abusive traffic than TB-large without raising false rejection of legitimate clients above TB-large's.
 
 * **Primary Metrics:**
   - Abusive Request Rejection Rate: $\text{ARR} = \frac{\text{Abusive Requests Rejected}}{\text{Abusive Requests Offered}}$
   - Legitimate False Rejection Rate: $\text{FRR} = \frac{\text{Legit Requests Rejected}}{\text{Legit Requests Offered}}$, evaluated for both steady Poisson and bursty-legit clients.
+  - Paired difference in legitimate FRR vs `TB-large`: $\Delta \text{FRR} = \text{FRR}_{\text{DREB}} - \text{FRR}_{\text{TB-large}}$.
 * **Supporting Outcome:**
-  - $\text{ARR}_{\text{DREB}} > \text{ARR}_{\text{TB-large}}$ across abusive scenarios ($k \in \{1.1, 1.25, 1.5, 2.0, 4.0\}$, evasion, jitter).
-  - $\text{FRR}_{\text{DREB}} \le \text{FRR}_{\text{TB-large}} + \epsilon$ (where $\epsilon \le 0.01$ or within bootstrap 95% CI).
+  - $\text{ARR}_{\text{DREB}} > \text{ARR}_{\text{TB-large}}$ across abusive scenarios ($k \in \{1.1, 1.25, 1.5, 2.0, 4.0\}$).
+  - Upper bound of the 95% bootstrap confidence interval of paired difference $\Delta \text{FRR} \le 0.0$ (i.e. strictly no higher than TB-large's false rejection rate).
 * **Contradicting Outcome:**
-  - $\text{ARR}_{\text{DREB}} \le \text{ARR}_{\text{TB-large}}$ (DREB fails to suppress abusive traffic better than TB-large), OR
-  - $\text{FRR}_{\text{DREB}} > \text{FRR}_{\text{TB-large}} + 0.01$ (DREB penalizes legitimate traffic more than TB-large).
+  - $\text{ARR}_{\text{DREB}} \le \text{ARR}_{\text{TB-large}}$, OR
+  - The 95% bootstrap CI of $\Delta \text{FRR}$ is strictly positive ($\text{lower CI} > 0.0$), indicating statistically significant elevation of legitimate false rejections above TB-large.
 
 ---
 
 ### Hypothesis H2b: DREB v2 Adaptive Penalty vs DREB v1
-> **Hypothesis Statement:** DREB v2 admits less abusive traffic (achieves higher abusive rejection rate) than DREB v1 at equal or lower legitimate false-rejection cost.
+> **Original Hypothesis Statement:** v2 admits less abusive traffic than v1 at equal false-rejection cost.
 
 * **Primary Metrics:**
   $$\Delta \text{ARR} = \text{ARR}_{\text{v2}} - \text{ARR}_{\text{v1-burst-matched}}$$
   $$\Delta \text{FRR} = \text{FRR}_{\text{v2}} - \text{FRR}_{\text{v1-burst-matched}}$$
 * **Supporting Outcome:**
-  - $\Delta \text{ARR} > 0$ for abusive clients (particularly repeat burst and evasion abusers).
-  - $\Delta \text{FRR} \le \epsilon$ for legitimate clients (steady and bursty).
+  - $\Delta \text{ARR} > 0$ (v2 blocks a higher percentage of abusive traffic than v1 burst-matched) while legitimate $\text{FRR}$ is statistically equivalent ($\Delta \text{FRR} \approx 0$).
 * **Contradicting Outcome:**
-  - $\text{ARR}_{\text{v2}} \le \text{ARR}_{\text{v1}}$, OR $\text{FRR}_{\text{v2}} > \text{FRR}_{\text{v1}} + 0.01$.
+  - $\text{ARR}_{\text{v2}} \le \text{ARR}_{\text{v1}}$, OR $\Delta \text{FRR} > 0$ by a statistically significant margin.
 
 ---
 
 ### Hypothesis H2c: Long-Run Cumulative Rate Bound Enforcement
-> **Hypothesis Statement:** No algorithm lets an abusive client's long-run admitted rate exceed its cumulative bound $R$ (i.e. $\frac{\text{Admitted Abusive Rate}}{R} \le 1.0 + \frac{S_{\max}}{R \cdot T} \approx 1.01$ over logical duration $T = 120\text{s}$).
+> **Original Hypothesis Statement:** no algorithm lets an abuser's long-run admitted rate exceed its cumulative bound.
 
 * **Primary Metric:**
   $$\text{Normalized Admitted Rate} = \frac{\text{Total Admitted Abusive Cost} / T}{R}$$
+* **Theoretical Exact Bound:**
+  $$\text{Exact Bound} = \frac{S_{\max} + R \cdot T}{R \cdot T} = 1.0 + \frac{S_{\max}}{R \cdot T}$$
+  (where $S_{\max}$ is the maximum capacity of the sustained bucket: $C$ for TB-large and DREB proportional, $9C/7$ for DREB burst-matched and v2 base 1.5, and $1.10C$ for v2 base 1.0).
 * **Supporting Outcome:**
-  - Normalized Admitted Rate $\le 1.0 + \frac{S_{\max}}{R \cdot T}$ for all algorithms and all abuser types ($k \in \{1.1, 1.25, 1.5, 2, 4\}$, evasion, jitter).
+  - Normalized Admitted Rate $\le \frac{S_{\max} + R \cdot T}{R \cdot T}$ across all seeds and abuser configurations.
 * **Contradicting Outcome:**
-  - Normalized Admitted Rate exceeds the theoretical cumulative bound for any algorithm.
+  - Normalized Admitted Rate exceeds $\frac{S_{\max} + R \cdot T}{R \cdot T}$ for any algorithm.
+
+---
+
+### Criteria Changes & Clarifications
+The following departures/approximations were introduced in intermediate reporting and are explicitly documented here:
+1. **Legitimate FRR Margin in H2a:** An intermediate tolerance of $+1.0\%$ ($\text{FRR}_{\text{DREB}} \le \text{FRR}_{\text{TB-lg}} + 1.0\%$) was applied during preliminary checks. This tolerance is revoked: H2a is judged strictly by whether the paired-difference 95% bootstrap CI against TB-large includes zero or is strictly negative. Under this strict standard, `DREB (proportional)` is contradicted because its FRR is $+0.72\%$ above TB-large (95% CI $[+0.69\%, +0.75\%]$).
+2. **Cumulative Rate Bound in H2c:** An intermediate threshold of static $1.01$ was used. It is replaced by each algorithm's exact mathematical cumulative bound $(S_{\max} + R \cdot T) / (R \cdot T)$ per client.
+3. **Evasion Abuser Reclassification:** The original evasion scenario with $\tau$ wait between bursts of post-idle ceiling yields an offered rate of $\approx 0.78 R < R$. Under token bucket semantics, this client is compliant; its rejections are counted as false rejections of compliant bursty traffic, not abuse suppression.
 
 ---
 
@@ -156,7 +167,7 @@ Experiment E1 measures the instantaneous burst allowance of rate-limiting algori
 * **Legitimate Mix:** 50% steady Poisson (rate uniform in $[0.5R, 0.9R]$) and 50% bursty-legit (exponential idle mean $3\tau$, burst uniform in $[0.3C, 0.9C]$).
 * **Abusive Traffic Profiles:**
   - Repeated burst abusers: burst size $0.95C$ at interval $\Delta t = \frac{0.95C}{k \cdot R}$ for $k \in \{1.1, 1.25, 1.5, 2.0, 4.0\}$.
-  - Evasion abuser: waits $\tau = \frac{9C}{7R}$ between bursts, sized at algorithm's post-idle ceiling, with offered rate target $k = 1.5$.
+  - Compliant bursty at $0.78R$ (formerly evasion): waits $\tau = \frac{9C}{7R}$ between bursts, sized at algorithm's post-idle ceiling (actual offered rate $0.78R$).
   - Jitter abuser: random burst sizes in $[0.5C, 0.95C]$ with interval $\Delta t = \frac{B}{1.5R}$ ($k = 1.5$).
 * **Algorithms (10 total):**
   1. `Token Bucket (TB-large)` ($C, R$)
@@ -170,4 +181,57 @@ Experiment E1 measures the instantaneous burst allowance of rate-limiting algori
   9. `DREB (v2-adaptive-base1.5)` ($C, R$, headline)
   10. `DREB (v2-adaptive-base1.0)` ($C, R$, variant)
 * **Replications:** $N = 30$ independent random seeds (seeds $2000 \dots 2029$; seeds $1000 \dots 1029$ reserved for E3 tuning).
-* **Metrics:** Abusive rejection rate, normalized abuser admitted rate ($\text{Rate}/R$), legitimate false-rejection rate (steady and bursty), total admitted cost, and trade-off plot (FRR vs ARR) at $C=1000$.
+
+---
+
+## 6. Formal Hypotheses: Experiment E3 (v2 Ablation & Tuning)
+
+### Hypothesis H3a: v2 vs v1 Performance Under Strict FRR Constraint
+> **Hypothesis Statement:** v2 admits less abuser traffic than v1 burst-matched at no higher legit FRR.
+
+* **Metric:** Abuser admitted rate / $R$ and overall legitimate FRR.
+* **Supporting Outcome:** Under the protocol's selection rule, the chosen v2 configuration achieves lower abuser admitted rate / $R$ than v1 burst-matched while maintaining overall legit $\text{FRR} \le \text{FRR}_{\text{TB-large}} + 0.1$ percentage points.
+* **Contradicting Outcome:** v2 cannot achieve lower abuser admitted rate without violating the FRR budget, OR achieves higher abuser admitted rate than v1.
+
+---
+
+### Hypothesis H3b: Contribution of Both v2 Adaptive Terms
+> **Hypothesis Statement:** Both v2 adaptive terms (sustained-cost scaling and decay scaling) contribute to abuse mitigation.
+
+* **Metric:** Abusive rejection rate (ARR) and abuser admitted rate / $R$ for:
+  1. Full v2 base 1.5
+  2. v2 with sustained-cost scaling disabled (`sustainedCostGain = 0.0`)
+  3. v2 with decay scaling disabled (`decayScalingEnabled = false`)
+  4. v2 with both adaptive terms disabled.
+* **Supporting Outcome:** Disabling either term strictly degrades abuser rejection (or increases admitted abuser rate) compared to the full model.
+* **Contradicting Outcome:** Disabling one or both terms has no effect or improves abuser rejection.
+
+---
+
+### Hypothesis H3c: Equivalence Sanity Check (v2 with Both Terms Off == v1 Burst-Matched)
+> **Hypothesis Statement:** v2 with both adaptive terms off is identical to v1 burst-matched.
+
+* **Metric:** Bit-for-bit / exact numeric identity between `v2 (both off)` and `v1 burst-matched` across all accepted, rejected, and rate metrics for all seeds.
+* **Supporting Outcome:** Maximum absolute difference $|\text{metric}_{\text{v2-both-off}} - \text{metric}_{\text{v1-BM}}| == 0.0$ everywhere.
+* **Contradicting Outcome:** Any non-zero difference (indicates an implementation bug).
+
+---
+
+### Experiment E3 Protocol & Search Grid
+* **Tuning Seeds:** Seeds 1000–1029 strictly reserved for parameter search.
+* **Held-Out Test Seeds:** Seeds 2000–2029 strictly reserved for final evaluation.
+* **Selection Rule (Fixed in Advance):**
+  $$\text{Maximize } \text{ARR} \quad \text{subject to } \text{FRR}_{\text{overall}} \le \text{FRR}_{\text{TB-large}} + 0.1\text{ percentage points}$$
+* **Ablation Variants (5):**
+  1. `v1 burst-matched`
+  2. `v2 base 1.5 full`
+  3. `v2 sustained-cost scaling off` (`sustainedCostGain = 0.0`)
+  4. `v2 decay scaling off` (`decayScalingEnabled = false`)
+  5. `v2 both off` (`sustainedCostGain = 0.0` and `decayScalingEnabled = false`)
+* **Single-Parameter Sweeps (others held at defaults: baseDecay=1.5, sustainedCostGain=0.35, abuseIncrement=2.0, abuseDecayRate=1.5, abuseGain=0.3):**
+  - `sustainedCostGain` $\in \{0.0, 0.1, 0.35, 1.0\}$
+  - `abuseIncrement` $\in \{0.5, 2.0, 8.0\}$
+  - `abuseDecayRate` $\in \{0.25, 1.5, 6.0\}$
+  - `abuseGain` $\in \{0.0, 0.3, 1.0\}$
+* **Scenario:** $k = 1.5, f = 0.3, C \in \{1000, 50000\}$, `coldStart` and `preWarmed`.
+* **Deliverables:** Pareto plot (legit FRR vs abuser admitted rate / $R$), aggregated comparison tables, verification of H3a, H3b, H3c.

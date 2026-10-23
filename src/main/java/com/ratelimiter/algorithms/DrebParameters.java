@@ -157,6 +157,15 @@ public final class DrebParameters {
                 1.5, 0.3, 2.0, 1.5, 0.35, true, true);
     }
 
+    public static DrebParameters customV2(double capacity, double refillRate, double baseDecay,
+                                         double abuseGain, double abuseIncrement, double abuseDecayRate,
+                                         double sustainedCostGain, boolean decayScalingEnabled,
+                                         boolean sustainedCostScalingEnabled) {
+        return new DrebParameters(Strategy.V2_ADAPTIVE_BASE_1_5, capacity, refillRate,
+                baseDecay, abuseGain, abuseIncrement, abuseDecayRate, sustainedCostGain,
+                decayScalingEnabled, sustainedCostScalingEnabled);
+    }
+
     public static DrebParameters fromStrategy(Strategy strategy, double capacity, double refillRate) {
         return switch (strategy) {
             case PROPORTIONAL -> forProportional(capacity, refillRate);
