@@ -350,34 +350,20 @@ public class ExperimentE2Runner {
 
     private static int admitBurst(RateLimiter limiter, String cid, long tMs, int burst) {
         if (burst <= 0) return 0;
-        // Fast path: try the entire burst as a single batch first
-        RateLimitRequest fullReq = new RateLimitRequest(cid, tMs, burst);
-        if (limiter.allow(fullReq).isAllowed()) {
-            return burst;
-        }
-
         int accepted = 0;
         int remaining = burst;
-        int chunkSize = Math.max(1, burst / 30);
+        int step = burst;
 
-        while (remaining >= chunkSize && chunkSize > 1) {
-            RateLimitRequest chunkReq = new RateLimitRequest(cid, tMs, chunkSize);
-            if (limiter.allow(chunkReq).isAllowed()) {
-                accepted += chunkSize;
-                remaining -= chunkSize;
-            } else {
-                break;
+        while (remaining > 0 && step >= 1) {
+            if (step <= remaining) {
+                RateLimitRequest req = new RateLimitRequest(cid, tMs, step);
+                if (limiter.allow(req).isAllowed()) {
+                    accepted += step;
+                    remaining -= step;
+                    continue;
+                }
             }
-        }
-
-        RateLimitRequest unitReq = new RateLimitRequest(cid, tMs, 1L);
-        while (remaining > 0) {
-            if (limiter.allow(unitReq).isAllowed()) {
-                accepted++;
-                remaining--;
-            } else {
-                break;
-            }
+            step /= 2;
         }
         return accepted;
     }
