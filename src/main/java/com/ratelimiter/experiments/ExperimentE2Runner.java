@@ -168,8 +168,26 @@ public class ExperimentE2Runner {
             }
         }
 
+        int totalTasks = tasks.size();
+        java.util.concurrent.atomic.AtomicInteger completed = new java.util.concurrent.atomic.AtomicInteger(0);
+        System.out.printf("Starting execution of %d trial tasks across %d worker threads...%n", totalTasks, threads);
+
+        List<Callable<Void>> instrumentedTasks = new ArrayList<>(totalTasks);
+        for (Callable<Void> task : tasks) {
+            instrumentedTasks.add(() -> {
+                task.call();
+                int done = completed.incrementAndGet();
+                if (done % 200 == 0 || done == totalTasks) {
+                    double elapsedSec = (System.currentTimeMillis() - simStart) / 1000.0;
+                    System.out.printf("  Progress: %d / %d tasks (%.1f%%) in %.1f s%n",
+                            done, totalTasks, (done * 100.0) / totalTasks, elapsedSec);
+                }
+                return null;
+            });
+        }
+
         try {
-            pool.invokeAll(tasks);
+            pool.invokeAll(instrumentedTasks);
             pool.shutdown();
         } catch (InterruptedException e) {
             throw new RuntimeException("Simulation execution interrupted", e);
@@ -228,7 +246,7 @@ public class ExperimentE2Runner {
             evasionCeiling = (int) Math.round(c * 1.10); // measured full-credit burst
         }
 
-        // 1. Simulate Abusive Clients
+    // 1. Simulate Abusive Clients
         for (int i = 0; i < numAbusive; i++) {
             String cid = "abuser_" + i;
             Random abRng = new Random(seed * 30011L + i * 37L);
@@ -237,32 +255,18 @@ public class ExperimentE2Runner {
             if ("evasion".equalsIgnoreCase(cond.abuserProfile())) {
                 while (t < DURATION_SEC) {
                     long tMs = Math.round(t * 1000.0);
-                    RateLimitRequest req = new RateLimitRequest(cid, tMs, 1L);
                     int burst = evasionCeiling;
                     abOff += burst;
-                    for (int b = 0; b < burst; b++) {
-                        if (limiter.allow(req).isAllowed()) {
-                            abAcc++;
-                        } else {
-                            break;
-                        }
-                    }
+                    abAcc += admitBurst(limiter, cid, tMs, burst);
                     t += tauSec;
                 }
             } else if ("jitter".equalsIgnoreCase(cond.abuserProfile())) {
                 while (t < DURATION_SEC) {
                     long tMs = Math.round(t * 1000.0);
-                    RateLimitRequest req = new RateLimitRequest(cid, tMs, 1L);
                     double bFrac = 0.50 + abRng.nextDouble() * 0.45;
                     int burst = (int) Math.round(bFrac * c);
                     abOff += burst;
-                    for (int b = 0; b < burst; b++) {
-                        if (limiter.allow(req).isAllowed()) {
-                            abAcc++;
-                        } else {
-                            break;
-                        }
-                    }
+                    abAcc += admitBurst(limiter, cid, tMs, burst);
                     double dt = (double) burst / (1.5 * r);
                     t += dt;
                 }
@@ -272,46 +276,27 @@ public class ExperimentE2Runner {
                 double dt = (0.95 * c) / (k * r);
                 while (t < DURATION_SEC) {
                     long tMs = Math.round(t * 1000.0);
-                    RateLimitRequest req = new RateLimitRequest(cid, tMs, 1L);
                     abOff += burst;
-                    for (int b = 0; b < burst; b++) {
-                        if (limiter.allow(req).isAllowed()) {
-                            abAcc++;
-                        } else {
-                            break;
-                        }
-                    }
+                    abAcc += admitBurst(limiter, cid, tMs, burst);
                     t += dt;
                 }
             }
         }
 
         // 2. Simulate Steady Poisson Legitimate Clients
-        // Evaluated with fast batch admission and exact unit-request fallback on rejection
+        // Evaluated in 50ms time slices with chunked admission and exact unit fallback
+        long stepMs = 50L;
         for (int i = 0; i < numSteady; i++) {
             String cid = "steady_" + i;
             Random stRng = new Random(seed * 10007L + i * 19L);
             double lambda = (0.50 + stRng.nextDouble() * 0.40) * r; // rate in [0.5R, 0.9R]
-            double meanPerMs = lambda * 0.001;
+            double meanPerStep = lambda * (stepMs / 1000.0);
 
-            for (long ms = 0; ms < (long) (DURATION_SEC * 1000.0); ms++) {
-                int count = samplePoisson(meanPerMs, stRng);
+            for (long ms = 0; ms < (long) (DURATION_SEC * 1000.0); ms += stepMs) {
+                int count = samplePoisson(meanPerStep, stRng);
                 if (count > 0) {
                     stOff += count;
-                    RateLimitRequest batchReq = new RateLimitRequest(cid, ms, count);
-                    if (limiter.allow(batchReq).isAllowed()) {
-                        stAcc += count;
-                    } else {
-                        // Boundary fallback: test unit-cost requests individually
-                        RateLimitRequest unitReq = new RateLimitRequest(cid, ms, 1L);
-                        for (int b = 0; b < count; b++) {
-                            if (limiter.allow(unitReq).isAllowed()) {
-                                stAcc++;
-                            } else {
-                                break;
-                            }
-                        }
-                    }
+                    stAcc += admitBurst(limiter, cid, ms, count);
                 }
             }
         }
@@ -331,15 +316,7 @@ public class ExperimentE2Runner {
                 double bFrac = 0.30 + buRng.nextDouble() * 0.60;
                 int burst = (int) Math.round(bFrac * c);
                 buOff += burst;
-
-                RateLimitRequest req = new RateLimitRequest(cid, tMs, 1L);
-                for (int b = 0; b < burst; b++) {
-                    if (limiter.allow(req).isAllowed()) {
-                        buAcc++;
-                    } else {
-                        break;
-                    }
-                }
+                buAcc += admitBurst(limiter, cid, tMs, burst);
             }
         }
 
@@ -369,6 +346,34 @@ public class ExperimentE2Runner {
                 legitOff, legitAcc, legitRej, frrOverall,
                 totOff, totAcc
         );
+    }
+
+    private static int admitBurst(RateLimiter limiter, String cid, long tMs, int burst) {
+        if (burst <= 0) return 0;
+        int accepted = 0;
+        int remaining = burst;
+        int chunkSize = Math.max(1, burst / 30);
+
+        while (remaining >= chunkSize && chunkSize > 1) {
+            RateLimitRequest chunkReq = new RateLimitRequest(cid, tMs, chunkSize);
+            if (limiter.allow(chunkReq).isAllowed()) {
+                accepted += chunkSize;
+                remaining -= chunkSize;
+            } else {
+                break;
+            }
+        }
+
+        RateLimitRequest unitReq = new RateLimitRequest(cid, tMs, 1L);
+        while (remaining > 0) {
+            if (limiter.allow(unitReq).isAllowed()) {
+                accepted++;
+                remaining--;
+            } else {
+                break;
+            }
+        }
+        return accepted;
     }
 
     private static int samplePoisson(double lambda, Random rng) {
