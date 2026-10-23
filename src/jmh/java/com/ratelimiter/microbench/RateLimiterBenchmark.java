@@ -32,7 +32,16 @@ import java.util.concurrent.atomic.AtomicLong;
 @State(Scope.Benchmark)
 public class RateLimiterBenchmark {
 
-    @Param({"token_bucket", "leaky_bucket", "fixed_window", "sliding_window_log", "sliding_window_counter", "custom"})
+    @Param({
+            "token_bucket",
+            "leaky_bucket",
+            "fixed_window",
+            "sliding_window_log",
+            "sliding_window_counter",
+            "dreb_proportional",
+            "dreb_burst_matched",
+            "dreb_v2_base15"
+    })
     private String algorithm;
 
     private RateLimiter limiter;
@@ -51,14 +60,17 @@ public class RateLimiterBenchmark {
         counter = new AtomicLong(System.currentTimeMillis());
     }
 
-    private static RateLimiter createLimiter(String algo, RateLimiterConfig config) {
+    public static RateLimiter createLimiter(String algo, RateLimiterConfig config) {
         return switch (algo) {
             case "token_bucket" -> new TokenBucket(config);
             case "leaky_bucket" -> new LeakyBucket(config);
             case "fixed_window" -> new FixedWindow(config);
             case "sliding_window_log" -> new SlidingWindowLog(config);
             case "sliding_window_counter" -> new SlidingWindowCounter(config);
-            case "custom" -> new com.ratelimiter.algorithms.CustomRateLimiter(config);
+            case "dreb_proportional" -> new com.ratelimiter.algorithms.CustomRateLimiter(config, com.ratelimiter.algorithms.CustomRateLimiter.PROPORTIONAL);
+            case "dreb_burst_matched" -> new com.ratelimiter.algorithms.CustomRateLimiter(config, com.ratelimiter.algorithms.CustomRateLimiter.BURST_CEILING_MATCHED);
+            case "dreb_v2_base15" -> new com.ratelimiter.algorithms.CustomRateLimiterV2(
+                    com.ratelimiter.algorithms.DrebParameters.forV2Base15(config.getBucketCapacity(), config.getRefillRate()));
             default -> throw new IllegalArgumentException("Unknown algorithm: " + algo);
         };
     }

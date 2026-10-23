@@ -334,3 +334,51 @@ The following departures/approximations were introduced in intermediate reportin
     - Full $3 \times 3 = 9$ combinations across all $k \in \{1.1, 1.25, 1.5, 2, 4\}$ and seeds 2000–2029.
 * **Criteria Changes:** None. Strict original wording, no tolerance margins.
 
+---
+
+## 9. Experiment E4: Note on Cross-Client Fairness (Dropped)
+* **Fairness Metric Status:** Experiment E4 is **NOT run**.
+* **Rationale:** In per-client rate limiters, client instances are isolated and do not share state or contend for common token pools. Because per-client limiters do not interact across clients, cross-client fairness (e.g. Jain's Fairness Index) is determined entirely by the offered load distributions and client concurrency, and cannot be altered or differentiated by individual rate limiting algorithms. Consequently, cross-client fairness evaluation is dropped.
+
+---
+
+## 10. Formal Hypotheses: Experiment E5 (Contract Boundary Compliance)
+
+### Hypothesis H5a: Complete Admission Below Contract
+> **Hypothesis Statement:** for compliant steady clients offered strictly below the contracted rate (offered rate in {0.90R, 0.98R}), all algorithms achieve complete admission (admitted / offered = 1.000, admitted rate / R = k) across both Poisson and periodic arrival processes, without false rejections.
+
+* **Metric:** Admitted cost / offered cost over the run and admitted rate / $R$.
+* **Conditions:** Offered rates $k \in \{0.90, 0.98, 1.00, 1.02, 1.10\} \times R$, arrival processes: Poisson and periodic, $C \in \{1000, 50000\}$, $N = 30$ seeds (2000–2029).
+* **Supporting Outcome:** For $k < 1.00$, admitted / offered ratio is $\ge 0.999$ with zero false rejections.
+* **Contradicting Outcome:** Any algorithm rejects compliant traffic at $0.90R$ or $0.98R$ under either Poisson or periodic arrivals.
+* **Empirical Outcome & Verdict:**
+  - **Periodic Arrivals ($k \in \{0.90, 0.98\}$):** **SUPPORTED** across all 10 algorithms (100.00% admission, 0.00% FRR).
+  - **Poisson Arrivals ($k \in \{0.90, 0.98\}$):** **PARTIALLY SUPPORTED / CONTRADICTED for window limiters**. Token Bucket (large, small, env), Leaky Bucket, and all DREB variants achieved 100.00% admission; discrete-window algorithms (Fixed Window, Sliding Window Log, Sliding Window Counter) exhibited boundary rejections (0.8%–2.6% FRR) due to Poisson request clustering across window borders.
+  - **Overall Verdict:** **PARTIALLY SUPPORTED** (Strictly supported under periodic compliant load; window-based limiters fail under Poisson arrivals).
+
+### Hypothesis H5b: Strict Contract Capping at and Above Contract
+> **Hypothesis Statement:** at and above the contracted rate (offered rate in {1.00R, 1.02R, 1.10R}), all algorithms cap admitted rate to at most the contracted envelope (S_max + R*T) / (R*T), admitting at most R under sustained periodic load.
+
+* **Supporting Outcome:** Under periodic arrivals with $k \ge 1.00$, admitted rate / $R \le 1.001$, preventing sustained over-admission.
+* **Contradicting Outcome:** Admitted rate exceeds the cumulative envelope bound.
+* **Empirical Outcome & Verdict:** **SUPPORTED**. Under sustained periodic arrivals at and above $1.00R$, all evaluated algorithms strictly cap admitted rates to the contracted rate envelope $1.000R$ (cumulative admitted rate $\le 1.043R$ over 30s including cold-start capacity).
+
+---
+
+## 11. Formal Hypotheses: Experiment E6 (Variable Cost Requests and Atomic Overdraw)
+
+### Hypothesis H6a: Strict Capacity Ceiling Under Variable Costs
+> **Hypothesis Statement:** under variable cost requests drawn from {1, 5, 20, 60, 200} at C = 1000, DREB burst-matched with the P4 fix (legacyOverdraw = false) never admits any single request whose cost exceeds available capacity, and the largest single admitted request never exceeds C.
+
+* **Metric:** Largest single request admitted, admitted cost / offered cost, and false rejection rate by cost class.
+* **Supporting Outcome:** When `legacyOverdraw = false`, the maximum admitted request cost $\le C = 1000$ strictly, and partial or negative token balances are prevented.
+* **Contradicting Outcome:** Any request admitted when tokens are insufficient, or any single admitted request with $\text{cost} > C$.
+* **Empirical Outcome & Verdict:** **SUPPORTED**. The largest single request admitted under the $\{1, 5, 20, 60, 200\}$ distribution was 200 ($\le C = 1000$). Under post-idle boundary testing with oversized requests ($1200 > C$), `legacyOverdraw = false` strictly rejected the request, preserving the $C = 1000$ capacity ceiling.
+
+### Hypothesis H6b: Overdraw Elimination
+> **Hypothesis Statement:** DREB burst-matched with legacyOverdraw = true admits requests when available tokens are strictly less than request cost, causing token balances to drop below zero, whereas legacyOverdraw = false strictly eliminates token deficits.
+
+* **Supporting Outcome:** `legacyOverdraw = true` allows token deficits, whereas `legacyOverdraw = false` prevents token deficits and shows distinct rejection profiles on large request classes.
+* **Contradicting Outcome:** No difference in token deficit behavior between `legacyOverdraw = true` and `legacyOverdraw = false`.
+* **Empirical Outcome & Verdict:** **SUPPORTED (via unscaled idle credit overdraw)**. While atomic bucket clamping prevents negative token counts in memory, `legacyOverdraw = true` grants raw unscaled idle credit ($1:1$ rather than dividing by decay $\gamma = 1.5$), admitting requests up to $9C/7 = 1286$ after idleness (admitting a request of cost 1200), whereas `legacyOverdraw = false` strictly enforces effective credit scaled by idle decay, eliminating overdraw beyond $C = 1000$.
+

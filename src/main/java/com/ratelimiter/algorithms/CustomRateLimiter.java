@@ -47,6 +47,10 @@ public final class CustomRateLimiter implements RateLimiter {
      * @param strategy one of {@link #PROPORTIONAL} or {@link #BURST_CEILING_MATCHED}
      */
     public CustomRateLimiter(RateLimiterConfig config, String strategy) {
+        this(config, strategy, false);
+    }
+
+    public CustomRateLimiter(RateLimiterConfig config, String strategy, boolean legacyOverdraw) {
         this.mappingStrategy = strategy;
         DrebParameters.Strategy strat = DrebParameters.Strategy.fromString(strategy);
         this.params = DrebParameters.fromConfig(config, strat);
@@ -57,7 +61,7 @@ public final class CustomRateLimiter implements RateLimiter {
 
         this.clock = new ManualClock(0.0);
         this.store = new InMemoryStateStore();
-        this.dreb = new DREBLimiter(store, clock, params.createRefillStrategy(), params.createIdlePolicy(), params.sustainedMax());
+        this.dreb = new DREBLimiter(store, clock, params.createRefillStrategy(), params.createIdlePolicy(), params.sustainedMax(), legacyOverdraw);
     }
 
     /**

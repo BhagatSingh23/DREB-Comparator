@@ -64,6 +64,12 @@ results/e9/*
 !results/e9/README.md
 !results/e9/graphs/
 !results/e9/graphs/*.png
+!results/e5/
+!results/e5/**
+!results/e6/
+!results/e6/**
+!results/perf/
+!results/perf/**
 
 *.patch
 *.docx

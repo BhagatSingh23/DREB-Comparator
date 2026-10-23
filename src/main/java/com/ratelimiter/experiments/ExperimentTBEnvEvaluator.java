@@ -336,8 +336,8 @@ public final class ExperimentTBEnvEvaluator {
             double[] dFrrLgCi = bootstrap(dFrrVsLg);
             double[] dFrrEnvCi = bootstrap(dFrrVsEnv);
 
-            System.out.printf("  %-22s | %8.1f%%  | %12.3f | %+6.3f [%+6.3f] | %9.2f%%  | %+6.2f%% [%+6.2f%%] | %+6.2f%% [%+6.2f%%] | %9.2f%%%n",
-                    a, mArr, mRate, dRateEnvCi[0], dRateEnvCi[1], mFrr, dFrrLgCi[0], dFrrLgCi[1], dFrrEnvCi[0], dFrrEnvCi[1], mBurst);
+            System.out.printf("  %-22s | %8.1f%%  | %12.3f | %+6.3f [%+6.3f, %+6.3f] | %9.2f%%  | %+6.2f%% [%+6.2f%%, %+6.2f%%] | %+6.2f%% [%+6.2f%%, %+6.2f%%] | %9.2f%%%n",
+                    a, mArr, mRate, dRateEnvCi[0], dRateEnvCi[1], dRateEnvCi[2], mFrr, dFrrLgCi[0], dFrrLgCi[1], dFrrLgCi[2], dFrrEnvCi[0], dFrrEnvCi[1], dFrrEnvCi[2], mBurst);
         }
         System.out.println("══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════");
     }
