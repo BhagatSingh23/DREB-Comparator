@@ -5,6 +5,7 @@ import com.ratelimiter.core.RateLimitResponse;
 import com.ratelimiter.core.RateLimiter;
 import com.ratelimiter.core.RateLimiterConfig;
 
+import java.util.ArrayDeque;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -43,23 +44,25 @@ public class SlidingWindowLog implements RateLimiter {
             long windowStart = now - windowSizeMs;
             
             // Evict old entries
-            while (!state.log.isEmpty() && state.log.getFirst() <= windowStart) {
-                state.log.removeFirst();
+            while (!state.log.isEmpty() && state.log.peekFirst().timestamp <= windowStart) {
+                state.currentCount -= state.log.pollFirst().count;
             }
             
-            long currentSize = state.log.size();
             long cost = request.getCost();
             
-            if (currentSize + cost <= maxRequests) {
-                for (long i = 0; i < cost; i++) {
-                    state.log.addLast(now);
+            if (state.currentCount + cost <= maxRequests) {
+                if (!state.log.isEmpty() && state.log.peekLast().timestamp == now) {
+                    state.log.peekLast().count += cost;
+                } else {
+                    state.log.addLast(new Entry(now, cost));
                 }
-                long remainingCapacity = maxRequests - (currentSize + cost);
+                state.currentCount += cost;
+                long remainingCapacity = maxRequests - state.currentCount;
                 return RateLimitResponse.allowed(remainingCapacity);
             } else {
                 long retryAfterMs = -1;
                 if (!state.log.isEmpty()) {
-                    retryAfterMs = state.log.getFirst() + windowSizeMs - now;
+                    retryAfterMs = state.log.peekFirst().timestamp + windowSizeMs - now;
                     if (retryAfterMs < 0) {
                         retryAfterMs = 0;
                     }
@@ -84,16 +87,25 @@ public class SlidingWindowLog implements RateLimiter {
         long tsMs = (long) (timestampSec * 1000.0);
         if ("drainedFirst".equalsIgnoreCase(initialState) || "drained-first".equalsIgnoreCase(initialState) || "drained".equalsIgnoreCase(initialState)) {
             ClientState s = new ClientState();
-            for (int i = 0; i < maxRequests; i++) {
-                s.log.addLast(tsMs);
-            }
+            s.log.addLast(new Entry(tsMs, maxRequests));
+            s.currentCount = maxRequests;
             states.put(clientId, s);
         } else {
             states.remove(clientId);
         }
     }
     
+    private static class Entry {
+        final long timestamp;
+        long count;
+        Entry(long timestamp, long count) {
+            this.timestamp = timestamp;
+            this.count = count;
+        }
+    }
+
     private static class ClientState {
-        final LinkedList<Long> log = new LinkedList<>();
+        final ArrayDeque<Entry> log = new ArrayDeque<>();
+        long currentCount = 0;
     }
 }
