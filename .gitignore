@@ -54,6 +54,11 @@ results/e7/*
 !results/e7/graphs/*.png
 !results/e7/data/
 !results/e7/data/*.csv
+!results/e8/
+results/e8/*
+!results/e8/README.md
+!results/e8/graphs/
+!results/e8/graphs/*.png
 
 *.patch
 *.docx

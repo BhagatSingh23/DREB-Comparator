@@ -28,6 +28,10 @@ public final class CustomRateLimiter implements RateLimiter {
     private final InMemoryStateStore store;
     private final String mappingStrategy;
     private final DrebParameters params;
+    private final double rawBurstMax;
+    private final double rawSustainedMax;
+    private final double rawIdleCap;
+    private final double rawIdleDecay;
 
     /**
      * Constructs a DREB limiter using the {@code proportional} mapping.
@@ -46,6 +50,10 @@ public final class CustomRateLimiter implements RateLimiter {
         this.mappingStrategy = strategy;
         DrebParameters.Strategy strat = DrebParameters.Strategy.fromString(strategy);
         this.params = DrebParameters.fromConfig(config, strat);
+        this.rawBurstMax = params.burstMax();
+        this.rawSustainedMax = params.sustainedMax();
+        this.rawIdleCap = params.idleCap();
+        this.rawIdleDecay = params.idleDecay();
 
         this.clock = new ManualClock(0.0);
         this.store = new InMemoryStateStore();
@@ -59,8 +67,21 @@ public final class CustomRateLimiter implements RateLimiter {
     public CustomRateLimiter(double burstMax, double burstRate,
                               double sustainedMax, double sustainedRate,
                               double idleGain, double idleCap, double idleDecay) {
-        this.mappingStrategy = "raw";
+        this("Custom", burstMax, burstRate, sustainedMax, sustainedRate, idleGain, idleCap, idleDecay);
+    }
+
+    /**
+     * Named raw-parameter constructor for custom variants like DualBucket.
+     */
+    public CustomRateLimiter(String name, double burstMax, double burstRate,
+                              double sustainedMax, double sustainedRate,
+                              double idleGain, double idleCap, double idleDecay) {
+        this.mappingStrategy = name;
         this.params = null;
+        this.rawBurstMax = burstMax;
+        this.rawSustainedMax = sustainedMax;
+        this.rawIdleCap = idleCap;
+        this.rawIdleDecay = idleDecay;
         this.clock = new ManualClock(0.0);
         this.store = new InMemoryStateStore();
         ConstantRateRefillStrategy refillStrategy =
@@ -79,7 +100,7 @@ public final class CustomRateLimiter implements RateLimiter {
 
         if (decision == Decision.ALLOW) {
             ClientState after = dreb.peekState(request.getClientId());
-            double effDecay = (params != null) ? params.idleDecay() : 1.5;
+            double effDecay = (params != null) ? params.idleDecay() : rawIdleDecay;
             double effBurst = after.burstTokens + (effDecay > 0 ? (after.idleCredit / effDecay) : after.idleCredit);
             long remaining = (long) Math.floor(Math.min(after.sustainedTokens, effBurst));
             return new RateLimitResponse(true, remaining, -1, null);
@@ -100,7 +121,7 @@ public final class CustomRateLimiter implements RateLimiter {
         if (PROPORTIONAL.equals(mappingStrategy)) {
             return "Custom (proportional)";
         }
-        return "Custom";
+        return mappingStrategy != null ? mappingStrategy : "Custom";
     }
 
     /** Returns the mapping strategy used by this instance. */
@@ -123,10 +144,11 @@ public final class CustomRateLimiter implements RateLimiter {
 
     @Override
     public void initializeState(String clientId, String initialState, double timestampSec) {
+        double bMax = (params != null) ? params.burstMax() : rawBurstMax;
+        double sMax = (params != null) ? params.sustainedMax() : rawSustainedMax;
+        double idCap = (params != null) ? params.idleCap() : rawIdleCap;
+
         if ("preWarmed".equalsIgnoreCase(initialState) || "pre-warmed".equalsIgnoreCase(initialState)) {
-            double bMax = (params != null) ? params.burstMax() : 33.333;
-            double sMax = (params != null) ? params.sustainedMax() : 100.0;
-            double idCap = (params != null) ? params.idleCap() : 66.667;
             ClientState s = new ClientState(bMax, sMax, idCap, timestampSec);
             store.save(clientId, s);
         } else if ("drainedFirst".equalsIgnoreCase(initialState) || "drained-first".equalsIgnoreCase(initialState) || "drained".equalsIgnoreCase(initialState)) {
@@ -134,8 +156,6 @@ public final class CustomRateLimiter implements RateLimiter {
             store.save(clientId, s);
         } else {
             // coldStart: full burst bucket, zero idle credit
-            double bMax = (params != null) ? params.burstMax() : 33.333;
-            double sMax = (params != null) ? params.sustainedMax() : 100.0;
             ClientState s = new ClientState(bMax, sMax, 0.0, timestampSec);
             store.save(clientId, s);
         }

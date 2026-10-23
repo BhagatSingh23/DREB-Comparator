@@ -71,13 +71,12 @@ Experiment E7 collects cycle-by-cycle state variable traces at $C=1000, R=1000, 
   EMPIRICAL FINDINGS FROM TRACE DATA:
   1. REASON FOR LOWER REJECTIONS VS TB-LARGE: In burst-matched DREB, instantaneous allowance after idle D is:
        A(D) = min(S_max, burst_tokens(D) + idle_credit(D) / 1.5).
-     Burst bucket tokens refill at rate r_burst = 5R/3 = 1666.7 tokens/s (vs R = 1000 tokens/s in TB-large),
-     and idle credit accumulates in parallel at rate g_idle = 2R/3 = 666.7 tokens/s.
-     Consequently, after short-to-medium idle intervals D < tau, DREB's effective available burst capacity
-     grows at rate r_burst + g_idle / 1.5 = (5/3)R + (2/3)/1.5 R = (5/3 + 4/9)R = (19/9)R = 2.11 R,
-     which is more than DOUBLE the refill rate of TB-large (1.0 R)!
-     Therefore, when bursts arrive after modest idle gaps, DREB has accumulated significantly more burst
-     allowance than TB-large, admitting larger portions of the burst.
+     The trace shows that DREB's burst bucket refills at rate r_burst = 5R/3 = 1666.7 tokens/s vs Token Bucket's R = 1000 tokens/s.
+     Consequently, following an earlier drain, DREB replenishes burst tokens 66.7% faster than TB-large.
+     When subsequent bursts arrive after short recovery intervals, DREB has accumulated more burst tokens
+     than TB-large, admitting larger portions of the burst (e.g. at bursts 9 and 10 in the trace above).
+     (Note: Idle credit does not accumulate in parallel with burst refill; it only accrues once the burst bucket
+     is completely full. The effective refill advantage during recovery is strictly the 5R/3 burst refill rate vs Token Bucket's R.)
   2. COMPARISON WITH TB-ENV: Notice that TB-env (capacity 9C/7 = 1286) admits EQUAL OR MORE tokens than DREB
      at every burst. DREB's lower FRR vs TB-large is strictly an artifact of comparing a 1286-envelope DREB
      against a 1000-capacity TB-large. Against a capacity-matched TB-env, DREB's FRR advantage is completely erased.

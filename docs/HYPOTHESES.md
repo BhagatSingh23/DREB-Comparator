@@ -237,3 +237,46 @@ The following departures/approximations were introduced in intermediate reportin
   - `abuseGain` $\in \{0.0, 0.3, 1.0\}$
 * **Scenario:** $k = 1.5, f = 0.3, C \in \{1000, 50000\}$, `coldStart` and `preWarmed`.
 * **Deliverables:** Pareto plot (legit FRR vs abuser admitted rate / $R$), aggregated comparison tables, verification of H3a, H3b, H3c.
+
+---
+
+## 7. Formal Hypotheses: Experiment E8 (Isolate the Idle Credit)
+
+### Hypothesis H8a: Trade-Off Frontier vs Static Dual Buckets
+> **Hypothesis Statement:** DREB (burst-matched) achieves a better trade-off than any static dual bucket without idle credit: for the same bursty-legit FRR it admits less abuser traffic, or for the same abuser admitted rate it has lower bursty-legit FRR.
+
+* **Definition of "better" in H8a:** DREB is below-or-left of the static-dual-bucket frontier at the same x or y, judged by paired 95% CIs, no tolerance margins.
+* **Supporting Outcome:** DREB burst-matched lies strictly below or to the left of the static dual bucket frontier at the same x (bursty-legit FRR) or y (abuser admitted rate / R) with strictly non-overlapping / negative paired 95% bootstrap CIs without tolerance margins.
+* **Contradicting Outcome:** DREB burst-matched lies on, above, or to the right of the static dual bucket frontier, or the paired 95% CIs overlap / include zero.
+* **Empirical Outcome & Verdict:** **CONTRADICTED** (judged by paired 95% bootstrap CIs, no tolerance margins). While DREB burst-matched achieves a strictly superior trade-off at moderate rates ($k \in \{1.1, 1.25, 1.5\}$), at high over-offered rates ($k \in \{2.0, 4.0\}$) abuser traffic saturates the sustained envelope ($S_{\text{rate}} = R$, admitted rate $\approx 1.040R$) across all $B \ge 0.55C$. DualBucket ($B = 1.00C$) achieves identical abuser admission (1.040R, difference +0.000 [+0.000, +0.000]) but achieves strictly lower bursty-legit FRR (1.43% vs 2.18%, paired difference +0.75 pp [+0.52 pp, +0.99 pp]) because its 1.0C burst bucket is permanently available without needing time $\tau$ to accumulate credit. Thus, DREB does not achieve a better trade-off than *any* static dual bucket.
+
+---
+
+### Hypothesis H8b: Idle Credit and Burst Acceptance
+> **Hypothesis Statement:** the idle credit increases burst acceptance after idleness relative to a static dual bucket with the same cold-start burst (B_max = 3C/7) without raising abuser admission.
+
+* **Metric:** Instantaneous burst acceptance after idle duration $D \in \{0, 0.5\tau, 1\tau, 2\tau\}$ and abuser admitted rate / $R$.
+* **Supporting Outcome:** DREB burst-matched has strictly higher instantaneous burst acceptance than DualBucket with $B = 3C/7$ for $D > 0$, while admitting no more abuser traffic ($\Delta \text{admitted rate} \le 0$ judged by paired 95% CI).
+* **Contradicting Outcome:** Idle credit fails to increase burst acceptance after idleness, OR increases abuser admitted rate relative to DualBucket ($B = 3C/7$).
+* **Empirical Outcome & Verdict:** **CONTRADICTED** (judged by paired 95% bootstrap CIs, no tolerance margins). Idle credit increases instantaneous burst acceptance after idleness from $0.428C$ to $1.000C$ (+133.6%), but it **significantly raises abuser admission** relative to DualBucket ($B = 3C/7$) by up to +0.306R across seeds 2000–2029 (at $k=1.10$: +0.306R [+0.306, +0.306]; at $k=1.25$: +0.291R [+0.291, +0.291]; at $k=1.50$: +0.263R [+0.263, +0.263]; at $k=2.00$: +0.126R [+0.126, +0.126]). Because DREB's burst bucket refills rapidly at $5R/3$ in just $0.257(C/R)$ seconds, periodic attack bursts with interval $dt > 0.257(C/R)$ leave the burst bucket full and accrue idle credit between bursts, which the abuser then consumes. DualBucket ($B=3C/7$) lacks idle credit and strictly clamps abusers to $0.428C$ per burst. Thus, idle credit raises abuser admission for all $k < 4.0$.
+
+---
+
+### Experiment E8 Protocol & DualBucket Family
+* **DualBucket Baseline Definition:** Existing DREB v1 with `idleGain = 0` and `idleCap = 0` (no idle credit), parameters:
+  - `burstMax = B`
+  - `burstRate = 5R/3`
+  - `sustainedMax = 9C/7`
+  - `sustainedRate = R`
+  - Family: $B \in \{0.30C, 0.43C (= 3C/7), 0.55C, 0.70C, 0.85C, 1.00C\}$.
+* **Algorithms Evaluated:**
+  - DualBucket family ($B \in \{0.30C, 0.43C, 0.55C, 0.70C, 0.85C, 1.00C\}$)
+  - `DREB (burst-matched)`
+  - `DREB (v2 base 1.5)`
+  - `Token Bucket (TB-large)` ($C, R$)
+  - `Token Bucket (TB-env)` ($9C/7, R$)
+  - `Token Bucket (TB-small)` ($3C/7, R$)
+* **Sanity Unit Test:** DualBucket with $B = 3C/7$ equals DREB burst-matched in cold start with `idleGain = 0` (sanity check).
+* **Scenarios:** $k \in \{1.1, 1.25, 1.5, 2, 4\}$, $f = 0.3$, $C \in \{1000, 50000\}$, `coldStart` and `preWarmed`, seeds 2000–2029 ($N=30$).
+* **Criteria Changes:** None. Strict original wording, no tolerance margins.
+
