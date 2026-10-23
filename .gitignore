@@ -47,6 +47,13 @@ results/e3/*
 !results/e3/README.md
 !results/e3/graphs/
 !results/e3/graphs/*.png
+!results/e7/
+results/e7/*
+!results/e7/README.md
+!results/e7/graphs/
+!results/e7/graphs/*.png
+!results/e7/data/
+!results/e7/data/*.csv
 
 *.patch
 *.docx

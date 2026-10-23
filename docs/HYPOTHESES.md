@@ -153,6 +153,8 @@ The following departures/approximations were introduced in intermediate reportin
 1. **Legitimate FRR Margin in H2a:** An intermediate tolerance of $+1.0\%$ ($\text{FRR}_{\text{DREB}} \le \text{FRR}_{\text{TB-lg}} + 1.0\%$) was applied during preliminary checks. This tolerance is revoked: H2a is judged strictly by whether the paired-difference 95% bootstrap CI against TB-large includes zero or is strictly negative. Under this strict standard, `DREB (proportional)` is contradicted because its FRR is $+0.72\%$ above TB-large (95% CI $[+0.69\%, +0.75\%]$).
 2. **Cumulative Rate Bound in H2c:** An intermediate threshold of static $1.01$ was used. It is replaced by each algorithm's exact mathematical cumulative bound $(S_{\max} + R \cdot T) / (R \cdot T)$ per client.
 3. **Evasion Abuser Reclassification:** The original evasion scenario with $\tau$ wait between bursts of post-idle ceiling yields an offered rate of $\approx 0.78 R < R$. Under token bucket semantics, this client is compliant; its rejections are counted as false rejections of compliant bursty traffic, not abuse suppression.
+4. **Legitimate FRR Reference in H3a:** In intermediate reporting, H3a was evaluated using the tuning rule's budget ($\text{FRR} \le \text{FRR}_{\text{TB-large}} + 0.1\text{ percentage points}$) rather than strictly against v1 burst-matched. Under the strict original wording ("at no higher legit FRR [than v1]"), both default v2 ($\Delta \text{FRR} = +0.04$ pp, 95% CI $[+0.04\%, +0.05\%]$) and the selected setting ($\Delta \text{FRR} = +0.18$ pp, 95% CI $[+0.17\%, +0.19\%]$) have paired CIs strictly above zero, contradicting H3a.
+5. **Both Adaptive Terms Contributing in H3b:** H3b was temporarily marked supported despite empirical measurements showing that disabling sustained-cost scaling (`sustainedCostGain = 0.0`) produces identical results to full v2 ($37.6\%$ ARR, $0.938 R$). Under the strict requirement that *both* terms contribute, H3b is contradicted because sustained-cost scaling has no measurable effect.
 
 ---
 
@@ -189,9 +191,9 @@ The following departures/approximations were introduced in intermediate reportin
 ### Hypothesis H3a: v2 vs v1 Performance Under Strict FRR Constraint
 > **Hypothesis Statement:** v2 admits less abuser traffic than v1 burst-matched at no higher legit FRR.
 
-* **Metric:** Abuser admitted rate / $R$ and overall legitimate FRR.
-* **Supporting Outcome:** Under the protocol's selection rule, the chosen v2 configuration achieves lower abuser admitted rate / $R$ than v1 burst-matched while maintaining overall legit $\text{FRR} \le \text{FRR}_{\text{TB-large}} + 0.1$ percentage points.
-* **Contradicting Outcome:** v2 cannot achieve lower abuser admitted rate without violating the FRR budget, OR achieves higher abuser admitted rate than v1.
+* **Metric:** Abuser admitted rate / $R$ and overall legitimate FRR, with paired differences vs v1 burst-matched.
+* **Supporting Outcome:** v2 achieves lower abuser admitted rate / $R$ than v1 burst-matched with paired legitimate $\text{FRR}$ difference $\Delta \text{FRR} \le 0$ (judged by upper bound of paired 95% bootstrap CI $\le 0.0$, i.e. strictly no higher legitimate FRR than v1 burst-matched).
+* **Contradicting Outcome:** Lower abuser admitted rate is accompanied by a statistically significant increase in legitimate FRR ($\Delta \text{FRR} > 0$, 95% CI strictly positive), OR v2 admits higher abuser rate than v1.
 
 ---
 

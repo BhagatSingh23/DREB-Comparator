@@ -30,9 +30,10 @@ Experiment E2 evaluates rate limiters under concurrent multi-client traffic cont
 
 ### Table 1: Standard Abuser ($k=1.5, f=0.3, C=1000, \text{coldStart}$)
 | Algorithm | Abuse Rej % | Diff vs TB-lg | Norm Rate / R | Diff vs TB-lg | Legit FRR % | Diff vs TB-lg | FRR Steady | Diff Steady | FRR Bursty | Diff Bursty | Total Admitted |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | *Ideal Contract Limiter* | *33.3%* | *ref* | *1.000* | *ref* | *0.00%* | *ref* | *0.00%* | *ref* | *0.00%* | *ref* | *—* |
 | Token Bucket (TB-large) | 33.1% | +0.0% [+0.0, +0.0] | 1.006 | +0.000 [+0.000, +0.000] | 0.45% | +0.00% [+0.00, +0.00] | 0.00% | +0.00% [+0.00, +0.00] | 2.42% | +0.00% [+0.00, +0.00] | 14,378,148 |
+| Token Bucket (TB-env, cap=9C/7) | 33.0% | -0.1% [-0.1, -0.1] | 1.008 | +0.002 [+0.002, +0.002] | 0.14% | -0.31% [-0.33, -0.29] | 0.00% | +0.00% [+0.00, +0.00] | 0.74% | -1.68% [-1.75, -1.60] | 14,410,250 |
 | Token Bucket (TB-small) | 54.9% | +21.8% [+21.8, +21.8] | 0.678 | -0.328 [-0.328, -0.328] | 6.29% | +5.84% [+5.59, +6.08] | 0.00% | +0.00% [+0.00, +0.00] | 34.22% | +31.80% [+31.69, +31.90] | 11,601,371 |
 | Leaky Bucket | 33.1% | +0.0% [+0.0, +0.0] | 1.006 | +0.000 [+0.000, +0.000] | 0.45% | +0.00% [+0.00, +0.00] | 0.00% | +0.00% [+0.00, +0.00] | 2.42% | +0.00% [+0.00, +0.00] | 14,378,148 |
 | Fixed Window | 34.9% | +1.8% [+1.8, +1.8] | 0.979 | -0.027 [-0.027, -0.027] | 0.93% | +0.48% [+0.46, +0.51] | 0.00% | +0.00% [+0.00, +0.00] | 5.06% | +2.64% [+2.53, +2.74] | 14,151,705 |
@@ -51,6 +52,7 @@ Experiment E2 evaluates rate limiters under concurrent multi-client traffic cont
 | Algorithm | Actual Offered Rate / R | Admitted Rate / R | Compliant False Rejection % | Diff vs TB-lg (95% CI) | Status Under Contract |
 | :--- | :---: | :---: | :---: | :---: | :--- |
 | Token Bucket (TB-large) | 0.783 | 0.783 | 0.0% | +0.0% [+0.0, +0.0] | Compliant (0% rejected) |
+| Token Bucket (TB-env, cap=9C/7) | 1.007 | 1.007 | 0.0% | +0.0% [+0.0, +0.0] | Compliant (0% rejected) |
 | Token Bucket (TB-small) | 0.335 | 0.335 | 0.0% | +0.0% [+0.0, +0.0] | Compliant (0% rejected) |
 | Leaky Bucket | 0.783 | 0.783 | 0.0% | +0.0% [+0.0, +0.0] | Compliant (0% rejected) |
 | Fixed Window | 0.783 | 0.783 | 0.0% | +0.0% [+0.0, +0.0] | Compliant (0% rejected) |
@@ -65,7 +67,21 @@ Experiment E2 evaluates rate limiters under concurrent multi-client traffic cont
 
 ---
 
-### Table 3 (A5): DREB Admitted Rate vs TB-large and Contract ($C=1000, f=0.3, \text{coldStart}$)
+### Table 3 (A2): Does DREB's Lower Legit FRR Survive Against TB-env?
+*Paired differences of DREB variants against TB-env (capacity $= 9C/7 \approx 1286$ for BM and v2; capacity $= C$ for proportional).*
+
+| Algorithm | Legit FRR (Overall) | Paired Diff vs TB-env (95% CI) | Legit FRR (Bursty) | Paired Diff vs TB-env (95% CI) | Does FRR Advantage Survive? |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **TB-env** | 0.14% | reference | 0.74% | reference | — |
+| **DREB (burst-matched)** | 0.34% | **+0.20% [+0.18%, +0.22%]** | 1.82% | **+1.08% [+1.01%, +1.15%]** | **NO (Inverted: higher FRR)** |
+| **DREB (v2 base 1.5)** | 0.38% | **+0.24% [+0.23%, +0.26%]** | 2.05% | **+1.31% [+1.24%, +1.38%]** | **NO (Inverted: higher FRR)** |
+| **DREB (proportional)** | 1.17% | **+1.03% [+0.99%, +1.07%]** | 6.35% | **+5.61% [+5.48%, +5.74%]** | **NO (Inverted: higher FRR)** |
+
+> **Critical Finding on Baseline Matching:** Against `TB-large` ($C=1000$), DREB burst-matched showed lower legitimate FRR (−0.11 pp overall, −0.60 pp bursty-legit). However, against `TB-env` whose capacity equals DREB's sustainedMax ($9C/7 \approx 1286$), DREB's lower false rejection **DOES NOT SURVIVE**. TB-env achieves an overall FRR of only 0.14% and bursty-legit FRR of 0.74%. DREB burst-matched has **higher** overall FRR (+0.20 pp) and **higher** bursty FRR (+1.08 pp) than TB-env. The apparent advantage over TB-large was an artifact of comparing DREB's 1286-envelope against a 1000-capacity Token Bucket.
+
+---
+
+### Table 4 (A5): DREB Admitted Rate vs TB-large and Contract ($C=1000, f=0.3, \text{coldStart}$)
 *Shows paired difference in abuser admitted rate / $R$ vs `TB-large` with 95% bootstrap CI, and comparison against contracted rate $1.0R$.*
 
 | DREB Variant | k | Admitted Rate / R | TB-large Rate / R | Diff vs TB-large (95% CI) | Status vs Contract (1.0R) |
@@ -109,6 +125,7 @@ Experiment E2 evaluates rate limiters under concurrent multi-client traffic cont
 - **H2c: "no algorithm lets an abuser's long-run admitted rate exceed its cumulative bound."**
   - **SUPPORTED for all 4 DREB variants**. Evaluated against each algorithm's exact mathematical cumulative bound $(S_{\max} + R \cdot T) / (R \cdot T)$ per client:
     - TB-large bound: $(1000 + 120000) / 120000 = 1.00833$; observed $\le 1.008$.
+    - TB-env bound: $(1286 + 120000) / 120000 = 1.0107$; observed $\le 1.008$.
     - DREB burst-matched bound: $(1286 + 120000) / 120000 = 1.0107$; observed $\le 1.010$.
     - DREB v2 base 1.5 bound: $(1286 + 120000) / 120000 = 1.0107$; observed $\le 1.010$.
     - DREB v2 base 1.0 bound: $(1286 + 120000) / 120000 = 1.0107$; observed $\le 1.010$.

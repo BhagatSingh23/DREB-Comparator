@@ -1,0 +1,137 @@
+algorithm,clientType,burstIndex,requestIndex,timestampSec,requestedCost,allowed,reason,burstTokens,sustainedTokens,sustainedMax,idleCredit,abuseScore,cumulativeAdmittedCost
+TB-large,bursty_legit,0,1,0.3173,789,true,allowed,211.00,211.00,1000.00,0.00,0.0000,789
+TB-large,bursty_legit,1,2,4.3266,886,true,allowed,114.00,114.00,1000.00,0.00,0.0000,1675
+TB-large,bursty_legit,2,3,8.1654,881,true,allowed,119.00,119.00,1000.00,0.00,0.0000,2556
+TB-large,bursty_legit,3,4,10.8342,765,true,allowed,235.00,235.00,1000.00,0.00,0.0000,3321
+TB-large,bursty_legit,4,5,16.6852,353,true,allowed,647.00,647.00,1000.00,0.00,0.0000,3674
+TB-large,bursty_legit,5,6,22.1626,450,true,allowed,550.00,550.00,1000.00,0.00,0.0000,4124
+TB-large,bursty_legit,6,7,23.5504,426,true,allowed,574.00,574.00,1000.00,0.00,0.0000,4550
+TB-large,bursty_legit,7,8,24.7779,838,true,allowed,162.00,162.00,1000.00,0.00,0.0000,5388
+TB-large,bursty_legit,8,9,26.2277,820,true,allowed,180.00,180.00,1000.00,0.00,0.0000,6208
+TB-large,bursty_legit,9,10,26.2942,626,false,Rate limit exceeded (Token Bucket),246.00,246.00,1000.00,0.00,0.0000,6208
+TB-large,bursty_legit,9,11,26.2942,313,false,Rate limit exceeded (Token Bucket),246.00,246.00,1000.00,0.00,0.0000,6208
+TB-large,bursty_legit,9,12,26.2942,156,true,allowed,90.00,90.00,1000.00,0.00,0.0000,6364
+TB-large,bursty_legit,9,13,26.2942,156,false,Rate limit exceeded (Token Bucket),90.00,90.00,1000.00,0.00,0.0000,6364
+TB-large,bursty_legit,9,14,26.2942,78,true,allowed,12.00,12.00,1000.00,0.00,0.0000,6442
+TB-large,bursty_legit,9,15,26.2942,78,false,Rate limit exceeded (Token Bucket),12.00,12.00,1000.00,0.00,0.0000,6442
+TB-large,bursty_legit,9,16,26.2942,39,false,Rate limit exceeded (Token Bucket),12.00,12.00,1000.00,0.00,0.0000,6442
+TB-large,bursty_legit,9,17,26.2942,19,false,Rate limit exceeded (Token Bucket),12.00,12.00,1000.00,0.00,0.0000,6442
+TB-large,bursty_legit,9,18,26.2942,9,true,allowed,3.00,3.00,1000.00,0.00,0.0000,6451
+TB-large,bursty_legit,9,19,26.2942,9,false,Rate limit exceeded (Token Bucket),3.00,3.00,1000.00,0.00,0.0000,6451
+TB-large,bursty_legit,9,20,26.2942,4,false,Rate limit exceeded (Token Bucket),3.00,3.00,1000.00,0.00,0.0000,6451
+TB-large,bursty_legit,9,21,26.2942,2,true,allowed,1.00,1.00,1000.00,0.00,0.0000,6453
+TB-large,bursty_legit,9,22,26.2942,2,false,Rate limit exceeded (Token Bucket),1.00,1.00,1000.00,0.00,0.0000,6453
+TB-large,bursty_legit,9,23,26.2942,1,true,allowed,0.00,0.00,1000.00,0.00,0.0000,6454
+TB-large,bursty_legit,9,24,26.2942,1,false,Rate limit exceeded (Token Bucket),0.00,0.00,1000.00,0.00,0.0000,6454
+TB-large,bursty_legit,10,25,26.4034,526,false,Rate limit exceeded (Token Bucket),109.00,109.00,1000.00,0.00,0.0000,6454
+TB-large,bursty_legit,10,26,26.4034,263,false,Rate limit exceeded (Token Bucket),109.00,109.00,1000.00,0.00,0.0000,6454
+TB-large,bursty_legit,10,27,26.4034,131,false,Rate limit exceeded (Token Bucket),109.00,109.00,1000.00,0.00,0.0000,6454
+TB-large,bursty_legit,10,28,26.4034,65,true,allowed,44.00,44.00,1000.00,0.00,0.0000,6519
+TB-large,bursty_legit,10,29,26.4034,65,false,Rate limit exceeded (Token Bucket),44.00,44.00,1000.00,0.00,0.0000,6519
+TB-large,bursty_legit,10,30,26.4034,32,true,allowed,12.00,12.00,1000.00,0.00,0.0000,6551
+TB-large,bursty_legit,10,31,26.4034,32,false,Rate limit exceeded (Token Bucket),12.00,12.00,1000.00,0.00,0.0000,6551
+TB-large,bursty_legit,10,32,26.4034,16,false,Rate limit exceeded (Token Bucket),12.00,12.00,1000.00,0.00,0.0000,6551
+TB-large,bursty_legit,10,33,26.4034,8,true,allowed,4.00,4.00,1000.00,0.00,0.0000,6559
+TB-large,bursty_legit,10,34,26.4034,8,false,Rate limit exceeded (Token Bucket),4.00,4.00,1000.00,0.00,0.0000,6559
+TB-large,bursty_legit,10,35,26.4034,4,true,allowed,0.00,0.00,1000.00,0.00,0.0000,6563
+TB-large,bursty_legit,10,36,26.4034,4,false,Rate limit exceeded (Token Bucket),0.00,0.00,1000.00,0.00,0.0000,6563
+TB-large,bursty_legit,10,37,26.4034,2,false,Rate limit exceeded (Token Bucket),0.00,0.00,1000.00,0.00,0.0000,6563
+TB-large,bursty_legit,10,38,26.4034,1,false,Rate limit exceeded (Token Bucket),0.00,0.00,1000.00,0.00,0.0000,6563
+TB-large,bursty_legit,11,39,29.5437,612,true,allowed,388.00,388.00,1000.00,0.00,0.0000,7175
+TB-env,bursty_legit,0,1,0.3173,789,true,allowed,497.00,497.00,1286.00,0.00,0.0000,789
+TB-env,bursty_legit,1,2,4.3266,886,true,allowed,400.00,400.00,1286.00,0.00,0.0000,1675
+TB-env,bursty_legit,2,3,8.1654,881,true,allowed,405.00,405.00,1286.00,0.00,0.0000,2556
+TB-env,bursty_legit,3,4,10.8342,765,true,allowed,521.00,521.00,1286.00,0.00,0.0000,3321
+TB-env,bursty_legit,4,5,16.6852,353,true,allowed,933.00,933.00,1286.00,0.00,0.0000,3674
+TB-env,bursty_legit,5,6,22.1626,450,true,allowed,836.00,836.00,1286.00,0.00,0.0000,4124
+TB-env,bursty_legit,6,7,23.5504,426,true,allowed,860.00,860.00,1286.00,0.00,0.0000,4550
+TB-env,bursty_legit,7,8,24.7779,838,true,allowed,448.00,448.00,1286.00,0.00,0.0000,5388
+TB-env,bursty_legit,8,9,26.2277,820,true,allowed,466.00,466.00,1286.00,0.00,0.0000,6208
+TB-env,bursty_legit,9,10,26.2942,626,false,Rate limit exceeded (Token Bucket),532.00,532.00,1286.00,0.00,0.0000,6208
+TB-env,bursty_legit,9,11,26.2942,313,true,allowed,219.00,219.00,1286.00,0.00,0.0000,6521
+TB-env,bursty_legit,9,12,26.2942,313,false,Rate limit exceeded (Token Bucket),219.00,219.00,1286.00,0.00,0.0000,6521
+TB-env,bursty_legit,9,13,26.2942,156,true,allowed,63.00,63.00,1286.00,0.00,0.0000,6677
+TB-env,bursty_legit,9,14,26.2942,156,false,Rate limit exceeded (Token Bucket),63.00,63.00,1286.00,0.00,0.0000,6677
+TB-env,bursty_legit,9,15,26.2942,78,false,Rate limit exceeded (Token Bucket),63.00,63.00,1286.00,0.00,0.0000,6677
+TB-env,bursty_legit,9,16,26.2942,39,true,allowed,24.00,24.00,1286.00,0.00,0.0000,6716
+TB-env,bursty_legit,9,17,26.2942,39,false,Rate limit exceeded (Token Bucket),24.00,24.00,1286.00,0.00,0.0000,6716
+TB-env,bursty_legit,9,18,26.2942,19,true,allowed,5.00,5.00,1286.00,0.00,0.0000,6735
+TB-env,bursty_legit,9,19,26.2942,19,false,Rate limit exceeded (Token Bucket),5.00,5.00,1286.00,0.00,0.0000,6735
+TB-env,bursty_legit,9,20,26.2942,9,false,Rate limit exceeded (Token Bucket),5.00,5.00,1286.00,0.00,0.0000,6735
+TB-env,bursty_legit,9,21,26.2942,4,true,allowed,1.00,1.00,1286.00,0.00,0.0000,6739
+TB-env,bursty_legit,9,22,26.2942,4,false,Rate limit exceeded (Token Bucket),1.00,1.00,1286.00,0.00,0.0000,6739
+TB-env,bursty_legit,9,23,26.2942,2,false,Rate limit exceeded (Token Bucket),1.00,1.00,1286.00,0.00,0.0000,6739
+TB-env,bursty_legit,9,24,26.2942,1,true,allowed,0.00,0.00,1286.00,0.00,0.0000,6740
+TB-env,bursty_legit,9,25,26.2942,1,false,Rate limit exceeded (Token Bucket),0.00,0.00,1286.00,0.00,0.0000,6740
+TB-env,bursty_legit,10,26,26.4034,526,false,Rate limit exceeded (Token Bucket),109.00,109.00,1286.00,0.00,0.0000,6740
+TB-env,bursty_legit,10,27,26.4034,263,false,Rate limit exceeded (Token Bucket),109.00,109.00,1286.00,0.00,0.0000,6740
+TB-env,bursty_legit,10,28,26.4034,131,false,Rate limit exceeded (Token Bucket),109.00,109.00,1286.00,0.00,0.0000,6740
+TB-env,bursty_legit,10,29,26.4034,65,true,allowed,44.00,44.00,1286.00,0.00,0.0000,6805
+TB-env,bursty_legit,10,30,26.4034,65,false,Rate limit exceeded (Token Bucket),44.00,44.00,1286.00,0.00,0.0000,6805
+TB-env,bursty_legit,10,31,26.4034,32,true,allowed,12.00,12.00,1286.00,0.00,0.0000,6837
+TB-env,bursty_legit,10,32,26.4034,32,false,Rate limit exceeded (Token Bucket),12.00,12.00,1286.00,0.00,0.0000,6837
+TB-env,bursty_legit,10,33,26.4034,16,false,Rate limit exceeded (Token Bucket),12.00,12.00,1286.00,0.00,0.0000,6837
+TB-env,bursty_legit,10,34,26.4034,8,true,allowed,4.00,4.00,1286.00,0.00,0.0000,6845
+TB-env,bursty_legit,10,35,26.4034,8,false,Rate limit exceeded (Token Bucket),4.00,4.00,1286.00,0.00,0.0000,6845
+TB-env,bursty_legit,10,36,26.4034,4,true,allowed,0.00,0.00,1286.00,0.00,0.0000,6849
+TB-env,bursty_legit,10,37,26.4034,4,false,Rate limit exceeded (Token Bucket),0.00,0.00,1286.00,0.00,0.0000,6849
+TB-env,bursty_legit,10,38,26.4034,2,false,Rate limit exceeded (Token Bucket),0.00,0.00,1286.00,0.00,0.0000,6849
+TB-env,bursty_legit,10,39,26.4034,1,false,Rate limit exceeded (Token Bucket),0.00,0.00,1286.00,0.00,0.0000,6849
+TB-env,bursty_legit,11,40,29.5437,612,true,allowed,674.00,674.00,1286.00,0.00,0.0000,7461
+DREB (burst-matched),bursty_legit,0,1,0.3173,789,false,burst_and_idle_credit_exhausted,428.57,1285.71,1285.71,211.33,0.0000,0
+DREB (burst-matched),bursty_legit,0,2,0.3173,394,true,allowed,34.57,891.71,1285.71,211.33,0.0000,394
+DREB (burst-matched),bursty_legit,0,3,0.3173,394,false,burst_and_idle_credit_exhausted,34.57,891.71,1285.71,211.33,0.0000,394
+DREB (burst-matched),bursty_legit,0,4,0.3173,197,false,burst_and_idle_credit_exhausted,34.57,891.71,1285.71,211.33,0.0000,394
+DREB (burst-matched),bursty_legit,0,5,0.3173,98,true,allowed,0.00,793.71,1285.71,116.19,0.0000,492
+DREB (burst-matched),bursty_legit,0,6,0.3173,98,false,burst_and_idle_credit_exhausted,0.00,793.71,1285.71,116.19,0.0000,492
+DREB (burst-matched),bursty_legit,0,7,0.3173,49,true,allowed,0.00,744.71,1285.71,42.69,0.0000,541
+DREB (burst-matched),bursty_legit,0,8,0.3173,49,false,burst_and_idle_credit_exhausted,0.00,744.71,1285.71,42.69,0.0000,541
+DREB (burst-matched),bursty_legit,0,9,0.3173,24,true,allowed,0.00,720.71,1285.71,6.69,0.0000,565
+DREB (burst-matched),bursty_legit,0,10,0.3173,24,false,burst_and_idle_credit_exhausted,0.00,720.71,1285.71,6.69,0.0000,565
+DREB (burst-matched),bursty_legit,0,11,0.3173,12,false,burst_and_idle_credit_exhausted,0.00,720.71,1285.71,6.69,0.0000,565
+DREB (burst-matched),bursty_legit,0,12,0.3173,6,false,burst_and_idle_credit_exhausted,0.00,720.71,1285.71,6.69,0.0000,565
+DREB (burst-matched),bursty_legit,0,13,0.3173,3,true,allowed,0.00,717.71,1285.71,2.19,0.0000,568
+DREB (burst-matched),bursty_legit,0,14,0.3173,3,false,burst_and_idle_credit_exhausted,0.00,717.71,1285.71,2.19,0.0000,568
+DREB (burst-matched),bursty_legit,0,15,0.3173,1,true,allowed,0.00,716.71,1285.71,0.69,0.0000,569
+DREB (burst-matched),bursty_legit,0,16,0.3173,1,false,burst_and_idle_credit_exhausted,0.00,716.71,1285.71,0.69,0.0000,569
+DREB (burst-matched),bursty_legit,1,17,4.3266,886,true,allowed,0.00,399.71,1285.71,171.00,0.0000,1455
+DREB (burst-matched),bursty_legit,2,18,8.1654,881,true,allowed,0.00,404.71,1285.71,178.50,0.0000,2336
+DREB (burst-matched),bursty_legit,3,19,10.8342,765,true,allowed,0.00,520.71,1285.71,352.50,0.0000,3101
+DREB (burst-matched),bursty_legit,4,20,16.6852,353,true,allowed,75.57,932.71,1285.71,857.14,0.0000,3454
+DREB (burst-matched),bursty_legit,5,21,22.1626,450,true,allowed,0.00,835.71,1285.71,825.00,0.0000,3904
+DREB (burst-matched),bursty_legit,6,22,23.5504,426,true,allowed,2.57,859.71,1285.71,857.14,0.0000,4330
+DREB (burst-matched),bursty_legit,7,23,24.7779,838,true,allowed,0.00,447.71,1285.71,243.00,0.0000,5168
+DREB (burst-matched),bursty_legit,8,24,26.2277,820,true,allowed,0.00,465.71,1285.71,270.00,0.0000,5988
+DREB (burst-matched),bursty_legit,9,25,26.2942,626,false,sustained_bucket_exhausted,110.00,531.71,1285.71,270.00,0.0000,5988
+DREB (burst-matched),bursty_legit,9,26,26.2942,313,false,burst_and_idle_credit_exhausted,110.00,531.71,1285.71,270.00,0.0000,5988
+DREB (burst-matched),bursty_legit,9,27,26.2942,156,true,allowed,0.00,375.71,1285.71,201.00,0.0000,6144
+DREB (burst-matched),bursty_legit,9,28,26.2942,156,false,burst_and_idle_credit_exhausted,0.00,375.71,1285.71,201.00,0.0000,6144
+DREB (burst-matched),bursty_legit,9,29,26.2942,78,true,allowed,0.00,297.71,1285.71,84.00,0.0000,6222
+DREB (burst-matched),bursty_legit,9,30,26.2942,78,false,burst_and_idle_credit_exhausted,0.00,297.71,1285.71,84.00,0.0000,6222
+DREB (burst-matched),bursty_legit,9,31,26.2942,39,true,allowed,0.00,258.71,1285.71,25.50,0.0000,6261
+DREB (burst-matched),bursty_legit,9,32,26.2942,39,false,burst_and_idle_credit_exhausted,0.00,258.71,1285.71,25.50,0.0000,6261
+DREB (burst-matched),bursty_legit,9,33,26.2942,19,false,burst_and_idle_credit_exhausted,0.00,258.71,1285.71,25.50,0.0000,6261
+DREB (burst-matched),bursty_legit,9,34,26.2942,9,true,allowed,0.00,249.71,1285.71,12.00,0.0000,6270
+DREB (burst-matched),bursty_legit,9,35,26.2942,9,false,burst_and_idle_credit_exhausted,0.00,249.71,1285.71,12.00,0.0000,6270
+DREB (burst-matched),bursty_legit,9,36,26.2942,4,true,allowed,0.00,245.71,1285.71,6.00,0.0000,6274
+DREB (burst-matched),bursty_legit,9,37,26.2942,4,false,burst_and_idle_credit_exhausted,0.00,245.71,1285.71,6.00,0.0000,6274
+DREB (burst-matched),bursty_legit,9,38,26.2942,2,true,allowed,0.00,243.71,1285.71,3.00,0.0000,6276
+DREB (burst-matched),bursty_legit,9,39,26.2942,2,false,burst_and_idle_credit_exhausted,0.00,243.71,1285.71,3.00,0.0000,6276
+DREB (burst-matched),bursty_legit,9,40,26.2942,1,true,allowed,0.00,242.71,1285.71,1.50,0.0000,6277
+DREB (burst-matched),bursty_legit,9,41,26.2942,1,false,burst_and_idle_credit_exhausted,0.00,242.71,1285.71,1.50,0.0000,6277
+DREB (burst-matched),bursty_legit,10,42,26.4034,526,false,sustained_bucket_exhausted,181.67,351.71,1285.71,1.50,0.0000,6277
+DREB (burst-matched),bursty_legit,10,43,26.4034,263,false,burst_and_idle_credit_exhausted,181.67,351.71,1285.71,1.50,0.0000,6277
+DREB (burst-matched),bursty_legit,10,44,26.4034,131,true,allowed,50.67,220.71,1285.71,1.50,0.0000,6408
+DREB (burst-matched),bursty_legit,10,45,26.4034,131,false,burst_and_idle_credit_exhausted,50.67,220.71,1285.71,1.50,0.0000,6408
+DREB (burst-matched),bursty_legit,10,46,26.4034,65,false,burst_and_idle_credit_exhausted,50.67,220.71,1285.71,1.50,0.0000,6408
+DREB (burst-matched),bursty_legit,10,47,26.4034,32,true,allowed,18.67,188.71,1285.71,1.50,0.0000,6440
+DREB (burst-matched),bursty_legit,10,48,26.4034,32,false,burst_and_idle_credit_exhausted,18.67,188.71,1285.71,1.50,0.0000,6440
+DREB (burst-matched),bursty_legit,10,49,26.4034,16,true,allowed,2.67,172.71,1285.71,1.50,0.0000,6456
+DREB (burst-matched),bursty_legit,10,50,26.4034,16,false,burst_and_idle_credit_exhausted,2.67,172.71,1285.71,1.50,0.0000,6456
+DREB (burst-matched),bursty_legit,10,51,26.4034,8,false,burst_and_idle_credit_exhausted,2.67,172.71,1285.71,1.50,0.0000,6456
+DREB (burst-matched),bursty_legit,10,52,26.4034,4,false,burst_and_idle_credit_exhausted,2.67,172.71,1285.71,1.50,0.0000,6456
+DREB (burst-matched),bursty_legit,10,53,26.4034,2,true,allowed,0.67,170.71,1285.71,1.50,0.0000,6458
+DREB (burst-matched),bursty_legit,10,54,26.4034,2,false,burst_and_idle_credit_exhausted,0.67,170.71,1285.71,1.50,0.0000,6458
+DREB (burst-matched),bursty_legit,10,55,26.4034,1,true,allowed,0.00,169.71,1285.71,1.00,0.0000,6459
+DREB (burst-matched),bursty_legit,10,56,26.4034,1,false,burst_and_idle_credit_exhausted,0.00,169.71,1285.71,1.00,0.0000,6459
+DREB (burst-matched),bursty_legit,11,57,29.5437,612,true,allowed,0.00,673.71,1285.71,582.00,0.0000,7071

@@ -78,6 +78,10 @@ public final class CustomRateLimiterV2 implements RateLimiter {
         return params;
     }
 
+    public ClientState peekState(String clientId) {
+        return dreb.peekState(clientId);
+    }
+
     @Override
     public void reset() {
         store.clear();

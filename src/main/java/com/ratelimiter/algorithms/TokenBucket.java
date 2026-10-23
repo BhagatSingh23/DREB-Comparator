@@ -65,6 +65,15 @@ public class TokenBucket implements RateLimiter {
         states.clear();
     }
 
+    public double getTokens(String clientId) {
+        ClientState s = states.get(clientId);
+        return s != null ? s.tokens : (double) bucketCapacity;
+    }
+
+    public long getBucketCapacity() {
+        return bucketCapacity;
+    }
+
     @Override
     public void initializeState(String clientId, String initialState, double timestampSec) {
         long tsMs = (long) (timestampSec * 1000.0);
