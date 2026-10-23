@@ -59,6 +59,11 @@ results/e8/*
 !results/e8/README.md
 !results/e8/graphs/
 !results/e8/graphs/*.png
+!results/e9/
+results/e9/*
+!results/e9/README.md
+!results/e9/graphs/
+!results/e9/graphs/*.png
 
 *.patch
 *.docx

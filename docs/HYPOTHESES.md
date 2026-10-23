@@ -280,3 +280,57 @@ The following departures/approximations were introduced in intermediate reportin
 * **Scenarios:** $k \in \{1.1, 1.25, 1.5, 2, 4\}$, $f = 0.3$, $C \in \{1000, 50000\}$, `coldStart` and `preWarmed`, seeds 2000–2029 ($N=30$).
 * **Criteria Changes:** None. Strict original wording, no tolerance margins.
 
+---
+
+## 8. Formal Hypotheses: Experiment E9 (Making the Static Baseline Fair)
+
+### Hypothesis H9a: Non-Domination Against Comprehensive Static Families
+> **Hypothesis Statement:** at each abuser overload k in {1.1, 1.25, 1.5, 2, 4}, DREB burst-matched is not dominated by any static policy from the families below (dominated = another policy has abuser admitted rate / R <= and bursty-legit FRR <=, with at least one strictly lower, judged by paired 95% CIs).
+
+* **Dominated Definition:** Another policy has abuser admitted rate / $R \le$ and bursty-legit $\text{FRR} \le$, with at least one strictly lower, judged by paired 95% bootstrap CIs without tolerance margins.
+* **Supporting Outcome:** In every condition $k \in \{1.1, 1.25, 1.5, 2, 4\}$, no static policy dominates DREB burst-matched.
+* **Contradicting Outcome:** At any $k$, at least one static policy from families (S1), (S2), or (S3) dominates DREB burst-matched.
+* **Empirical Outcome & Verdict:** **CONTRADICTED** (judged by paired 95% bootstrap CIs, no tolerance margins). While DREB burst-matched is non-dominated at moderate overload $k \in \{1.1, 1.25, 1.5\}$, it is strictly dominated by static dual buckets at high overload $k \in \{2.0, 4.0\}$. First point of failure occurs at $C=1000$, preWarmed, $k=2.00$ where `DualBucket(B=1.00C, P=1.67R)` achieves identical abuser rate ($1.040R$, $\Delta = +0.000R$ $[+0.000R, +0.000R]$) with statistically significantly lower bursty-legit FRR ($1.43\%$ vs $1.73\%$, paired diff $+0.30\text{ pp}$ $[+0.26\text{ pp}, +0.34\text{ pp}]$). At $k=4.00$, `DualBucket(B=1.00C, P=4.00R)` achieves $0.96\%$ bursty FRR vs DREB's $2.18\%$ (paired diff $+1.22\text{ pp}$ $[+1.00\text{ pp}, +1.46\text{ pp}]$). Thus H9a fails at $k \in \{2.0, 4.0\}$.
+
+---
+
+### Hypothesis H9b: Bursty-Legit Advantage at Equal Abuser Admission
+> **Hypothesis Statement:** at each k, DREB dominates every static policy whose abuser admitted rate / R is within 0.05 of DREB's (i.e. DREB has lower bursty-legit FRR at equal abuser admission).
+
+* **Supporting Outcome:** For every static policy with $|\text{Rate}_{\text{static}} - \text{Rate}_{\text{DREB}}| \le 0.05$, DREB has strictly lower bursty-legit FRR ($\Delta \text{FRR} < 0$, upper bound of paired 95% CI $< 0$).
+* **Contradicting Outcome:** Any static policy with abuser admitted rate within 0.05 of DREB has equal or lower bursty-legit FRR ($\Delta \text{FRR} \ge 0$, CI includes zero or is positive).
+* **Empirical Outcome & Verdict:** **CONTRADICTED** (judged by paired 95% bootstrap CIs, no tolerance margins). H9b holds strongly at $k \in \{1.1, 1.25, 1.5\}$ (e.g. at $k=1.5$, static policies within 0.05 of DREB's 0.948R have bursty FRR $\ge 8.46\%$ vs DREB's $2.18\%$, a $-6.28\text{ pp}$ advantage). However, at $k \in \{2.0, 4.0\}$, multiple static policies (`DualBucket(B=1.00C)`, `TB(C=1.286C)`) have identical abuser rates ($1.040R$, $|\Delta| = 0.000 \le 0.05$) while achieving *lower* bursty FRR ($1.43\%$ vs $1.73\%$ or $0.96\%$ vs $2.18\%$), directly contradicting H9b.
+
+---
+
+### Hypothesis H9c: Robustness to Bursty-Legit Traffic Distribution
+> **Hypothesis Statement:** the result of H9a/H9b does not change when the bursty-legit idle-time mean is varied from 1 tau to 10 tau.
+
+* **Supporting Outcome:** The verdicts for H9a and H9b remain identical across all tested idle-time means $\in \{1\tau, 3\tau, 10\tau\}$ and burst ranges $\in \{[0.1C, 0.5C], [0.3C, 0.9C], [0.6C, 1.0C]\}$.
+* **Contradicting Outcome:** Changing the idle-time mean flips the verdict of H9a or H9b.
+* **Empirical Outcome & Verdict:** **SUPPORTED** (judged by paired 95% bootstrap CIs, no tolerance margins). Across all tested legitimate idle-time means ($1\tau, 3\tau, 10\tau$) and burst ranges, the outcome is invariant: DREB is non-dominated and superior at moderate overload ($k \le 1.5$), but is strictly dominated by large static dual buckets at high overload ($k \ge 2.0$). Varying the legit idle distribution does not alter the fundamental mechanism or flip the verdicts of H9a/H9b.
+
+---
+
+### Experiment E9 Protocol & Policy Families
+* **Static Families (no idle credit anywhere):**
+  - **(S1) DualBucket with Fine B Sweep:**
+    - $B/C \in \{0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00\}$ (15 values)
+    - Peak rate $P \in \{1.0R, 1.25R, 5R/3, 2.5R, 4.0R\}$ (5 values, $P = \text{burstRate}$)
+    - $S_{\max} = 9C/7, S_{\text{rate}} = R, \text{idleGain} = 0, \text{idleCap} = 0$. (75 policies)
+  - **(S2) Single Token Bucket with Capacity Sweep:**
+    - Capacity $\in \{0.30C, 0.43C (= 3C/7), 0.55C, 0.70C, 0.85C, 1.00C, 1.286C (= 9C/7)\}$, refill rate $R$. (7 policies)
+  - **(S3) Single Token Bucket with Refill Rate Sweep:**
+    - Capacity $0.43C (= 3C/7)$, refill rate $\in \{R, 1.1R, 1.25R\}$. (3 policies)
+* **Dynamic Policies:**
+  - `DREB (burst-matched)` (headline)
+  - `DREB (v2 base 1.5)`
+  - `DREB (idleGain=4R/3)` (variant exploring idle gain movement)
+* **Scenarios:**
+  - **Baseline Grid:** $C \in \{1000, 50000\}$, `coldStart` and `preWarmed`, $f = 0.3$, $k \in \{1.1, 1.25, 1.5, 2, 4\}$, seeds 2000–2029 (default legit: idle mean $3\tau$, burst $[0.3C, 0.9C]$).
+  - **Sensitivity Grid ($C = 1000$, `coldStart`):**
+    - Idle-time mean $\in \{1\tau, 3\tau, 10\tau\}$
+    - Burst-size range $\in \{[0.1C, 0.5C], [0.3C, 0.9C], [0.6C, 1.0C]\}$
+    - Full $3 \times 3 = 9$ combinations across all $k \in \{1.1, 1.25, 1.5, 2, 4\}$ and seeds 2000–2029.
+* **Criteria Changes:** None. Strict original wording, no tolerance margins.
+
