@@ -1208,8 +1208,8 @@ public class ExperimentE9Runner {
         sb.append("---\n\n");
         sb.append("## 5. Full Per-Setting Table Supporting H9c (45 Settings: 9 Legit Models x 5 k Values)\n\n");
         sb.append("Comprehensive per-setting verification for H9c (evaluating all 9 combinations of bursty-legit idle-time mean in {1tau, 3tau, 10tau} and burst size range in {[0.1C, 0.5C], [0.3C, 0.9C], [0.6C, 1.0C]} across every k in {1.1, 1.25, 1.5, 2.0, 4.0}):\n\n");
-        sb.append("| Overload k | Idle Mean | Burst Size Range | DREB Admitted Rate / R | DREB Bursty FRR % | Static Non-Dominated Set (Policy: Rate, FRR) | DREB Verdict vs Static |\n");
-        sb.append("| :---: | :---: | :---: | :---: | :---: | :--- | :---: |\n");
+        sb.append("| Overload k | Idle Mean | Burst Size Range | DREB Rate / R | DREB Bursty FRR % | Best Static Policy | Static Rate / R | Static Bursty FRR % | $\\Delta$ Rate vs DREB [95% CI] | $\\Delta$ Bursty FRR vs DREB [95% CI] | DREB Verdict |\n");
+        sb.append("| :---: | :---: | :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |\n");
 
         for (double k : K_VALUES) {
             for (double idleTau : SENS_IDLE_TAUS) {
@@ -1237,29 +1237,104 @@ public class ExperimentE9Runner {
                         }
                     }
 
-                    StringBuilder frontierSb = new StringBuilder();
-                    for (int fi = 0; fi < frontier.size(); fi++) {
-                        PolicySummary fs = frontier.get(fi);
-                        if (fi > 0) frontierSb.append("; ");
-                        frontierSb.append(String.format("%s (%.3fR, %.1f%%)", fs.policy().displayName(), fs.abuserRateMean(), fs.burstyFrrMean()));
+                    PolicySummary bestStatic;
+                    if (dominatingStatic != null) {
+                        bestStatic = dominatingStatic;
+                    } else {
+                        // Nearest static policy on the Pareto frontier to DREB
+                        PolicySummary nearest = null;
+                        double minDistance = Double.MAX_VALUE;
+                        for (PolicySummary s : frontier) {
+                            double dist = Math.hypot(s.abuserRateMean() - drebBm.abuserRateMean(), (s.burstyFrrMean() - drebBm.burstyFrrMean()) / 5.0);
+                            if (dist < minDistance) {
+                                minDistance = dist;
+                                nearest = s;
+                            }
+                        }
+                        bestStatic = (nearest != null) ? nearest : frontier.get(0);
                     }
 
                     String verdict;
                     if (dominatingStatic != null) {
                         verdict = "**Dominated** (by " + dominatingStatic.policy().displayName() + ")";
                     } else if (drebDominatesAll) {
-                        verdict = "**Dominating** (strictly dominates static set)";
+                        verdict = "**Dominating**";
                     } else {
-                        verdict = "**Non-Dominated** (on Pareto frontier)";
+                        verdict = "**Non-Dominated**";
                     }
 
-                    sb.append(String.format("| %4.2f | %4.1f\\tau | %-16s | %7.3f | %6.2f%% | %s | %s |\n",
+                    sb.append(String.format("| %4.2f | %4.1f\\tau | %-16s | %7.3f | %6.2f%% | %-26s | %7.3f | %6.2f%% | %+6.3f [%+6.3f, %+6.3f] | %+6.2f%% [%+6.2f%%, %+6.2f%%] | %s |\n",
                             k, idleTau, bLbl,
                             drebBm.abuserRateMean(), drebBm.burstyFrrMean(),
-                            frontierSb.toString(),
+                            bestStatic.policy().displayName(),
+                            bestStatic.abuserRateMean(), bestStatic.burstyFrrMean(),
+                            bestStatic.dRateMean(), bestStatic.dRateCi()[0], bestStatic.dRateCi()[1],
+                            bestStatic.dBurstyMean(), bestStatic.dBurstyCi()[0], bestStatic.dBurstyCi()[1],
                             verdict
                     ));
                 }
+            }
+        }
+
+        sb.append("\n### 5.1 Dominance Verdict per k: coldStart vs preWarmed (C = 1000, Abuser Burst = 0.95C)\n\n");
+        sb.append("| Overload k | Initial State | DREB Admitted Rate / R | DREB Bursty FRR % | Dominating / Nearest Static Policy | Static Rate / R | Static Bursty FRR % | $\\Delta$ Rate vs DREB [95% CI] | $\\Delta$ Bursty FRR vs DREB [95% CI] | Verdict |\n");
+        sb.append("| :---: | :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |\n");
+
+        for (double k : K_VALUES) {
+            for (String init : INITIAL_STATES) {
+                ScenarioConfig sc = findScenario(scenarios, 1000.0, init, k, 3.0, 0.30, 0.90, 0.95);
+                if (sc == null) continue;
+
+                List<PolicySummary> summaries = summarizeScenario(sc, policies, allResults.get(sc));
+                List<PolicySummary> frontier = computeStaticParetoFrontier(summaries);
+                PolicySummary drebBm = findSummary(summaries, "DREB_BM");
+
+                PolicySummary dominatingStatic = null;
+                boolean drebDominatesAll = true;
+                for (PolicySummary s : frontier) {
+                    if (s.isDrebDominatedByThis()) {
+                        dominatingStatic = s;
+                        break;
+                    }
+                    if (!s.doesDrebDominateThis()) {
+                        drebDominatesAll = false;
+                    }
+                }
+
+                PolicySummary bestStatic;
+                if (dominatingStatic != null) {
+                    bestStatic = dominatingStatic;
+                } else {
+                    PolicySummary nearest = null;
+                    double minDistance = Double.MAX_VALUE;
+                    for (PolicySummary s : frontier) {
+                        double dist = Math.hypot(s.abuserRateMean() - drebBm.abuserRateMean(), (s.burstyFrrMean() - drebBm.burstyFrrMean()) / 5.0);
+                        if (dist < minDistance) {
+                            minDistance = dist;
+                            nearest = s;
+                        }
+                    }
+                    bestStatic = (nearest != null) ? nearest : frontier.get(0);
+                }
+
+                String verdict;
+                if (dominatingStatic != null) {
+                    verdict = "**Dominated** (by " + dominatingStatic.policy().displayName() + ")";
+                } else if (drebDominatesAll) {
+                    verdict = "**Dominating**";
+                } else {
+                    verdict = "**Non-Dominated**";
+                }
+
+                sb.append(String.format("| %4.2f | %-10s | %7.3f | %6.2f%% | %-34s | %7.3f | %6.2f%% | %+6.3f [%+6.3f, %+6.3f] | %+6.2f%% [%+6.2f%%, %+6.2f%%] | %s |\n",
+                        k, init,
+                        drebBm.abuserRateMean(), drebBm.burstyFrrMean(),
+                        bestStatic.policy().displayName(),
+                        bestStatic.abuserRateMean(), bestStatic.burstyFrrMean(),
+                        bestStatic.dRateMean(), bestStatic.dRateCi()[0], bestStatic.dRateCi()[1],
+                        bestStatic.dBurstyMean(), bestStatic.dBurstyCi()[0], bestStatic.dBurstyCi()[1],
+                        verdict
+                ));
             }
         }
 
@@ -1374,6 +1449,7 @@ public class ExperimentE9Runner {
         for (double k : K_VALUES) {
             boolean dominatedAtK = false;
             for (ScenarioConfig sc : scenarios) {
+                if (sc.isAbuserSensitivity()) continue;
                 if (Math.abs(sc.k() - k) < 1e-4) {
                     List<PolicySummary> summaries = summarizeScenario(sc, policies, allResults.get(sc));
                     for (PolicySummary s : summaries) {

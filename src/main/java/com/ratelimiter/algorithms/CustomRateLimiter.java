@@ -24,7 +24,7 @@ public final class CustomRateLimiter implements RateLimiter {
     public static final String BURST_CEILING_MATCHED = "burst_ceiling_matched";
 
     private final DREBLimiter dreb;
-    private final ManualClock clock;
+    private final ThreadLocalClock clock;
     private final InMemoryStateStore store;
     private final String mappingStrategy;
     private final DrebParameters params;
@@ -59,7 +59,7 @@ public final class CustomRateLimiter implements RateLimiter {
         this.rawIdleCap = params.idleCap();
         this.rawIdleDecay = params.idleDecay();
 
-        this.clock = new ManualClock(0.0);
+        this.clock = new ThreadLocalClock(0.0);
         this.store = new InMemoryStateStore();
         this.dreb = new DREBLimiter(store, clock, params.createRefillStrategy(), params.createIdlePolicy(), params.sustainedMax(), legacyOverdraw);
     }
@@ -86,7 +86,7 @@ public final class CustomRateLimiter implements RateLimiter {
         this.rawSustainedMax = sustainedMax;
         this.rawIdleCap = idleCap;
         this.rawIdleDecay = idleDecay;
-        this.clock = new ManualClock(0.0);
+        this.clock = new ThreadLocalClock(0.0);
         this.store = new InMemoryStateStore();
         ConstantRateRefillStrategy refillStrategy =
                 new ConstantRateRefillStrategy(burstMax, burstRate, sustainedMax, sustainedRate);
@@ -97,20 +97,26 @@ public final class CustomRateLimiter implements RateLimiter {
 
     @Override
     public RateLimitResponse allow(RateLimitRequest request) {
-        clock.set(request.getTimestampMs() / 1000.0);
-
         int cost = (int) Math.min(Integer.MAX_VALUE, request.getCost());
-        Decision decision = dreb.allow(request.getClientId(), cost);
+        return allow(request.getClientId(), cost, request.getTimestampMs() / 1000.0);
+    }
+
+    /**
+     * Thread-safe direct allow method passing explicit timestamp in seconds.
+     */
+    public RateLimitResponse allow(String clientId, int cost, double nowSeconds) {
+        clock.set(nowSeconds);
+        Decision decision = dreb.allow(clientId, cost);
 
         if (decision == Decision.ALLOW) {
-            ClientState after = dreb.peekState(request.getClientId());
+            ClientState after = dreb.peekState(clientId);
             double effDecay = (params != null) ? params.idleDecay() : rawIdleDecay;
             double effBurst = after.burstTokens + (effDecay > 0 ? (after.idleCredit / effDecay) : after.idleCredit);
             long remaining = (long) Math.floor(Math.min(after.sustainedTokens, effBurst));
             return new RateLimitResponse(true, remaining, -1, null);
         }
 
-        ClientState state = dreb.peekState(request.getClientId());
+        ClientState state = dreb.peekState(clientId);
         String reason = state.sustainedTokens < cost
                 ? "sustained_bucket_exhausted"
                 : "burst_and_idle_credit_exhausted";
