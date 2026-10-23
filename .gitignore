@@ -35,6 +35,12 @@ buildNumber.properties
 results/*
 !results/superseded/
 !results/superseded/**
+!results/e1/
+results/e1/*
+!results/e1/README.md
+!results/e2/
+results/e2/*
+!results/e2/README.md
 
 *.patch
 *.docx

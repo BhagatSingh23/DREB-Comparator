@@ -20,7 +20,8 @@ This document defines the formal mappings from external rate-limiting parameters
 | **$\text{abuseDecayRate}$** | Score recovery rate | score / s | N/A | N/A | $1.5$ | $1.5$ |
 | **$\text{sustainedCostGain}$**| Sustained cost escalator | dimensionless | N/A | N/A | $0.35$ | $0.35$ |
 | **Cold-Start Max Burst** | Fresh client ($B_{\max}$, credit=0) | requests | $\frac{1}{3}C \approx 0.333 C$ | $\frac{3}{7}C \approx 0.429 C$ | $\frac{3}{7}C \approx 0.429 C$ | $\frac{3}{7}C \approx 0.429 C$ |
-| **Full-Credit Max Burst** | Pre-warmed ($B_{\max} + \frac{\text{idle\_cap}}{\text{decay}}$) | requests | $\frac{7}{9}C \approx 0.778 C$ | **$C$** | **$C$** | $\frac{3}{7}C + \frac{6}{7}C = \frac{9}{7}C \approx 1.286 C$ |
+| **Full-Credit Theoretical Burst** | Static bound ($B_{\max} + \frac{\text{idle\_cap}}{\text{decay}}$) | requests | $\frac{7}{9}C \approx 0.778 C$ | $C$ | $C$ | $\frac{9}{7}C \approx 1.286 C$ |
+| **Full-Credit Measured Burst ($C=100$)** | Actual empirical instantaneous burst | requests | $77$ | $99$ ($\approx C$) | **$94$** (intra-burst decay) | **$110$** (intra-burst decay) |
 | **Cumulative Bound ($T$)** | Envelope over interval $T$ | cost units | $C + R \cdot T$ | $\frac{9}{7}C + R \cdot T$ | $\frac{9}{7}C + R \cdot T$ | $\frac{9}{7}C + R \cdot T$ |
 
 ---
@@ -44,23 +45,26 @@ This document defines the formal mappings from external rate-limiting parameters
 
 ---
 
-## 3. Policy Choice: Base Decay for DREB v2 (`baseDecay`)
+## 3. Policy Choice: Base Decay for DREB v2 (`baseDecay`) and Intra-Burst Abuse Escalation
 
 In DREB v2, the effective idle debit multiplier applied to borrowed idle credit is dynamic:
 $$\text{effectiveDecay} = \text{baseDecay} + \text{abuseGain} \cdot \text{abuseScore}$$
 
-There are two distinct parameterizations:
+### Intra-Burst Abuse Escalation Mechanism
+In static formulas, one might expect an instantaneous burst from full idle credit to admit $B_{\max} + \frac{\text{idle\_cap}}{\text{baseDecay}}$. However, in `DREBLimiterV2`, whenever idle credit is borrowed (after the burst bucket $B_{\max}$ is exhausted), each request draws idle credit and increments `abuseScore` by $\text{abuseIncrement} \cdot \frac{\text{cost}}{\text{idle\_cap}}$. Because all requests in an instantaneous burst arrive at the exact same timestamp ($t = D$), `abuseScore` does not have time to decay.
 
-### Headline Comparison Policy: `baseDecay = 1.5` (`V2_ADAPTIVE_BASE_1_5`)
-- **Specification:** At zero abuse ($\text{abuseScore} = 0$), the base decay matches v1's burst-matched $\text{idle\_decay} = 1.5$ exactly.
-- **Burst Ceiling:** The maximum instantaneous burst from full state is strictly equal to $C$:
-  $$B_{\max} + \frac{\text{idle\_cap}}{1.5} = \frac{3}{7}C + \frac{4}{7}C = C$$
-- **Role:** Serves as the primary headline v2 algorithm in benchmark comparisons, ensuring that any burst allowance differences vs v1 or Token Bucket arise strictly from dynamic abuse penalty scaling rather than an inflated base credit multiplier.
+As a direct consequence, `effectiveDecay` progressively escalates within the burst itself:
+- Each subsequent request debits more idle credit than the previous one.
+- The idle credit pool is exhausted earlier than predicted by the static base decay formula.
 
-### Named Variant Policy: `baseDecay = 1.0` (`V2_ADAPTIVE_BASE_1_0`)
-- **Specification:** A client bursting after genuine idleness pays no extra penalty multiplier on idle credit ($\text{baseDecay} = 1.0$).
-- **Burst Ceiling:** Base 1.0 plainly admits up to $\frac{9}{7}C$ in one burst (e.g. 128 unit requests at $C=100$):
-  $$B_{\max} + \frac{\text{idle\_cap}}{1.0} = \frac{3}{7}C + \frac{6}{7}C = \frac{9}{7}C \approx 1.286 C$$
-- **Role:** Maintained as an explicit named variant for evaluating the maximum possible credit reward for demonstrated idleness under zero abuse.
+### Empirical Burst Ceilings ($C = 100$):
+- **`v2_adaptive_base_1_5` (Headline):**
+  - Static theoretical ceiling: $B_{\max} + \frac{\text{idle\_cap}}{1.5} = 42 + 57 = 100 = C$.
+  - **Empirical measured burst:** Exactly **$94$** requests (at $C=1000$: $939$, at $C=50000$: $46,958$). The intra-burst escalation of `effectiveDecay` above $1.5$ reduces the first-burst admission by $\approx 6\%$.
+  - Role: Headline comparison policy ensuring rigorous burst control without exceeding $C$.
+- **`v2_adaptive_base_1_0` (Named Variant):**
+  - Static theoretical ceiling: $\frac{9}{7}C \approx 128$ requests.
+  - **Empirical measured burst:** Exactly **$110$** requests (at $C=1000$: $1,098$, at $C=50000$: $54,930$). The static "$\frac{9}{7}C$" claim is incorrect because intra-burst abuse escalation raises decay from $1.0$ upwards, capping the burst at $110$ rather than $128$.
+  - Note: While capped below $128$, $110$ strictly exceeds `TB-large` ($100$), confirming that base decay 1.0 exceeds nominal capacity $C$.
 
 Both options are exposed as first-class named configurations in `DrebParameters.Strategy` and in `config/experiments.yaml`.

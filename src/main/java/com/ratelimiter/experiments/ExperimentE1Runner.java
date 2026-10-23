@@ -181,8 +181,16 @@ public class ExperimentE1Runner {
                 .windowSizeMs(1000L)
                 .build();
 
+        RateLimiterConfig tbSmallPropConfig = RateLimiterConfig.builder()
+                .bucketCapacity((long) Math.floor(c / 3.0))
+                .refillRate(r)
+                .maxRequests((long) Math.floor(c / 3.0))
+                .windowSizeMs(1000L)
+                .build();
+
         map.put("Token Bucket (TB-large)", () -> new TokenBucket(stdConfig));
         map.put("Token Bucket (TB-small)", () -> new TokenBucket(tbSmallConfig));
+        map.put("Token Bucket (TB-small-prop)", () -> new TokenBucket(tbSmallPropConfig));
         map.put("Leaky Bucket", () -> new LeakyBucket(stdConfig));
         map.put("Fixed Window", () -> new FixedWindow(stdConfig));
         map.put("Sliding Window Log", () -> new SlidingWindowLog(stdConfig));
@@ -229,7 +237,8 @@ public class ExperimentE1Runner {
             CondKey ck = ce.getKey();
             Map<String, Map<Long, Integer>> algoMap = ce.getValue();
 
-            Map<Long, Integer> tbSmallMap = algoMap.get("Token Bucket (TB-small)");
+            Map<Long, Integer> tbSmallBmMap = algoMap.get("Token Bucket (TB-small)");
+            Map<Long, Integer> tbSmallPropMap = algoMap.get("Token Bucket (TB-small-prop)");
             Map<Long, Integer> tbLargeMap = algoMap.get("Token Bucket (TB-large)");
 
             double tauSec = (ck.capacity * 6.0 / 7.0) / (ck.capacity * 2.0 / 3.0);
@@ -238,6 +247,10 @@ public class ExperimentE1Runner {
 
             for (Map.Entry<String, Map<Long, Integer>> ae : algoMap.entrySet()) {
                 String algo = ae.getKey();
+                if ("Token Bucket (TB-small-prop)".equals(algo)) {
+                    continue; // Internal reference baseline, not a primary comparison algorithm
+                }
+
                 Map<Long, Integer> seedValues = ae.getValue();
                 int N = seedValues.size();
 
@@ -245,13 +258,15 @@ public class ExperimentE1Runner {
                 List<Double> diffTbSmallList = new ArrayList<>();
                 List<Double> diffTbLargeList = new ArrayList<>();
 
+                Map<Long, Integer> targetTbSmallMap = "DREB (proportional)".equals(algo) ? tbSmallPropMap : tbSmallBmMap;
+
                 for (Map.Entry<Long, Integer> se : seedValues.entrySet()) {
                     long seed = se.getKey();
                     int acc = se.getValue();
                     acceptedList.add((double) acc);
 
-                    if (tbSmallMap != null && tbSmallMap.containsKey(seed)) {
-                        diffTbSmallList.add((double) (acc - tbSmallMap.get(seed)));
+                    if (targetTbSmallMap != null && targetTbSmallMap.containsKey(seed)) {
+                        diffTbSmallList.add((double) (acc - targetTbSmallMap.get(seed)));
                     }
                     if (tbLargeMap != null && tbLargeMap.containsKey(seed)) {
                         diffTbLargeList.add((double) (acc - tbLargeMap.get(seed)));
@@ -447,75 +462,130 @@ public class ExperimentE1Runner {
         }
         System.out.println("══════════════════════════════════════════════════════════════════════════════");
 
-        // Evaluate Hypotheses
-        // H1a: after full idleness with B >= C:
-        //      Full idleness condition: preWarmed (any D), coldStart (D >= 1.0 tau), drainedFirst (D >= 2.0 tau).
-        //      DREB burst acceptance >= TB-small for all DREB variants,
-        //      and for DREB (burst-matched) within epsilon (<= 1.0 token) of TB-large.
-        boolean h1aSupported = true;
-        for (CellSummary s : summaries) {
-            E1CellKey k = s.key();
-            String algo = k.algorithm();
-            boolean isFullIdleness = "preWarmed".equals(k.initialState())
-                    || ("coldStart".equals(k.initialState()) && k.idleTau() >= 1.0)
-                    || ("drainedFirst".equals(k.initialState()) && k.idleTau() >= 2.0);
+        // Evaluate Hypotheses per DREB variant
+        String[] drebVariants = {
+                "DREB (burst-matched)",
+                "DREB (proportional)",
+                "DREB (v2-adaptive-base1.5)",
+                "DREB (v2-adaptive-base1.0)"
+        };
 
-            if (isFullIdleness && k.burstRatio() >= 1.0) {
-                if (algo.startsWith("DREB")) {
-                    if (s.diffTbSmallMean() < -0.1) {
-                        h1aSupported = false;
-                    }
-                    if ("DREB (burst-matched)".equals(algo)) {
-                        if (s.diffTbLargeMean() < -1.0) {
-                            h1aSupported = false;
+        System.out.println();
+        System.out.println("══════════════════════════════════════════════════════════════════════════════");
+        System.out.println("  HYPOTHESIS EVALUATION VERDICTS (PER DREB VARIANT):");
+        System.out.println("══════════════════════════════════════════════════════════════════════════════");
+        System.out.printf("  %-26s | %-4s | %-12s | %s%n", "Algorithm", "Hyp", "Verdict", "Empirical Key Numbers & Explanation");
+        System.out.println("──────────────────────────────────────────────────────────────────────────────");
+
+        for (String variant : drebVariants) {
+            // H1a: full idleness burst acceptance >= per-variant TB-small, and within epsilon (<= 1.0) of TB-large
+            boolean h1a_ge_sm = true;
+            boolean h1a_near_lg = true;
+            double h1a_sample_acc_c100 = 0.0;
+            double h1a_sample_diff_sm = 0.0;
+            double h1a_sample_diff_lg = 0.0;
+
+            for (CellSummary s : summaries) {
+                if (variant.equals(s.key().algorithm())) {
+                    E1CellKey k = s.key();
+                    boolean isFullIdleness = "preWarmed".equals(k.initialState())
+                            || ("coldStart".equals(k.initialState()) && k.idleTau() >= 1.0)
+                            || ("drainedFirst".equals(k.initialState()) && k.idleTau() >= 2.0);
+
+                    if (isFullIdleness && k.burstRatio() >= 1.0) {
+                        if (s.diffTbSmallMean() < -0.1) h1a_ge_sm = false;
+                        if (s.diffTbLargeMean() < -1.0) h1a_near_lg = false;
+                        if (k.capacity() == 100.0 && k.idleTau() == 1.0 && k.burstRatio() == 1.0 && "coldStart".equals(k.initialState())) {
+                            h1a_sample_acc_c100 = s.meanAccepted();
+                            h1a_sample_diff_sm = s.diffTbSmallMean();
+                            h1a_sample_diff_lg = s.diffTbLargeMean();
                         }
                     }
                 }
             }
-        }
+            String h1aVerdict;
+            String h1aDetails;
+            if (h1a_ge_sm && h1a_near_lg) {
+                h1aVerdict = "SUPPORTED";
+                h1aDetails = String.format("C=100: acc=%.1f (diff vs TB-sm: %+.1f, vs TB-lg: %+.1f <= 1.0)",
+                        h1a_sample_acc_c100, h1a_sample_diff_sm, h1a_sample_diff_lg);
+            } else if (h1a_ge_sm) {
+                h1aVerdict = "CONTRADICTED";
+                h1aDetails = String.format("C=100: acc=%.1f (diff vs TB-sm: %+.1f >= 0, but vs TB-lg: %+.1f < -1.0)",
+                        h1a_sample_acc_c100, h1a_sample_diff_sm, h1a_sample_diff_lg);
+            } else {
+                h1aVerdict = "CONTRADICTED";
+                h1aDetails = String.format("C=100: acc=%.1f (diff vs TB-sm: %+.1f < 0)",
+                        h1a_sample_acc_c100, h1a_sample_diff_sm);
+            }
+            System.out.printf("  %-26s | H1a  | %-12s | %s%n", variant, h1aVerdict, h1aDetails);
 
-        // H1b: for a client with no idle history (coldStart D=0 or drainedFirst D=0) with B >= C:
-        //      - Under coldStart: burst acceptance is close to TB-small (<= B_max + 1.0), not TB-large (|A - TB-sm| < |TB-lg - A|)
-        //      - Under drainedFirst: burst acceptance is 0 (= TB-small = TB-large)
-        boolean h1bSupported = true;
-        for (CellSummary s : summaries) {
-            E1CellKey k = s.key();
-            String algo = k.algorithm();
-            if (k.idleTau() == 0.0 && k.burstRatio() >= 1.0 && algo.startsWith("DREB")) {
-                if ("coldStart".equals(k.initialState())) {
-                    double distSmall = Math.abs(s.diffTbSmallMean());
-                    double distLarge = Math.abs(s.diffTbLargeMean());
-                    double bMax = Math.floor(k.capacity() * 3.0 / 7.0);
-                    if (distSmall >= distLarge || s.meanAccepted() > bMax + 1.0) {
-                        h1bSupported = false;
-                    }
-                } else if ("drainedFirst".equals(k.initialState())) {
-                    if (s.meanAccepted() > 0.1) {
-                        h1bSupported = false;
+            // H1b: Zero-history restriction (coldStart D=0 or drainedFirst D=0): close to TB-small, not TB-large
+            boolean h1b_ok = true;
+            double h1b_sample_acc_c100 = 0.0;
+            double h1b_sample_diff_sm = 0.0;
+            double h1b_sample_diff_lg = 0.0;
+            for (CellSummary s : summaries) {
+                if (variant.equals(s.key().algorithm())) {
+                    E1CellKey k = s.key();
+                    if (k.idleTau() == 0.0 && k.burstRatio() >= 1.0) {
+                        if ("coldStart".equals(k.initialState())) {
+                            double distSmall = Math.abs(s.diffTbSmallMean());
+                            double distLarge = Math.abs(s.diffTbLargeMean());
+                            double bMax = Math.floor(k.capacity() * 3.0 / 7.0);
+                            if (distSmall >= distLarge || s.meanAccepted() > bMax + 1.0) h1b_ok = false;
+                            if (k.capacity() == 100.0 && k.burstRatio() == 1.0) {
+                                h1b_sample_acc_c100 = s.meanAccepted();
+                                h1b_sample_diff_sm = s.diffTbSmallMean();
+                                h1b_sample_diff_lg = s.diffTbLargeMean();
+                            }
+                        } else if ("drainedFirst".equals(k.initialState())) {
+                            if (s.meanAccepted() > 0.1) h1b_ok = false;
+                        }
                     }
                 }
             }
-        }
+            String h1bVerdict = h1b_ok ? "SUPPORTED" : "CONTRADICTED";
+            String h1bDetails = String.format("coldStart D=0: acc=%.1f (diff vs TB-sm: %+.1f == 0, vs TB-lg: %+.1f); drained: acc=0.0",
+                    h1b_sample_acc_c100, h1b_sample_diff_sm, h1b_sample_diff_lg);
+            System.out.printf("  %-26s | H1b  | %-12s | %s%n", variant, h1bVerdict, h1bDetails);
 
-        // H1c: DREB never exceeds TB-large's instantaneous burst at decay 1.5
-        boolean h1cSupported = true;
-        for (CellSummary s : summaries) {
-            E1CellKey k = s.key();
-            String algo = k.algorithm();
-            if ("DREB (burst-matched)".equals(algo) || "DREB (v2-adaptive-base1.5)".equals(algo)) {
-                if (s.diffTbLargeMean() > 0.001) {
-                    h1cSupported = false;
+            // H1c: Never exceeds TB-large at base decay 1.5
+            if ("DREB (burst-matched)".equals(variant) || "DREB (proportional)".equals(variant) || "DREB (v2-adaptive-base1.5)".equals(variant)) {
+                double maxDiffLg = -999999;
+                for (CellSummary s : summaries) {
+                    if (variant.equals(s.key().algorithm())) {
+                        if (s.diffTbLargeMean() > maxDiffLg) maxDiffLg = s.diffTbLargeMean();
+                    }
                 }
+                String h1cVerdict = maxDiffLg <= 0.001 ? "SUPPORTED" : "CONTRADICTED";
+                String h1cDetails = String.format("max(acc - TB-lg) across all cells = %+.1f <= 0", maxDiffLg);
+                System.out.printf("  %-26s | H1c  | %-12s | %s%n", variant, h1cVerdict, h1cDetails);
+            } else {
+                System.out.printf("  %-26s | H1c  | %-12s | %s%n", variant, "UNTESTED", "N/A (base decay is 1.0, not 1.5)");
             }
-        }
 
-        System.out.println();
-        System.out.println("══════════════════════════════════════════════════════════════════════════════");
-        System.out.println("  HYPOTHESIS EVALUATION VERDICTS:");
-        System.out.println("══════════════════════════════════════════════════════════════════════════════");
-        System.out.printf("  Hypothesis H1a (Full Idleness Acceptance): %s%n", h1aSupported ? "SUPPORTED" : "CONTRADICTED");
-        System.out.printf("  Hypothesis H1b (Zero-History Restriction): %s%n", h1bSupported ? "SUPPORTED" : "CONTRADICTED");
-        System.out.printf("  Hypothesis H1c (Strict Ceiling at Decay 1.5): %s%n", h1cSupported ? "SUPPORTED" : "CONTRADICTED");
+            // H1d: v2 base 1.0 never exceeds TB-large
+            if ("DREB (v2-adaptive-base1.0)".equals(variant)) {
+                double maxDiffLg = -999999;
+                double maxAcc = 0.0;
+                for (CellSummary s : summaries) {
+                    if (variant.equals(s.key().algorithm()) && s.key().capacity() == 100.0) {
+                        if (s.diffTbLargeMean() > maxDiffLg) {
+                            maxDiffLg = s.diffTbLargeMean();
+                            maxAcc = s.meanAccepted();
+                        }
+                    }
+                }
+                String h1dVerdict = maxDiffLg <= 0.001 ? "SUPPORTED" : "CONTRADICTED";
+                String h1dDetails = String.format("max burst at C=100 is %.1f > TB-lg (100.0) by %+.1f", maxAcc, maxDiffLg);
+                System.out.printf("  %-26s | H1d  | %-12s | %s%n", variant, h1dVerdict, h1dDetails);
+            } else {
+                System.out.printf("  %-26s | H1d  | %-12s | %s%n", variant, "UNTESTED", "N/A (applies to v2 base 1.0 only)");
+            }
+
+            System.out.println("──────────────────────────────────────────────────────────────────────────────");
+        }
         System.out.println("══════════════════════════════════════════════════════════════════════════════");
     }
 }

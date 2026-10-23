@@ -61,15 +61,27 @@ Experiment E1 measures the instantaneous burst allowance of rate-limiting algori
 * **Supporting Outcome:**
   - $\Delta_{\max} \le 0$ across all tested cells without exception (i.e. $A_{\text{DREB-1.5}} \le A_{\text{TB-large}}$ everywhere).
 * **Contradicting Outcome:**
-  - Any single observation where $A_{\text{DREB-1.5}} > A_{\text{TB-large}}$ ($\Delta > 0$). (Note: `DREB (v2-adaptive-base1.0)` is expected to exceed `TB-large` up to $9C/7$ by design, but decay 1.5 variants must never exceed $C$).
+  - Any single observation where $A_{\text{DREB-1.5}} > A_{\text{TB-large}}$ ($\Delta > 0$).
 
 ---
 
-## 3. Experimental Parameters & Grid
+### Hypothesis H1d: DREB v2 Base 1.0 Upper Bound vs TB-large
+> **Hypothesis Statement:** DREB v2 configured with base decay 1.0 (`DREB (v2-adaptive-base1.0)`) never exceeds `TB-large`'s instantaneous burst acceptance.
+
+* **Primary Metric:**
+  $$\Delta_{\max} = \max_{\text{all cells}} \left( A_{\text{v2-1.0}} - A_{\text{TB-large}} \right)$$
+* **Supporting Outcome:**
+  - $\Delta_{\max} \le 0$ across all tested cells.
+* **Contradicting Outcome:**
+  - Any cell where $A_{\text{v2-1.0}} > A_{\text{TB-large}}$ ($\Delta > 0$). (Expected to be contradicted because base decay 1.0 allows bursts up to 110 at $C=100$, exceeding $C=100$).
+
+---
+
+## 3. Experimental Parameters & Grid: Experiment E1
 
 * **Algorithms (10 total):**
   1. `Token Bucket (TB-large)` ($C, R$)
-  2. `Token Bucket (TB-small)` ($B_{\max} = 3C/7, R$)
+  2. `Token Bucket (TB-small)` (Per-variant: capacity = that variant's own $B_{\max}$)
   3. `Leaky Bucket` ($C, R$)
   4. `Fixed Window` ($C, W = 1\text{s}$)
   5. `Sliding Window Log` ($C, W = 1\text{s}$)
@@ -85,5 +97,77 @@ Experiment E1 measures the instantaneous burst allowance of rate-limiting algori
   - `coldStart`: Client created at $t=0$, idles for $D$, receives burst at $t=D$.
   - `preWarmed`: Client starts with full idle credit ($\text{idleCredit} = \text{idle\_cap}$), idles for $D$, receives burst at $t=D$.
   - `drainedFirst`: Client drains entire bucket at $t=0$, idles for $D$, receives burst at $t=D$.
-* **Replications:** $N = 30$ independent random seeds.
-* **Outputs:** Accepted counts, mean, standard deviation, 95% bootstrap confidence intervals, paired differences vs `TB-small` and `TB-large`, and heatmaps per DREB variant.
+* **Replications:** $N = 30$ independent random seeds. (Note: E1 is deterministic so $N=1$ yields identical results).
+* **Outputs:** Accepted counts, mean, standard deviation, 95% bootstrap confidence intervals, paired differences vs per-variant `TB-small` and `TB-large`, and heatmaps.
+
+---
+
+## 4. Formal Hypotheses: Experiment E2 (Mixed Legitimate & Abusive Traffic)
+
+### Hypothesis H2a: Abusive Traffic Suppression Without Excessive False Rejection
+> **Hypothesis Statement:** DREB variants admit a smaller fraction of abusive traffic than `TB-large` (higher abusive rejection rate) without raising false rejection of legitimate clients above `TB-large`'s false rejection rate.
+
+* **Primary Metrics:**
+  - Abusive Request Rejection Rate: $\text{ARR} = \frac{\text{Abusive Requests Rejected}}{\text{Abusive Requests Offered}}$
+  - Legitimate False Rejection Rate: $\text{FRR} = \frac{\text{Legit Requests Rejected}}{\text{Legit Requests Offered}}$, evaluated for both steady Poisson and bursty-legit clients.
+* **Supporting Outcome:**
+  - $\text{ARR}_{\text{DREB}} > \text{ARR}_{\text{TB-large}}$ across abusive scenarios ($k \in \{1.1, 1.25, 1.5, 2.0, 4.0\}$, evasion, jitter).
+  - $\text{FRR}_{\text{DREB}} \le \text{FRR}_{\text{TB-large}} + \epsilon$ (where $\epsilon \le 0.01$ or within bootstrap 95% CI).
+* **Contradicting Outcome:**
+  - $\text{ARR}_{\text{DREB}} \le \text{ARR}_{\text{TB-large}}$ (DREB fails to suppress abusive traffic better than TB-large), OR
+  - $\text{FRR}_{\text{DREB}} > \text{FRR}_{\text{TB-large}} + 0.01$ (DREB penalizes legitimate traffic more than TB-large).
+
+---
+
+### Hypothesis H2b: DREB v2 Adaptive Penalty vs DREB v1
+> **Hypothesis Statement:** DREB v2 admits less abusive traffic (achieves higher abusive rejection rate) than DREB v1 at equal or lower legitimate false-rejection cost.
+
+* **Primary Metrics:**
+  $$\Delta \text{ARR} = \text{ARR}_{\text{v2}} - \text{ARR}_{\text{v1-burst-matched}}$$
+  $$\Delta \text{FRR} = \text{FRR}_{\text{v2}} - \text{FRR}_{\text{v1-burst-matched}}$$
+* **Supporting Outcome:**
+  - $\Delta \text{ARR} > 0$ for abusive clients (particularly repeat burst and evasion abusers).
+  - $\Delta \text{FRR} \le \epsilon$ for legitimate clients (steady and bursty).
+* **Contradicting Outcome:**
+  - $\text{ARR}_{\text{v2}} \le \text{ARR}_{\text{v1}}$, OR $\text{FRR}_{\text{v2}} > \text{FRR}_{\text{v1}} + 0.01$.
+
+---
+
+### Hypothesis H2c: Long-Run Cumulative Rate Bound Enforcement
+> **Hypothesis Statement:** No algorithm lets an abusive client's long-run admitted rate exceed its cumulative bound $R$ (i.e. $\frac{\text{Admitted Abusive Rate}}{R} \le 1.0 + \frac{S_{\max}}{R \cdot T} \approx 1.01$ over logical duration $T = 120\text{s}$).
+
+* **Primary Metric:**
+  $$\text{Normalized Admitted Rate} = \frac{\text{Total Admitted Abusive Cost} / T}{R}$$
+* **Supporting Outcome:**
+  - Normalized Admitted Rate $\le 1.0 + \frac{S_{\max}}{R \cdot T}$ for all algorithms and all abuser types ($k \in \{1.1, 1.25, 1.5, 2, 4\}$, evasion, jitter).
+* **Contradicting Outcome:**
+  - Normalized Admitted Rate exceeds the theoretical cumulative bound for any algorithm.
+
+---
+
+## 5. Experimental Parameters & Grid: Experiment E2
+
+* **Baseline Matching Family:** Family 1 (equal $C$ and $R$).
+* **Capacities:** $C \in \{1000, 50000\}$, with sustained rate $R = C$.
+* **Initial State Conditions:** `coldStart` and `preWarmed`.
+* **Client Population:** $N_{\text{clients}} = 200$ clients per trial.
+* **Duration:** $T = 120.0$ seconds logical simulation time.
+* **Abusive Fraction:** $f \in \{0.1, 0.3, 0.5\}$.
+* **Legitimate Mix:** 50% steady Poisson (rate uniform in $[0.5R, 0.9R]$) and 50% bursty-legit (exponential idle mean $3\tau$, burst uniform in $[0.3C, 0.9C]$).
+* **Abusive Traffic Profiles:**
+  - Repeated burst abusers: burst size $0.95C$ at interval $\Delta t = \frac{0.95C}{k \cdot R}$ for $k \in \{1.1, 1.25, 1.5, 2.0, 4.0\}$.
+  - Evasion abuser: waits $\tau = \frac{9C}{7R}$ between bursts, sized at algorithm's post-idle ceiling, with offered rate target $k = 1.5$.
+  - Jitter abuser: random burst sizes in $[0.5C, 0.95C]$ with interval $\Delta t = \frac{B}{1.5R}$ ($k = 1.5$).
+* **Algorithms (10 total):**
+  1. `Token Bucket (TB-large)` ($C, R$)
+  2. `Token Bucket (TB-small)` (Per-variant capacity matching each DREB variant)
+  3. `Leaky Bucket` ($C, R$)
+  4. `Fixed Window` ($C, W = 1\text{s}$)
+  5. `Sliding Window Log` ($C, W = 1\text{s}$)
+  6. `Sliding Window Counter` ($C, W = 1\text{s}$)
+  7. `DREB (proportional)` ($C, R$)
+  8. `DREB (burst-matched)` ($C, R$)
+  9. `DREB (v2-adaptive-base1.5)` ($C, R$, headline)
+  10. `DREB (v2-adaptive-base1.0)` ($C, R$, variant)
+* **Replications:** $N = 30$ independent random seeds (seeds $2000 \dots 2029$; seeds $1000 \dots 1029$ reserved for E3 tuning).
+* **Metrics:** Abusive rejection rate, normalized abuser admitted rate ($\text{Rate}/R$), legitimate false-rejection rate (steady and bursty), total admitted cost, and trade-off plot (FRR vs ARR) at $C=1000$.
