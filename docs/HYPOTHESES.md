@@ -407,6 +407,17 @@ The following departures/approximations were introduced in intermediate reportin
 * **Empirical Outcome & Verdict:** **REFUTED** (judged by paired 95% bootstrap CIs over seeds 2000–2029, evaluated without tolerance margins).
   1. *Small Bursts ($0.30C$):* Across all $k \in \{1.10, 1.25, 1.50, 2.00, 4.00\}$ and all window sizes $W \in \{0.05, 0.10, 0.25\} C/R$, non-worse static dual buckets (`DualBucket(B=0.85C, P=4.00R)`) admit identical peak short-window load as DREB ($\Delta\text{PeakLoad} = +0.000$ $[+0.000, +0.000]$). Because H10 strictly requires strictly lower peak load, this equality refutes H10.
   2. *Pre-Warmed State at High Overload ($k \ge 2.00$):* Under pre-warmed initial conditions, static dual buckets achieve *strictly lower* peak admitted load than DREB (e.g. at $k = 2.00, \text{burst} = 0.95C$, $\Delta\text{PeakLoad} = -0.100$ $[-0.100, -0.100]$) because DREB allows burst capacity plus accumulated credit to discharge simultaneously in short intervals.
-  3. *Three-Metric Dominance:* In all cells where a static policy matches or improves upon DREB on long-term rate and bursty-legit FRR, it also achieves equal or lower peak short-window load. DREB is 3-metric dominated whenever it is 2-metric dominated.
+  3. *Three-Metric Evaluation Clarification:* While static dual buckets with equal peak load tie DREB at small bursts ($0.30C$) and achieve lower peak load under pre-warmed states at $k \ge 2.00$, under cold start with large bursts (e.g. $k = 4.00$, burst $0.95C$), DREB is 2-metric dominated in E9 by `DualBucket(B=1.00C, P=4.00R)` yet admits substantially *lower* peak short-window load ($0.428C$ vs $0.850C$, $\Delta = +0.422C$). Hence DREB is not universally 3-metric dominated in cold start.
+
+### Hypothesis H10b: Steady-State Peak Short-Window Admitted Load Advantage (Restricting to t >= 5 s)
+> **Hypothesis Statement:** restricting the peak short-window admitted load to windows that start at t >= 5 s (after the initial full-bucket burst), DREB burst-matched has strictly lower peak load than every static policy that is not worse on both admitted rate and bursty-legit FRR, at k in {1.1, 1.25, 1.5, 2, 4}.
+
+* **Metric:** Peak abuser admitted cost in sliding window of length $W \in \{0.05, 0.10, 0.25\} C/R$ for windows starting at $t \ge 5.0\,\text{s}$ (post-warmup steady state), normalized by $C$; paired 95% bootstrap CIs over seeds 2000–2029 ($N = 30$).
+* **Candidate Set:** All static policies from families S1, S2, and S3 that are not worse than DREB on both long-term abuser admitted rate and bursty-legit FRR ($\text{Rate}_{\text{static}} - \text{Rate}_{\text{DREB}} \le 0$ and $\text{FRR}_{\text{static}} - \text{FRR}_{\text{DREB}} \le 0$, judged by paired 95% bootstrap CIs).
+* **Supporting Outcome:** For every non-worse static policy, DREB burst-matched achieves strictly lower peak admitted load:
+  $$\text{PeakLoad}_{\text{static}} - \text{PeakLoad}_{\text{DREB}} > 0 \quad (\text{paired 95% CI lower bound } > 0.0)$$
+* **Contradicting Outcome:** Any non-worse static policy achieves equal or lower peak short-window admitted load:
+  $$\text{PeakLoad}_{\text{static}} - \text{PeakLoad}_{\text{DREB}} \le 0 \quad (\text{paired 95% CI includes zero or is negative})$$
+
 
 

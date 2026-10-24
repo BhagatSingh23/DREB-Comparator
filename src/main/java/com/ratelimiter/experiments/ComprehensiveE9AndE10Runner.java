@@ -69,7 +69,9 @@ public class ComprehensiveE9AndE10Runner {
             long seed,
             double abuserAdmittedRateNorm,
             double burstyFrr,
-            double[] peakLoads // peakLoads[0]=W_50ms, [1]=W_100ms, [2]=W_250ms
+            double[] peakLoads, // peakLoads[0]=W_50ms, [1]=W_100ms, [2]=W_250ms (full duration)
+            double[] peakLoadsFirst5s, // windows starting at t < 5.0s
+            double[] peakLoadsSteady // windows starting at t >= 5.0s
     ) {}
 
     public static void main(String[] args) throws Exception {
@@ -99,8 +101,14 @@ public class ComprehensiveE9AndE10Runner {
         // Process Part A: Full 50-row sweep table
         processPartA(scenarios, policies, allResults);
 
-        // Process Part D: E10 Peak Window Load & 3-Metric Dominance (H10)
-        processPartD(scenarios, policies, allResults);
+        // Process Part D: E10 Peak Window Load & 3-Metric Dominance (H10 Full Duration)
+        processPartD("FULL DURATION [0, 60s] (H10)", TrialResult::peakLoads, scenarios, policies, allResults);
+
+        // Process Part D Steady: E10 Steady-State (H10b) (t >= 5s)
+        processPartD("STEADY-STATE [5s, 60s] (H10b)", TrialResult::peakLoadsSteady, scenarios, policies, allResults);
+
+        // Process First 5s vs Steady-State comparison
+        compareFirst5sVsSteadyState(scenarios, policies, allResults);
     }
 
     private static List<PolicyDef> buildPolicies() {
@@ -293,6 +301,8 @@ public class ComprehensiveE9AndE10Runner {
 
         long abAcc = 0;
         double[] peakLoads = new double[WINDOWS_SEC.length];
+        double[] peakLoadsFirst5s = new double[WINDOWS_SEC.length];
+        double[] peakLoadsSteady = new double[WINDOWS_SEC.length];
 
         // Evaluate abuser clients and track sliding window peak loads
         for (int i = 0; i < numAbusive; i++) {
@@ -314,6 +324,8 @@ public class ComprehensiveE9AndE10Runner {
                 for (int wIdx = 0; wIdx < WINDOWS_SEC.length; wIdx++) {
                     long wMs = Math.round(WINDOWS_SEC[wIdx] * 1000.0);
                     long maxWindowCost = 0;
+                    long maxWindowCostFirst5s = 0;
+                    long maxWindowCostSteady = 0;
                     int right = 0;
                     long curWindowCost = 0;
 
@@ -323,9 +335,16 @@ public class ComprehensiveE9AndE10Runner {
                             right++;
                         }
                         if (curWindowCost > maxWindowCost) maxWindowCost = curWindowCost;
+                        if (timestamps[left] < 5000L) {
+                            if (curWindowCost > maxWindowCostFirst5s) maxWindowCostFirst5s = curWindowCost;
+                        } else {
+                            if (curWindowCost > maxWindowCostSteady) maxWindowCostSteady = curWindowCost;
+                        }
                         curWindowCost -= admitted[left];
                     }
                     peakLoads[wIdx] = (double) maxWindowCost / CAPACITY;
+                    peakLoadsFirst5s[wIdx] = (double) maxWindowCostFirst5s / CAPACITY;
+                    peakLoadsSteady[wIdx] = (double) maxWindowCostSteady / CAPACITY;
                 }
             }
         }
@@ -349,7 +368,7 @@ public class ComprehensiveE9AndE10Runner {
         double abRateNorm = (double) abAcc / (DURATION_SEC * numAbusive * REFILL_RATE);
         double burstyFrr = buOff > 0 ? (double) (buOff - buAcc) / buOff : 0.0;
 
-        return new TrialResult(policyId, seed, abRateNorm, burstyFrr, peakLoads);
+        return new TrialResult(policyId, seed, abRateNorm, burstyFrr, peakLoads, peakLoadsFirst5s, peakLoadsSteady);
     }
 
     private static long admitBurst(RateLimiter limiter, String clientId, long tMs, int burstTokens) {
@@ -442,15 +461,22 @@ public class ComprehensiveE9AndE10Runner {
         }
     }
 
+    @FunctionalInterface
+    interface PeakExtractor {
+        double[] extract(TrialResult tr);
+    }
+
     private static void processPartD(
+            String sectionTitle,
+            PeakExtractor extractor,
             List<ScenarioConfig> scenarios, List<PolicyDef> policies,
             Map<ScenarioConfig, Map<String, List<TrialResult>>> allResults
     ) {
         System.out.println("\n=================================================================================================================================");
-        System.out.println("  PART D: HYPOTHESIS H10 (SHORT-WINDOW ADMITTED LOAD & 3-METRIC DOMINANCE)");
+        System.out.println("  PART D: " + sectionTitle);
         System.out.println("=================================================================================================================================");
         System.out.printf("%-10s | %4s | %6s | %5s | %-15s | %-30s | %-22s | %-12s%n",
-                "InitState", "k", "Burst", "W", "Verdict H10", "Best Static (Rate & FRR <=)", "Delta PeakLoad [95% CI]", "3-Metric Dom?");
+                "InitState", "k", "Burst", "W", "Verdict", "Best Static (Rate & FRR <=)", "Delta PeakLoad [95% CI]", "3-Metric Dom?");
         System.out.println("-----------+------+--------+-------+-----------------+--------------------------------+------------------------+-------------");
 
         for (int wIdx = 0; wIdx < WINDOWS_SEC.length; wIdx++) {
@@ -461,7 +487,7 @@ public class ComprehensiveE9AndE10Runner {
                 Map<String, List<TrialResult>> res = allResults.get(sc);
                 List<TrialResult> drebTrials = res.get("DREB_BM");
 
-                // Evaluate H10: against all static policies that are NOT worse on Rate and FRR (Rate <= and FRR <=),
+                // Against all static policies that are NOT worse on Rate and FRR (Rate <= and FRR <=),
                 // does DREB have strictly lower peak load (PeakLoad(Static) - PeakLoad(DREB) > 0)?
                 PolicyDef bestNonWorseStatic = null;
                 double minDeltaPeakLoad = Double.MAX_VALUE;
@@ -481,7 +507,7 @@ public class ComprehensiveE9AndE10Runner {
                         dRates.add(pTrials.get(s).abuserAdmittedRateNorm() - drebTrials.get(s).abuserAdmittedRateNorm());
                         dFrrs.add((pTrials.get(s).burstyFrr() - drebTrials.get(s).burstyFrr()) * 100.0);
                         // Candidate minus Reference: Static PeakLoad - DREB PeakLoad
-                        dPeaks.add(pTrials.get(s).peakLoads()[wIdx] - drebTrials.get(s).peakLoads()[wIdx]);
+                        dPeaks.add(extractor.extract(pTrials.get(s))[wIdx] - extractor.extract(drebTrials.get(s))[wIdx]);
                     }
 
                     double[] dRateCi = bootstrap(dRates);
@@ -514,7 +540,7 @@ public class ComprehensiveE9AndE10Runner {
                     }
                 }
 
-                String verdictH10 = (bestNonWorseStatic == null)
+                String verdictH = (bestNonWorseStatic == null)
                         ? "VACUOUS (No static <=)"
                         : (anyStaticBeatsOrEqualsPeak ? "REFUTED" : "SUPPORTED");
                 String staticName = (bestNonWorseStatic != null) ? bestNonWorseStatic.displayName() : "None";
@@ -524,13 +550,13 @@ public class ComprehensiveE9AndE10Runner {
                 String domStr = any3MetricDominates ? "YES (Dominated)" : "NO";
 
                 System.out.printf("%-10s | %4.2f | %5.2fC | %7s | %-15s | %-30s | %-22s | %-12s%n",
-                        sc.initialState(), sc.k(), sc.abuserBurstFrac(), wStr, verdictH10, staticName, peakDiffStr, domStr);
+                        sc.initialState(), sc.k(), sc.abuserBurstFrac(), wStr, verdictH, staticName, peakDiffStr, domStr);
             }
         }
 
         // Summary Aggregated Table
         System.out.println("\n=================================================================================================================================");
-        System.out.println("  PART D SUMMARY: BREAKDOWN PER INITIAL STATE x ABUSER BURST x WINDOW W");
+        System.out.println("  SUMMARY BREAKDOWN (" + sectionTitle + "): INITIAL STATE x ABUSER BURST x WINDOW W");
         System.out.println("=================================================================================================================================");
         System.out.println("| Initial State | Abuser Burst | Window W | DREB Strictly Lower (k cells) | Ties (k cells) | DREB Strictly Higher (k cells) | Vacuous (No Static <=) |");
         System.out.println("| :---: | :---: | :---: | :---: | :---: | :---: | :---: |");
@@ -565,7 +591,7 @@ public class ComprehensiveE9AndE10Runner {
                             for (int s = 0; s < NUM_SEEDS; s++) {
                                 dRates.add(pTrials.get(s).abuserAdmittedRateNorm() - drebTrials.get(s).abuserAdmittedRateNorm());
                                 dFrrs.add((pTrials.get(s).burstyFrr() - drebTrials.get(s).burstyFrr()) * 100.0);
-                                dPeaks.add(pTrials.get(s).peakLoads()[wIdx] - drebTrials.get(s).peakLoads()[wIdx]);
+                                dPeaks.add(extractor.extract(pTrials.get(s))[wIdx] - extractor.extract(drebTrials.get(s))[wIdx]);
                             }
 
                             double[] dRateCi = bootstrap(dRates);
@@ -604,78 +630,170 @@ public class ComprehensiveE9AndE10Runner {
             }
         }
 
-        // Detailed coldStart at bursts >= 0.70C per k
+        // Detailed coldStart & preWarmed at bursts >= 0.70C per k
+        for (String init : INITIAL_STATES) {
+            System.out.println("\n=================================================================================================================================");
+            System.out.printf("  DETAILED (%s) AT BURSTS >= 0.70C: DREB PEAK vs BEST NON-WORSE STATIC PEAK PER k [%s]%n", init, sectionTitle);
+            System.out.println("=================================================================================================================================");
+            System.out.println("| Window W | Overload k | Burst Size | DREB Peak Load | Best Non-Worse Static Policy | Static Peak Load | Paired Delta Peak [95% CI] | Verdict |");
+            System.out.println("| :---: | :---: | :---: | :---: | :--- | :---: | :---: | :---: |");
+
+            for (int wIdx = 0; wIdx < WINDOWS_SEC.length; wIdx++) {
+                double wSec = WINDOWS_SEC[wIdx];
+                String wStr = String.format("%.2fC/R", wSec);
+
+                for (double bFrac : new double[]{0.70, 0.95, 1.20}) {
+                    for (double k : K_VALUES) {
+                        ScenarioConfig sc = new ScenarioConfig(CAPACITY, init, k, bFrac);
+                        Map<String, List<TrialResult>> res = allResults.get(sc);
+                        List<TrialResult> drebTrials = res.get("DREB_BM");
+
+                        double drebPeakMean = 0;
+                        for (TrialResult tr : drebTrials) drebPeakMean += extractor.extract(tr)[wIdx];
+                        drebPeakMean /= drebTrials.size();
+
+                        PolicyDef bestNonWorseStatic = null;
+                        double minDeltaPeakLoad = Double.MAX_VALUE;
+                        double[] minDeltaPeakCi = null;
+                        double bestStaticPeakMean = 0;
+
+                        for (PolicyDef p : policies) {
+                            if ("Dynamic".equals(p.family())) continue;
+                            List<TrialResult> pTrials = res.get(p.id());
+
+                            List<Double> dRates = new ArrayList<>();
+                            List<Double> dFrrs = new ArrayList<>();
+                            List<Double> dPeaks = new ArrayList<>();
+
+                            for (int s = 0; s < NUM_SEEDS; s++) {
+                                dRates.add(pTrials.get(s).abuserAdmittedRateNorm() - drebTrials.get(s).abuserAdmittedRateNorm());
+                                dFrrs.add((pTrials.get(s).burstyFrr() - drebTrials.get(s).burstyFrr()) * 100.0);
+                                dPeaks.add(extractor.extract(pTrials.get(s))[wIdx] - extractor.extract(drebTrials.get(s))[wIdx]);
+                            }
+
+                            double[] dRateCi = bootstrap(dRates);
+                            double[] dFrrCi = bootstrap(dFrrs);
+                            double[] dPeakCi = bootstrap(dPeaks);
+
+                            boolean staticNoWorseRate = mean(dRates) <= 1e-6 && dRateCi[1] <= 1e-6;
+                            boolean staticNoWorseFrr = mean(dFrrs) <= 1e-6 && dFrrCi[1] <= 1e-6;
+
+                            if (staticNoWorseRate && staticNoWorseFrr) {
+                                double deltaPeakMean = mean(dPeaks);
+                                if (deltaPeakMean < minDeltaPeakLoad) {
+                                    minDeltaPeakLoad = deltaPeakMean;
+                                    minDeltaPeakCi = dPeakCi;
+                                    bestNonWorseStatic = p;
+
+                                    double pMean = 0;
+                                    for (TrialResult tr : pTrials) pMean += extractor.extract(tr)[wIdx];
+                                    bestStaticPeakMean = pMean / pTrials.size();
+                                }
+                            }
+                        }
+
+                        String staticName = (bestNonWorseStatic != null) ? bestNonWorseStatic.displayName() : "None (Vacuous)";
+                        String staticPeakStr = (bestNonWorseStatic != null) ? String.format("%.3fC", bestStaticPeakMean) : "N/A";
+                        String deltaStr = (bestNonWorseStatic != null)
+                                ? String.format("%+.3fC [%+.3f, %+.3f]", minDeltaPeakLoad, minDeltaPeakCi[0], minDeltaPeakCi[1])
+                                : "N/A";
+                        String verdict = (bestNonWorseStatic == null)
+                                ? "Vacuous (Non-Dominated)"
+                                : (minDeltaPeakCi[0] > 1e-6 ? "SUPPORTED (DREB Lower)" : (minDeltaPeakCi[1] < -1e-6 ? "REFUTED (Static Lower)" : "REFUTED (Tied)"));
+
+                        System.out.printf("| %7s | %10.2f | %9.2fC | %14.3fC | %-28s | %16s | %27s | %-24s |%n",
+                                wStr, k, bFrac, drebPeakMean, staticName, staticPeakStr, deltaStr, verdict);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void compareFirst5sVsSteadyState(
+            List<ScenarioConfig> scenarios, List<PolicyDef> policies,
+            Map<ScenarioConfig, Map<String, List<TrialResult>>> allResults
+    ) {
         System.out.println("\n=================================================================================================================================");
-        System.out.println("  COLDSTART AT BURSTS >= 0.70C: DREB PEAK vs BEST NON-WORSE STATIC PEAK PER k");
+        System.out.println("  FIRST 5s vs STEADY-STATE PEAK LOAD COMPARISON (ATTRIBUTABLE TO FIRST BURST)");
         System.out.println("=================================================================================================================================");
-        System.out.println("| Window W | Overload k | Burst Size | DREB Peak Load | Best Non-Worse Static Policy | Static Peak Load | Paired Delta Peak [95% CI] | Verdict |");
-        System.out.println("| :---: | :---: | :---: | :---: | :--- | :---: | :---: | :---: |");
+        System.out.println("| InitState | Overload k | Burst Size | Window W | DREB First 5s | DREB Steady | DREB Drop | Static First 5s | Static Steady | Static Drop | Verdict (Steady) |");
+        System.out.println("| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |");
 
-        for (int wIdx = 0; wIdx < WINDOWS_SEC.length; wIdx++) {
-            double wSec = WINDOWS_SEC[wIdx];
-            String wStr = String.format("%.2fC/R", wSec);
-
-            for (double bFrac : new double[]{0.70, 0.95, 1.20}) {
+        for (String init : INITIAL_STATES) {
+            for (double bFrac : ABUSER_BURSTS) {
                 for (double k : K_VALUES) {
-                    ScenarioConfig sc = new ScenarioConfig(CAPACITY, "coldStart", k, bFrac);
+                    ScenarioConfig sc = new ScenarioConfig(CAPACITY, init, k, bFrac);
                     Map<String, List<TrialResult>> res = allResults.get(sc);
                     List<TrialResult> drebTrials = res.get("DREB_BM");
 
-                    double drebPeakMean = 0;
-                    for (TrialResult tr : drebTrials) drebPeakMean += tr.peakLoads()[wIdx];
-                    drebPeakMean /= drebTrials.size();
+                    for (int wIdx = 0; wIdx < WINDOWS_SEC.length; wIdx++) {
+                        double wSec = WINDOWS_SEC[wIdx];
+                        String wStr = String.format("%.2fC/R", wSec);
 
-                    PolicyDef bestNonWorseStatic = null;
-                    double minDeltaPeakLoad = Double.MAX_VALUE;
-                    double[] minDeltaPeakCi = null;
-                    double bestStaticPeakMean = 0;
-
-                    for (PolicyDef p : policies) {
-                        if ("Dynamic".equals(p.family())) continue;
-                        List<TrialResult> pTrials = res.get(p.id());
-
-                        List<Double> dRates = new ArrayList<>();
-                        List<Double> dFrrs = new ArrayList<>();
-                        List<Double> dPeaks = new ArrayList<>();
-
-                        for (int s = 0; s < NUM_SEEDS; s++) {
-                            dRates.add(pTrials.get(s).abuserAdmittedRateNorm() - drebTrials.get(s).abuserAdmittedRateNorm());
-                            dFrrs.add((pTrials.get(s).burstyFrr() - drebTrials.get(s).burstyFrr()) * 100.0);
-                            dPeaks.add(pTrials.get(s).peakLoads()[wIdx] - drebTrials.get(s).peakLoads()[wIdx]);
+                        double drebFirst5s = 0, drebSteady = 0;
+                        for (TrialResult tr : drebTrials) {
+                            drebFirst5s += tr.peakLoadsFirst5s()[wIdx];
+                            drebSteady += tr.peakLoadsSteady()[wIdx];
                         }
+                        drebFirst5s /= drebTrials.size();
+                        drebSteady /= drebTrials.size();
 
-                        double[] dRateCi = bootstrap(dRates);
-                        double[] dFrrCi = bootstrap(dFrrs);
-                        double[] dPeakCi = bootstrap(dPeaks);
+                        // Find best non-worse static policy under steady state
+                        PolicyDef bestNonWorseStatic = null;
+                        double minDeltaSteady = Double.MAX_VALUE;
+                        double[] minDeltaSteadyCi = null;
+                        double staticFirst5s = 0, staticSteady = 0;
 
-                        boolean staticNoWorseRate = mean(dRates) <= 1e-6 && dRateCi[1] <= 1e-6;
-                        boolean staticNoWorseFrr = mean(dFrrs) <= 1e-6 && dFrrCi[1] <= 1e-6;
+                        for (PolicyDef p : policies) {
+                            if ("Dynamic".equals(p.family())) continue;
+                            List<TrialResult> pTrials = res.get(p.id());
 
-                        if (staticNoWorseRate && staticNoWorseFrr) {
-                            double deltaPeakMean = mean(dPeaks);
-                            if (deltaPeakMean < minDeltaPeakLoad) {
-                                minDeltaPeakLoad = deltaPeakMean;
-                                minDeltaPeakCi = dPeakCi;
-                                bestNonWorseStatic = p;
+                            List<Double> dRates = new ArrayList<>();
+                            List<Double> dFrrs = new ArrayList<>();
+                            List<Double> dPeaksSteady = new ArrayList<>();
 
-                                double pMean = 0;
-                                for (TrialResult tr : pTrials) pMean += tr.peakLoads()[wIdx];
-                                bestStaticPeakMean = pMean / pTrials.size();
+                            for (int s = 0; s < NUM_SEEDS; s++) {
+                                dRates.add(pTrials.get(s).abuserAdmittedRateNorm() - drebTrials.get(s).abuserAdmittedRateNorm());
+                                dFrrs.add((pTrials.get(s).burstyFrr() - drebTrials.get(s).burstyFrr()) * 100.0);
+                                dPeaksSteady.add(pTrials.get(s).peakLoadsSteady()[wIdx] - drebTrials.get(s).peakLoadsSteady()[wIdx]);
+                            }
+
+                            double[] dRateCi = bootstrap(dRates);
+                            double[] dFrrCi = bootstrap(dFrrs);
+                            double[] dPeakSteadyCi = bootstrap(dPeaksSteady);
+
+                            boolean staticNoWorseRate = mean(dRates) <= 1e-6 && dRateCi[1] <= 1e-6;
+                            boolean staticNoWorseFrr = mean(dFrrs) <= 1e-6 && dFrrCi[1] <= 1e-6;
+
+                            if (staticNoWorseRate && staticNoWorseFrr) {
+                                double deltaMean = mean(dPeaksSteady);
+                                if (deltaMean < minDeltaSteady) {
+                                    minDeltaSteady = deltaMean;
+                                    minDeltaSteadyCi = dPeakSteadyCi;
+                                    bestNonWorseStatic = p;
+
+                                    double sF5 = 0, sSt = 0;
+                                    for (TrialResult tr : pTrials) {
+                                        sF5 += tr.peakLoadsFirst5s()[wIdx];
+                                        sSt += tr.peakLoadsSteady()[wIdx];
+                                    }
+                                    staticFirst5s = sF5 / pTrials.size();
+                                    staticSteady = sSt / pTrials.size();
+                                }
                             }
                         }
+
+                        String staticF5Str = (bestNonWorseStatic != null) ? String.format("%.3fC", staticFirst5s) : "N/A";
+                        String staticStStr = (bestNonWorseStatic != null) ? String.format("%.3fC", staticSteady) : "N/A";
+                        String staticDropStr = (bestNonWorseStatic != null) ? String.format("%.3fC", staticFirst5s - staticSteady) : "N/A";
+                        String verdictSteady = (bestNonWorseStatic == null)
+                                ? "Vacuous"
+                                : (minDeltaSteadyCi[0] > 1e-6 ? "DREB Lower" : (minDeltaSteadyCi[1] < -1e-6 ? "Static Lower" : "Tied"));
+
+                        System.out.printf("| %-9s | %10.2f | %9.2fC | %8s | %13.3fC | %11.3fC | %9.3fC | %15s | %13s | %11s | %-16s |%n",
+                                init, k, bFrac, wStr, drebFirst5s, drebSteady, (drebFirst5s - drebSteady),
+                                staticF5Str, staticStStr, staticDropStr, verdictSteady);
                     }
-
-                    String staticName = (bestNonWorseStatic != null) ? bestNonWorseStatic.displayName() : "None (Vacuous)";
-                    String staticPeakStr = (bestNonWorseStatic != null) ? String.format("%.3fC", bestStaticPeakMean) : "N/A";
-                    String deltaStr = (bestNonWorseStatic != null)
-                            ? String.format("%+.3fC [%+.3f, %+.3f]", minDeltaPeakLoad, minDeltaPeakCi[0], minDeltaPeakCi[1])
-                            : "N/A";
-                    String verdict = (bestNonWorseStatic == null)
-                            ? "Vacuous (Non-Dominated)"
-                            : (minDeltaPeakCi[0] > 1e-6 ? "SUPPORTED (DREB Lower)" : (minDeltaPeakCi[1] < -1e-6 ? "REFUTED (Static Lower)" : "REFUTED (Tied)"));
-
-                    System.out.printf("| %7s | %10.2f | %9.2fC | %14.3fC | %-28s | %16s | %27s | %-24s |%n",
-                            wStr, k, bFrac, drebPeakMean, staticName, staticPeakStr, deltaStr, verdict);
                 }
             }
         }
