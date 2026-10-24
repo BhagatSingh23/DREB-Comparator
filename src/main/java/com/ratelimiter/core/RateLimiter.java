@@ -25,6 +25,19 @@ public interface RateLimiter {
     RateLimitResponse allow(RateLimitRequest request);
 
     /**
+     * Direct evaluation without allocating a RateLimitRequest object.
+     * Returns RateLimitResponse.
+     *
+     * @param clientId    client identifier
+     * @param timestampMs timestamp in milliseconds
+     * @param cost        token cost of request
+     * @return RateLimitResponse containing decision and metadata
+     */
+    default RateLimitResponse allowDirect(String clientId, long timestampMs, int cost) {
+        return allow(new RateLimitRequest(clientId, timestampMs, cost));
+    }
+
+    /**
      * Returns a human-readable name for this algorithm, used in reports and charts.
      *
      * @return algorithm name, e.g. "Token Bucket", "Fixed Window"

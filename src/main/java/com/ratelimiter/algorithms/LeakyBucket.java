@@ -32,24 +32,27 @@ public class LeakyBucket implements RateLimiter {
         if (request == null) {
             throw new IllegalArgumentException("Request cannot be null");
         }
-        
-        ClientState state = states.computeIfAbsent(request.getClientId(), k -> new ClientState(bucketCapacity, request.getTimestampMs()));
+        return allowDirect(request.getClientId(), request.getTimestampMs(), (int) request.getCost());
+    }
+
+    @Override
+    public RateLimitResponse allowDirect(String clientId, long timestampMs, int cost) {
+        ClientState state = states.computeIfAbsent(clientId, k -> new ClientState(bucketCapacity, timestampMs));
         
         synchronized (state) {
-            long now = request.getTimestampMs();
-            long elapsed = now - state.lastCheckTimestamp;
+            long elapsed = timestampMs - state.lastCheckTimestamp;
             
             if (elapsed > 0) {
                 double leaked = elapsed * refillRate / 1000.0;
                 state.allowance = Math.min(bucketCapacity, state.allowance + leaked);
-                state.lastCheckTimestamp = now;
+                state.lastCheckTimestamp = timestampMs;
             }
             
-            if (state.allowance >= request.getCost()) {
-                state.allowance -= request.getCost();
+            if (state.allowance >= cost) {
+                state.allowance -= cost;
                 return RateLimitResponse.allowed((long) state.allowance);
             } else {
-                long retryAfterMs = (long) Math.ceil((request.getCost() - state.allowance) * 1000.0 / refillRate);
+                long retryAfterMs = (long) Math.ceil((cost - state.allowance) * 1000.0 / refillRate);
                 return RateLimitResponse.rejected(retryAfterMs, "Rate limit exceeded (Leaky Bucket)");
             }
         }

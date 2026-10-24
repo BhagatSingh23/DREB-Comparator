@@ -32,25 +32,28 @@ public class FixedWindow implements RateLimiter {
         if (request == null) {
             throw new IllegalArgumentException("Request cannot be null");
         }
-        
-        ClientState state = states.computeIfAbsent(request.getClientId(), k -> new ClientState());
+        return allowDirect(request.getClientId(), request.getTimestampMs(), (int) request.getCost());
+    }
+
+    @Override
+    public RateLimitResponse allowDirect(String clientId, long timestampMs, int cost) {
+        ClientState state = states.computeIfAbsent(clientId, k -> new ClientState());
         
         synchronized (state) {
-            long now = request.getTimestampMs();
-            long currentWindow = (now / windowSizeMs) * windowSizeMs;
+            long currentWindow = (timestampMs / windowSizeMs) * windowSizeMs;
             
             if (state.windowStart != currentWindow) {
                 state.windowStart = currentWindow;
                 state.count = 0;
             }
             
-            if (state.count + request.getCost() <= maxRequests) {
-                state.count += request.getCost();
+            if (state.count + cost <= maxRequests) {
+                state.count += cost;
                 long remainingCapacity = maxRequests - state.count;
                 return RateLimitResponse.allowed(remainingCapacity);
             } else {
                 long windowEnd = currentWindow + windowSizeMs;
-                long retryAfterMs = windowEnd - now;
+                long retryAfterMs = windowEnd - timestampMs;
                 return RateLimitResponse.rejected(retryAfterMs, "Rate limit exceeded (Fixed Window)");
             }
         }

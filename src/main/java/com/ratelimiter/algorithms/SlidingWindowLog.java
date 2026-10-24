@@ -36,25 +36,26 @@ public class SlidingWindowLog implements RateLimiter {
         if (request == null) {
             throw new IllegalArgumentException("Request cannot be null");
         }
-        
-        ClientState state = states.computeIfAbsent(request.getClientId(), k -> new ClientState());
+        return allowDirect(request.getClientId(), request.getTimestampMs(), (int) request.getCost());
+    }
+
+    @Override
+    public RateLimitResponse allowDirect(String clientId, long timestampMs, int cost) {
+        ClientState state = states.computeIfAbsent(clientId, k -> new ClientState());
         
         synchronized (state) {
-            long now = request.getTimestampMs();
-            long windowStart = now - windowSizeMs;
+            long windowStart = timestampMs - windowSizeMs;
             
             // Evict old entries
             while (!state.log.isEmpty() && state.log.peekFirst().timestamp <= windowStart) {
                 state.currentCount -= state.log.pollFirst().count;
             }
             
-            long cost = request.getCost();
-            
             if (state.currentCount + cost <= maxRequests) {
-                if (!state.log.isEmpty() && state.log.peekLast().timestamp == now) {
+                if (!state.log.isEmpty() && state.log.peekLast().timestamp == timestampMs) {
                     state.log.peekLast().count += cost;
                 } else {
-                    state.log.addLast(new Entry(now, cost));
+                    state.log.addLast(new Entry(timestampMs, cost));
                 }
                 state.currentCount += cost;
                 long remainingCapacity = maxRequests - state.currentCount;
@@ -62,7 +63,7 @@ public class SlidingWindowLog implements RateLimiter {
             } else {
                 long retryAfterMs = -1;
                 if (!state.log.isEmpty()) {
-                    retryAfterMs = state.log.peekFirst().timestamp + windowSizeMs - now;
+                    retryAfterMs = state.log.peekFirst().timestamp + windowSizeMs - timestampMs;
                     if (retryAfterMs < 0) {
                         retryAfterMs = 0;
                     }

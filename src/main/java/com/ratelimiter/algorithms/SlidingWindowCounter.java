@@ -33,12 +33,15 @@ public class SlidingWindowCounter implements RateLimiter {
         if (request == null) {
             throw new IllegalArgumentException("Request cannot be null");
         }
-        
-        ClientState state = states.computeIfAbsent(request.getClientId(), k -> new ClientState());
+        return allowDirect(request.getClientId(), request.getTimestampMs(), (int) request.getCost());
+    }
+
+    @Override
+    public RateLimitResponse allowDirect(String clientId, long timestampMs, int cost) {
+        ClientState state = states.computeIfAbsent(clientId, k -> new ClientState());
         
         synchronized (state) {
-            long now = request.getTimestampMs();
-            long currentWindowKey = (now / windowSizeMs) * windowSizeMs;
+            long currentWindowKey = (timestampMs / windowSizeMs) * windowSizeMs;
             
             // Advance window if needed
             if (state.currentWindowKey != currentWindowKey) {
@@ -51,12 +54,12 @@ public class SlidingWindowCounter implements RateLimiter {
                 state.currentCount = 0;
             }
             
-            double overlapFraction = 1.0 - ((double)(now - currentWindowKey) / windowSizeMs);
+            double overlapFraction = 1.0 - ((double)(timestampMs - currentWindowKey) / windowSizeMs);
             long estimatedCount = (long) (state.previousCount * overlapFraction) + state.currentCount;
             
-            if (estimatedCount + request.getCost() <= maxRequests) {
-                state.currentCount += request.getCost();
-                long remainingCapacity = maxRequests - (estimatedCount + request.getCost());
+            if (estimatedCount + cost <= maxRequests) {
+                state.currentCount += cost;
+                long remainingCapacity = maxRequests - (estimatedCount + cost);
                 return RateLimitResponse.allowed(remainingCapacity);
             } else {
                 return RateLimitResponse.rejected(-1, "Rate limit exceeded (Sliding Window Counter)");

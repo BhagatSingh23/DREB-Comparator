@@ -5,8 +5,12 @@
 ### Hypothesis H10
 > **Statement:** *against abuser traffic at k in {1.1, 1.25, 1.5, 2, 4}, DREB burst-matched has lower peak short-window admitted load than any static policy that is not worse on both admitted rate and bursty-legit FRR.*
 
-#### Verdict:
-**REFUTED** (judged by paired 95% bootstrap confidence intervals over seeds 2000–2029, evaluated without tolerance margins).
+#### Verdict (Overall & Per Initial State):
+- **Overall Verdict:** **REFUTED** (judged by paired 95% bootstrap confidence intervals over seeds 2000–2029, evaluated without tolerance margins).
+- **`coldStart` Verdict:** **REFUTED**.
+  - *Reason:* At small abuser bursts ($0.30C$), DREB's peak short-window load ties identically with non-worse static policies (`DualBucket(B=0.85C, P=4.00R)`) across all evaluated window sizes ($\Delta \text{PeakLoad} = +0.000C \ [+0.000, +0.000]$). Because H10 strictly demands that DREB have *strictly lower* peak load than every non-worse static policy, these ties refute H10. (At larger bursts $\ge 0.50C$ where non-worse static policies exist, DREB does achieve strictly lower peak load by $+0.008C$ to $+0.498C$).
+- **`preWarmed` Verdict:** **REFUTED**.
+  - *Reason:* At bursts $0.30C$ and $0.50C$, DREB ties peak load identically with non-worse static policies ($\Delta \text{PeakLoad} = +0.000C$). Furthermore, at large bursts ($\ge 0.95C$) under high overload ($k \ge 2.00$), DREB admits *strictly higher* peak load than static policies (e.g. at burst $0.95C$, static peak is $0.100C$ lower than DREB; at burst $1.20C$, static peak is $0.150C$ lower than DREB, paired CI $[-0.150, -0.150]$), directly violating H10.
 
 ---
 
@@ -19,6 +23,97 @@
    Here, DREB admits $0.95C$ in a 50ms window from pre-warmed burst capacity plus accumulated credit, whereas the static limiter restricts the abuser to its configured ceiling, directly violating H10.
 3. **Three-Metric Dominance:**
    Across all scenarios where a static policy matches or improves upon DREB on both long-term admitted rate and bursty-legit FRR, that same static policy achieves equal or lower peak short-window admitted load. Consequently, DREB is **3-metric dominated** by static dual buckets whenever DREB is 2-metric dominated.
+
+---
+
+### Summary Breakdown Table: Initial State $\times$ Abuser Burst $\times$ Window $W$
+Count of overload $k \in \{1.10, 1.25, 1.50, 2.00, 4.00\}$ cells where DREB has strictly lower peak load, ties, strictly higher, or vacuous (no non-worse static candidate):
+
+| Initial State | Abuser Burst | Window W | DREB Strictly Lower (k cells) | Ties (k cells) | DREB Strictly Higher (k cells) | Vacuous (No Static $\le$) |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| coldStart  |  0.30C |  0.05C/R |  0 |  5 |  0 |  0 |
+| coldStart  |  0.30C |  0.10C/R |  1 |  4 |  0 |  0 |
+| coldStart  |  0.30C |  0.25C/R |  1 |  4 |  0 |  0 |
+| coldStart  |  0.50C |  0.05C/R |  4 |  0 |  0 |  1 |
+| coldStart  |  0.50C |  0.10C/R |  4 |  0 |  0 |  1 |
+| coldStart  |  0.50C |  0.25C/R |  4 |  0 |  0 |  1 |
+| coldStart  |  0.70C |  0.05C/R |  2 |  0 |  0 |  3 |
+| coldStart  |  0.70C |  0.10C/R |  2 |  0 |  0 |  3 |
+| coldStart  |  0.70C |  0.25C/R |  2 |  0 |  0 |  3 |
+| coldStart  |  0.95C |  0.05C/R |  1 |  0 |  0 |  4 |
+| coldStart  |  0.95C |  0.10C/R |  1 |  0 |  0 |  4 |
+| coldStart  |  0.95C |  0.25C/R |  1 |  0 |  0 |  4 |
+| coldStart  |  1.20C |  0.05C/R |  1 |  0 |  0 |  4 |
+| coldStart  |  1.20C |  0.10C/R |  1 |  0 |  0 |  4 |
+| coldStart  |  1.20C |  0.25C/R |  1 |  0 |  0 |  4 |
+| preWarmed  |  0.30C |  0.05C/R |  0 |  5 |  0 |  0 |
+| preWarmed  |  0.30C |  0.10C/R |  0 |  5 |  0 |  0 |
+| preWarmed  |  0.30C |  0.25C/R |  0 |  5 |  0 |  0 |
+| preWarmed  |  0.50C |  0.05C/R |  0 |  5 |  0 |  0 |
+| preWarmed  |  0.50C |  0.10C/R |  0 |  5 |  0 |  0 |
+| preWarmed  |  0.50C |  0.25C/R |  0 |  5 |  0 |  0 |
+| preWarmed  |  0.70C |  0.05C/R |  0 |  3 |  0 |  2 |
+| preWarmed  |  0.70C |  0.10C/R |  0 |  3 |  0 |  2 |
+| preWarmed  |  0.70C |  0.25C/R |  0 |  3 |  0 |  2 |
+| preWarmed  |  0.95C |  0.05C/R |  0 |  0 |  2 |  3 |
+| preWarmed  |  0.95C |  0.10C/R |  0 |  0 |  2 |  3 |
+| preWarmed  |  0.95C |  0.25C/R |  0 |  1 |  1 |  3 |
+| preWarmed  |  1.20C |  0.05C/R |  0 |  0 |  1 |  4 |
+| preWarmed  |  1.20C |  0.10C/R |  0 |  0 |  1 |  4 |
+| preWarmed  |  1.20C |  0.25C/R |  0 |  0 |  1 |  4 |
+
+---
+
+### Detailed Table: coldStart at Bursts $\ge 0.70C$ Across Overload $k$
+Evaluated for each window size $W \in \{0.05C/R, 0.10C/R, 0.25C/R\}$ and burst size $\in \{0.70C, 0.95C, 1.20C\}$:
+
+| Window W | Overload k | Burst Size | DREB Peak Load | Best Non-Worse Static Policy | Static Peak Load | Paired $\Delta$ Peak [95% CI] | Verdict |
+| :---: | :---: | :---: | :---: | :--- | :---: | :---: | :---: |
+| 0.05C/R | 1.10 | 0.70C | 0.598C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.05C/R | 1.25 | 0.70C | 0.564C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.05C/R | 1.50 | 0.70C | 0.522C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.05C/R | 2.00 | 0.70C | 0.470C | DualBucket(B=0.85C,P=4.00R) | 0.700C | +0.230C [+0.230, +0.230] | SUPPORTED (DREB Lower) |
+| 0.05C/R | 4.00 | 0.70C | 0.428C | DualBucket(B=0.85C,P=4.00R) | 0.700C | +0.272C [+0.272, +0.272] | SUPPORTED (DREB Lower) |
+| 0.05C/R | 1.10 | 0.95C | 0.699C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.05C/R | 1.25 | 0.95C | 0.653C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.05C/R | 1.50 | 0.95C | 0.597C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.05C/R | 2.00 | 0.95C | 0.526C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.05C/R | 4.00 | 0.95C | 0.428C | DualBucket(B=0.85C,P=4.00R) | 0.850C | +0.422C [+0.422, +0.422] | SUPPORTED (DREB Lower) |
+| 0.05C/R | 1.10 | 1.20C | 0.800C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.05C/R | 1.25 | 1.20C | 0.741C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.05C/R | 1.50 | 1.20C | 0.670C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.05C/R | 2.00 | 1.20C | 0.581C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.05C/R | 4.00 | 1.20C | 0.448C | DualBucket(B=0.85C,P=4.00R) | 0.850C | +0.402C [+0.402, +0.402] | SUPPORTED (DREB Lower) |
+| 0.10C/R | 1.10 | 0.70C | 0.598C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.10C/R | 1.25 | 0.70C | 0.564C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.10C/R | 1.50 | 0.70C | 0.522C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.10C/R | 2.00 | 0.70C | 0.470C | DualBucket(B=0.85C,P=4.00R) | 0.700C | +0.230C [+0.230, +0.230] | SUPPORTED (DREB Lower) |
+| 0.10C/R | 4.00 | 0.70C | 0.428C | DualBucket(B=0.85C,P=4.00R) | 0.700C | +0.272C [+0.272, +0.272] | SUPPORTED (DREB Lower) |
+| 0.10C/R | 1.10 | 0.95C | 0.699C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.10C/R | 1.25 | 0.95C | 0.653C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.10C/R | 1.50 | 0.95C | 0.597C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.10C/R | 2.00 | 0.95C | 0.526C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.10C/R | 4.00 | 0.95C | 0.428C | DualBucket(B=0.85C,P=4.00R) | 0.850C | +0.422C [+0.422, +0.422] | SUPPORTED (DREB Lower) |
+| 0.10C/R | 1.10 | 1.20C | 0.800C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.10C/R | 1.25 | 1.20C | 0.741C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.10C/R | 1.50 | 1.20C | 0.670C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.10C/R | 2.00 | 1.20C | 0.581C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.10C/R | 4.00 | 1.20C | 0.448C | DualBucket(B=0.85C,P=4.00R) | 0.850C | +0.402C [+0.402, +0.402] | SUPPORTED (DREB Lower) |
+| 0.25C/R | 1.10 | 0.70C | 0.598C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.25C/R | 1.25 | 0.70C | 0.564C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.25C/R | 1.50 | 0.70C | 0.522C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.25C/R | 2.00 | 0.70C | 0.470C | DualBucket(B=0.85C,P=4.00R) | 0.700C | +0.230C [+0.230, +0.230] | SUPPORTED (DREB Lower) |
+| 0.25C/R | 4.00 | 0.70C | 0.720C | DualBucket(B=1.00C,P=1.25R) | 1.218C | +0.498C [+0.498, +0.498] | SUPPORTED (DREB Lower) |
+| 0.25C/R | 1.10 | 0.95C | 0.699C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.25C/R | 1.25 | 0.95C | 0.653C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.25C/R | 1.50 | 0.95C | 0.597C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.25C/R | 2.00 | 0.95C | 0.526C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.25C/R | 4.00 | 0.95C | 0.825C | DualBucket(B=1.00C,P=1.25R) | 1.297C | +0.472C [+0.472, +0.472] | SUPPORTED (DREB Lower) |
+| 0.25C/R | 1.10 | 1.20C | 0.800C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.25C/R | 1.25 | 1.20C | 0.741C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.25C/R | 1.50 | 1.20C | 0.670C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.25C/R | 2.00 | 1.20C | 0.581C | None (Vacuous) | N/A | N/A | Vacuous (Non-Dominated) |
+| 0.25C/R | 4.00 | 1.20C | 0.448C | DualBucket(B=0.85C,P=4.00R) | 0.850C | +0.402C [+0.402, +0.402] | SUPPORTED (DREB Lower) |
 
 ---
 

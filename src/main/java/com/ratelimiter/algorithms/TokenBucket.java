@@ -32,24 +32,27 @@ public class TokenBucket implements RateLimiter {
         if (request == null) {
             throw new IllegalArgumentException("Request cannot be null");
         }
-        
-        ClientState state = states.computeIfAbsent(request.getClientId(), k -> new ClientState(bucketCapacity, request.getTimestampMs()));
+        return allowDirect(request.getClientId(), request.getTimestampMs(), (int) request.getCost());
+    }
+
+    @Override
+    public RateLimitResponse allowDirect(String clientId, long timestampMs, int cost) {
+        ClientState state = states.computeIfAbsent(clientId, k -> new ClientState(bucketCapacity, timestampMs));
         
         synchronized (state) {
-            long now = request.getTimestampMs();
             // Refill tokens
-            long elapsed = now - state.lastRefillTimestamp;
+            long elapsed = timestampMs - state.lastRefillTimestamp;
             if (elapsed > 0) {
                 double tokensToAdd = elapsed * refillRate / 1000.0;
                 state.tokens = Math.min(bucketCapacity, state.tokens + tokensToAdd);
-                state.lastRefillTimestamp = now;
+                state.lastRefillTimestamp = timestampMs;
             }
             
-            if (state.tokens + 1e-9 >= request.getCost()) {
-                state.tokens -= request.getCost();
+            if (state.tokens + 1e-9 >= cost) {
+                state.tokens -= cost;
                 return RateLimitResponse.allowed((long) state.tokens);
             } else {
-                long retryAfterMs = (long) Math.ceil((request.getCost() - state.tokens) * 1000.0 / refillRate);
+                long retryAfterMs = (long) Math.ceil((cost - state.tokens) * 1000.0 / refillRate);
                 return RateLimitResponse.rejected(retryAfterMs, "Rate limit exceeded (Token Bucket)");
             }
         }

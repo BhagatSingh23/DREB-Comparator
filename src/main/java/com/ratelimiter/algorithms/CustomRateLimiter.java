@@ -97,8 +97,16 @@ public final class CustomRateLimiter implements RateLimiter {
 
     @Override
     public RateLimitResponse allow(RateLimitRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Request cannot be null");
+        }
         int cost = (int) Math.min(Integer.MAX_VALUE, request.getCost());
-        return allow(request.getClientId(), cost, request.getTimestampMs() / 1000.0);
+        return allowDirect(request.getClientId(), request.getTimestampMs(), cost);
+    }
+
+    @Override
+    public RateLimitResponse allowDirect(String clientId, long timestampMs, int cost) {
+        return allow(clientId, cost, timestampMs / 1000.0);
     }
 
     /**

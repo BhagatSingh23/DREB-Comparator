@@ -371,6 +371,24 @@ Evaluating DREB burst-matched against static families S1-S3 as abuser burst size
 | preWarmed  | 4.00 |  0.95C |   1.040R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
 | preWarmed  | 4.00 |  1.20C |   1.033R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
 
+**Recount of Dominated Cells Across the 50-Cell Sweep:**
+The 50-cell sweep has **29 dominated cells** (coldStart: 13, preWarmed: 16) and 21 non-dominated cells:
+- **coldStart (13 dominated cells):**
+  - $k = 1.10$: $0.30C$ (1 cell)
+  - $k = 1.25$: $0.30C, 0.50C$ (2 cells)
+  - $k = 1.50$: $0.30C, 0.50C$ (2 cells)
+  - $k = 2.00$: $0.30C, 0.50C, 0.70C$ (3 cells)
+  - $k = 4.00$: $0.30C, 0.50C, 0.70C, 0.95C, 1.20C$ (5 cells)
+- **preWarmed (16 dominated cells):**
+  - $k = 1.10$: $0.30C, 0.50C$ (2 cells)
+  - $k = 1.25$: $0.30C, 0.50C$ (2 cells)
+  - $k = 1.50$: $0.30C, 0.50C, 0.70C$ (3 cells)
+  - $k = 2.00$: $0.30C, 0.50C, 0.70C, 0.95C$ (4 cells)
+  - $k = 4.00$: $0.30C, 0.50C, 0.70C, 0.95C, 1.20C$ (5 cells)
+
+**Domination Mechanism:**
+In every dominated cell, the abuser admitted rate is strictly tied ($|\Delta \text{Rate}| = 0.000R$, paired CI $[+0.000, +0.000]$) and the FRR difference comes solely from the legitimate traffic (rate limiters are strictly per-client and do not interact). Therefore, these dominations arise because static $B=1.00C$ has a larger burst bucket under the same sustained envelope ($S_{\max} = 9C/7$), which allows more legitimate burst requests to pass without penalty once the abuser's admitted rate is already clamped to the sustained ceiling.
+
 **Reconciliation with Earlier Burst Thresholds:**
 The earlier statement claiming DREB was non-dominated for bursts $\ge 0.50C$ was strictly restricted to $(k = 1.10, \text{coldStart})$. Across the complete parameter grid:
 - At $k = 1.25$ and $k = 1.50$, bursts of size $0.50C$ are **strictly dominated** in both coldStart and preWarmed.

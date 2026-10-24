@@ -291,11 +291,12 @@ The following departures/approximations were introduced in intermediate reportin
 * **Supporting Outcome:** In every condition $k \in \{1.1, 1.25, 1.5, 2, 4\}$, no static policy dominates DREB burst-matched.
 * **Contradicting Outcome:** At any $k$, at least one static policy from families (S1), (S2), or (S3) dominates DREB burst-matched.
 * **Empirical Outcome & Verdict:** **CONTRADICTED** (judged by paired 95% bootstrap CIs, no tolerance margins).
-  - *Abuser Burst Sensitivity Grid:* Evaluating across all $k \in \{1.1, 1.25, 1.5, 2, 4\} \times \text{burst} \in \{0.30C, 0.50C, 0.70C, 0.95C, 1.20C\} \times \{\text{coldStart}, \text{preWarmed}\}$, DREB burst-matched is **dominated** in 26 of 50 evaluated cells:
+  - *Abuser Burst Sensitivity Grid:* Evaluating across all $k \in \{1.1, 1.25, 1.5, 2, 4\} \times \text{burst} \in \{0.30C, 0.50C, 0.70C, 0.95C, 1.20C\} \times \{\text{coldStart}, \text{preWarmed}\}$, DREB burst-matched is **dominated** in 29 of 50 evaluated cells (13 in coldStart, 16 in preWarmed):
     1. At small abuser bursts ($0.30C$), DREB is dominated across **all** $k$ in both coldStart and preWarmed by `DualBucket(B=1.00C, P=4.00R)`.
     2. At burst $0.50C$, DREB is dominated at $k \in \{1.25, 1.5, 2, 4\}$ in coldStart, and at all $k \in \{1.1, 1.25, 1.5, 2, 4\}$ in preWarmed.
     3. At $k = 4.00$, DREB is dominated across **all** burst sizes ($0.30C$–$1.20C$) in both initial states.
     4. Only at large bursts ($\ge 0.70C$ for moderate $k \le 1.5$) does DREB maintain non-domination.
+    *(Mechanism Note: In every dominated cell, the abuser admitted rate is tied ($|\Delta \text{Rate}| = 0.000R$) and the FRR difference comes solely from legitimate traffic, since rate limiters are strictly per-client and do not interact. These dominations arise because static $B=1.00C$ provides a larger burst bucket under the identical sustained envelope $S_{\max} = 9C/7$.)*
   - *Baseline Grid (Burst 0.95C):* DREB is non-dominated at moderate overload $k \in \{1.1, 1.25, 1.5\}$, but is strictly dominated by static dual buckets at high overload $k \in \{2.0, 4.0\}$ (in preWarmed at $k=2.00$, and in both coldStart and preWarmed at $k=4.00$). Thus H9a fails across the grid.
 
 ---
