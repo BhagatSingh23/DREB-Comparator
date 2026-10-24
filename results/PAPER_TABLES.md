@@ -566,52 +566,69 @@ Comprehensive per-setting verification for H9c (evaluating all 9 combinations of
 
 ### Table 7.3: Abuser Burst-Size Sensitivity Sweep across k and Burst Sizes (C=1000, coldStart & preWarmed)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart & preWarmed, Deterministic: No for bursty FRR. Commit: `f882ec5`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart & preWarmed, Deterministic: No for bursty FRR. Evaluated without tolerance margins.*
 
 Evaluating DREB burst-matched against static families S1-S3 as abuser burst size sweeps across {0.30C, 0.50C, 0.70C, 0.95C, 1.20C} with offered rate held constant at kR (interval adjusted to burst / kR):
 
-| Initial State | Overload k | Abuser Burst Size | DREB Admitted Rate / R | DREB Bursty FRR % | DREB Status vs Static | Nearest Static Policy | Nearest Rate / R | Nearest Bursty FRR % | $\Delta$ Rate vs DREB [95% CI] | $\Delta$ Bursty FRR vs DREB [95% CI] |
-| :---: | :---: | :---: | :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: |
-| coldStart  | 1.10 |  0.30C |   1.034 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.034 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.10 |  0.50C |   1.042 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.043 |   2.05% | +0.001 [+0.001, +0.001] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.10 |  0.70C |   0.950 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.040 |   2.05% | +0.090 [+0.090, +0.090] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.10 |  0.95C |   0.805 |   2.18% | **Non-Dominated** | DualBucket(B=0.80C,P=4.00R) |   0.933 |   2.70% | +0.128 [+0.128, +0.128] |  +0.52% [ +0.27%,  +0.75%] |
-| coldStart  | 1.10 |  1.20C |   0.733 |   2.18% | **Non-Dominated** | DualBucket(B=0.85C,P=2.50R) |   0.793 |   2.02% | +0.060 [+0.060, +0.060] |  -0.15% [ -0.42%,  +0.09%] |
-| coldStart  | 1.25 |  0.30C |   1.043 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.043 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.25 |  0.50C |   1.043 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.043 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.25 |  0.70C |   1.009 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.032 |   2.05% | +0.023 [+0.023, +0.023] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.25 |  0.95C |   0.862 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.031 |   2.05% | +0.169 [+0.169, +0.169] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.25 |  1.20C |   0.780 |   2.18% | **Non-Dominated** | DualBucket(B=0.80C,P=4.00R) |   0.853 |   2.70% | +0.073 [+0.073, +0.073] |  +0.52% [ +0.27%,  +0.75%] |
-| coldStart  | 1.50 |  0.30C |   1.043 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.043 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.50 |  0.50C |   1.043 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.043 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.50 |  0.70C |   1.037 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.038 |   2.05% | +0.001 [+0.001, +0.001] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.50 |  0.95C |   0.948 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.035 |   2.05% | +0.087 [+0.087, +0.087] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.50 |  1.20C |   0.840 |   2.18% | **Non-Dominated** | TB(C=1.00C,R=1.00R)        |   1.020 |   2.50% | +0.180 [+0.180, +0.180] |  +0.32% [ +0.08%,  +0.55%] |
-| coldStart  | 2.00 |  0.30C |   1.043 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.043 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 2.00 |  0.50C |   1.035 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.035 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 2.00 |  0.70C |   1.035 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.035 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 2.00 |  0.95C |   1.039 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.040 |   2.05% | +0.002 [+0.002, +0.002] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 2.00 |  1.20C |   0.963 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.023 |   2.05% | +0.060 [+0.060, +0.060] |  -0.13% [ -0.39%,  +0.11%] |
-| preWarmed  | 1.10 |  0.30C |   1.034 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.034 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.10 |  0.50C |   1.043 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.043 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.10 |  0.70C |   0.969 |   1.73% | **Non-Dominated** | DualBucket(B=0.95C,P=1.67R) |   1.040 |   1.71% | +0.071 [+0.071, +0.071] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.10 |  0.95C |   0.825 |   1.73% | **Non-Dominated** | DualBucket(B=0.85C,P=4.00R) |   0.992 |   1.60% | +0.167 [+0.167, +0.167] |  -0.13% [ -0.19%,  -0.07%] |
-| preWarmed  | 1.10 |  1.20C |   0.753 |   1.73% | **Non-Dominated** | DualBucket(B=0.85C,P=4.00R) |   0.793 |   1.60% | +0.041 [+0.041, +0.041] |  -0.13% [ -0.19%,  -0.07%] |
-| preWarmed  | 1.25 |  0.30C |   1.043 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.043 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.25 |  0.50C |   1.043 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.043 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.25 |  0.70C |   1.028 |   1.73% | **Non-Dominated** | DualBucket(B=0.95C,P=1.67R) |   1.032 |   1.71% | +0.004 [+0.004, +0.004] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.25 |  0.95C |   0.881 |   1.73% | **Non-Dominated** | DualBucket(B=0.95C,P=1.67R) |   1.031 |   1.71% | +0.150 [+0.150, +0.150] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.25 |  1.20C |   0.799 |   1.73% | **Non-Dominated** | DualBucket(B=0.85C,P=4.00R) |   0.907 |   1.60% | +0.108 [+0.108, +0.108] |  -0.13% [ -0.19%,  -0.07%] |
-| preWarmed  | 1.50 |  0.30C |   1.043 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.043 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.50 |  0.50C |   1.043 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.043 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.50 |  0.70C |   1.038 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.038 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.50 |  0.95C |   0.967 |   1.73% | **Non-Dominated** | DualBucket(B=0.95C,P=1.67R) |   1.035 |   1.71% | +0.068 [+0.068, +0.068] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.50 |  1.20C |   0.859 |   1.73% | **Non-Dominated** | DualBucket(B=0.95C,P=1.67R) |   1.029 |   1.71% | +0.170 [+0.170, +0.170] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 2.00 |  0.30C |   1.043 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.043 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 2.00 |  0.50C |   1.035 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.035 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 2.00 |  0.70C |   1.035 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.035 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 2.00 |  0.95C |   1.040 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.040 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 2.00 |  1.20C |   0.982 |   1.73% | **Non-Dominated** | DualBucket(B=0.95C,P=1.67R) |   1.023 |   1.71% | +0.041 [+0.041, +0.041] |  -0.02% [ -0.06%,  +0.02%] |
+| Initial State | Overload k | Abuser Burst Size | DREB Admitted Rate / R | DREB Bursty FRR % | DREB Status vs Static | Dominating Static Policy | $\Delta$ Rate vs DREB [95% CI] | $\Delta$ Bursty FRR vs DREB [95% CI] | Verdict |
+| :---: | :---: | :---: | :---: | :---: | :---: | :--- | :---: | :---: | :---: |
+| coldStart  | 1.10 |  0.30C |   1.034 |   2.18% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] | **Dominated** |
+| coldStart  | 1.10 |  0.50C |   1.042 |   2.18% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| coldStart  | 1.10 |  0.70C |   0.950 |   2.18% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| coldStart  | 1.10 |  0.95C |   0.805 |   2.18% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| coldStart  | 1.10 |  1.20C |   0.733 |   2.18% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| coldStart  | 1.25 |  0.30C |   1.043 |   2.18% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] | **Dominated** |
+| coldStart  | 1.25 |  0.50C |   1.043 |   2.18% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] | **Dominated** |
+| coldStart  | 1.25 |  0.70C |   1.009 |   2.18% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| coldStart  | 1.25 |  0.95C |   0.862 |   2.18% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| coldStart  | 1.25 |  1.20C |   0.780 |   2.18% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| coldStart  | 1.50 |  0.30C |   1.043 |   2.18% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] | **Dominated** |
+| coldStart  | 1.50 |  0.50C |   1.043 |   2.18% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] | **Dominated** |
+| coldStart  | 1.50 |  0.70C |   1.037 |   2.18% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| coldStart  | 1.50 |  0.95C |   0.948 |   2.18% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| coldStart  | 1.50 |  1.20C |   0.840 |   2.18% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| coldStart  | 2.00 |  0.30C |   1.043 |   2.18% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] | **Dominated** |
+| coldStart  | 2.00 |  0.50C |   1.035 |   2.18% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] | **Dominated** |
+| coldStart  | 2.00 |  0.70C |   1.035 |   2.18% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] | **Dominated** |
+| coldStart  | 2.00 |  0.95C |   1.039 |   2.18% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| coldStart  | 2.00 |  1.20C |   0.963 |   2.18% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| coldStart  | 4.00 |  0.30C |   1.043 |   2.18% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] | **Dominated** |
+| coldStart  | 4.00 |  0.50C |   1.039 |   2.18% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] | **Dominated** |
+| coldStart  | 4.00 |  0.70C |   1.040 |   2.18% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] | **Dominated** |
+| coldStart  | 4.00 |  0.95C |   1.040 |   2.18% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] | **Dominated** |
+| coldStart  | 4.00 |  1.20C |   1.033 |   2.18% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] | **Dominated** |
+| preWarmed  | 1.10 |  0.30C |   1.034 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 1.10 |  0.50C |   1.043 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 1.10 |  0.70C |   0.969 |   1.73% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| preWarmed  | 1.10 |  0.95C |   0.825 |   1.73% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| preWarmed  | 1.10 |  1.20C |   0.753 |   1.73% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| preWarmed  | 1.25 |  0.30C |   1.043 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 1.25 |  0.50C |   1.043 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 1.25 |  0.70C |   1.028 |   1.73% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| preWarmed  | 1.25 |  0.95C |   0.881 |   1.73% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| preWarmed  | 1.25 |  1.20C |   0.799 |   1.73% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| preWarmed  | 1.50 |  0.30C |   1.043 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 1.50 |  0.50C |   1.043 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 1.50 |  0.70C |   1.038 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 1.50 |  0.95C |   0.967 |   1.73% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| preWarmed  | 1.50 |  1.20C |   0.859 |   1.73% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| preWarmed  | 2.00 |  0.30C |   1.043 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 2.00 |  0.50C |   1.035 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 2.00 |  0.70C |   1.035 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 2.00 |  0.95C |   1.040 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 2.00 |  1.20C |   0.982 |   1.73% | **Non-Dominated** | None                          | N/A                     | N/A                     | **Non-Dominated** |
+| preWarmed  | 4.00 |  0.30C |   1.043 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 4.00 |  0.50C |   1.039 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 4.00 |  0.70C |   1.040 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 4.00 |  0.95C |   1.040 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+| preWarmed  | 4.00 |  1.20C |   1.033 |   1.73% | **Dominated**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] | **Dominated** |
+
+**Reconciliation with Earlier Burst Thresholds:**
+The earlier statement claiming DREB was non-dominated for bursts $\ge 0.50C$ was strictly restricted to $(k = 1.10, \text{coldStart})$. Across the complete parameter grid:
+- At $k = 1.25$ and $k = 1.50$, bursts of size $0.50C$ are **strictly dominated** in both coldStart and preWarmed.
+- At $k = 1.50$ in preWarmed, bursts of size $0.70C$ are also **strictly dominated**.
+- At $k = 2.00$ in preWarmed, bursts up to $0.95C$ are **strictly dominated**.
+- At $k = 4.00$, DREB is **strictly dominated across all evaluated burst sizes** ($0.30C$ through $1.20C$) under both initial states.
 
 ---
 
@@ -811,40 +828,74 @@ Evaluating DREB burst-matched against static families S1-S3 as abuser burst size
 | **(i) Private Key Maps (Disjoint Maps)** |   35,740,667 |   36,986,667 |    70,724,667 |    75,120,000 | **1.98x** | **2.10x** |
 | **Baseline: Shared Map Token Bucket**    |   31,614,667 |   50,260,667 |    68,697,333 |    52,882,003 | **2.17x** | **1.67x** |
 
-### Table 9.3: Multi-Threaded Throughput under same-key Contention (1 Key, Indicative)
+### Table 9.3: 1-Thread Throughput across Measured Paths under same-key (1 Key, 3-Run Stabilized)
 
-*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 99.9% Student-t CI across 5 intervals, Oracle JDK 21 LTS, Deterministic: No.*
+*Caption: Single Machine Relative Comparison, Apple M3 (8 Cores), Oracle JDK 21 LTS, 3 Separate Runs per algorithm, 5 Forks, Warmup 2 x 1s, Measurement 5 x 1s per fork. Reported: Median, Range across 3 runs, and 99.9% Student-t CI. Commit: `7301a3b`.*
 
-Under same-key contention, all threads access a single client key, isolating monitor lock serialization:
+#### Path Definitions (B1):
+- **Adapter Path (`benchmarkAdapterAllow`):** Invokes the limiter through the generic `RateLimiter` interface. Each request allocates `new RateLimitRequest("bench-client", ts)` (32 B) and returns `RateLimitResponse.allowed(remaining)` or `.rejected()` (64 B). For DREB variants, it additionally calls `dreb.peekState(clientId)`, allocating an immutable `ClientState` snapshot (80 B). Total heap allocation per op: 96 B/op (TB) to 176 B/op (DREB).
+- **Direct Path (`benchmarkDirectAllow`):** Directly invokes the rate limiter implementation method with primitive timestamp arguments (`long ts` or `long cost, long ts`), returning internal response or snapshot without allocating `RateLimitRequest`.
+- **Engine-Alone Path (`benchmarkEngineAlone`):** Directly evaluates pure algorithm logic via a primitive `boolean allow(String clientId, long cost, long ts)` or `boolean tryAcquire(String clientId)` method with zero internal object allocation (`0.0 B/op`). Instantiates no request, response, or peekState snapshot.
 
-| Algorithm | 1 Thread (ops/s) [99.9% CI] | 2 Threads (ops/s) [99.9% CI] | 4 Threads (ops/s) [99.9% CI] | 8 Threads (ops/s) [99.9% CI] | Ratio vs TB (8T) |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Token Bucket**           | 61,719,200 [±3,120,000] | 23,155,600 [±1,840,000] | 17,436,000 [±1,420,000] | 18,832,000 [±1,650,000] |   1.00x |
-| Leaky Bucket               | 64,129,600 [±2,850,000] | 24,885,200 [±1,920,000] | 19,363,600 [±1,510,000] | 17,338,000 [±1,390,000] |   0.92x |
-| Fixed Window               | 39,884,637 [±3,450,000] |  8,758,000 [±  950,000] | 12,724,000 [±1,180,000] | 14,637,600 [±1,220,000] |   0.78x |
-| Sliding Window Log         | 40,250,000 [±2,100,000] | 15,667,600 [±1,340,000] | 14,024,400 [±1,210,000] | 16,407,200 [±1,450,000] |   0.87x |
-| Sliding Window Counter     | 39,360,800 [±3,200,000] |  8,998,800 [±  880,000] | 11,925,600 [±1,050,000] | 19,506,800 [±1,720,000] |   1.04x |
-| DREB (proportional)        | 18,949,200 [±  763,617] |  4,272,400 [±  480,000] |  6,465,200 [±  610,000] |  7,801,200 [±  710,000] |   0.41x |
-| DREB (burst-matched)       | 19,174,800 [±  939,029] |  4,753,600 [±  510,000] |  6,805,600 [±  640,000] |  6,938,400 [±  680,000] |   0.37x |
-| DREB (v2 base 1.5)         | 18,319,200 [±1,250,000] |  6,689,200 [±  720,000] |  6,592,206 [±  690,000] |  7,476,000 [±  740,000] |   0.40x |
+| Algorithm | Measured Path | Run 1 (ops/s) | Run 2 (ops/s) | Run 3 (ops/s) | Median (ops/s) | Range (ops/s) | 99.9% CI |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Token Bucket**           | Adapter      | 50,848,834 | 57,904,667 | 52,698,000 | **52,698,000** |  7,055,832 | ±155,926,727 |
+| Token Bucket               | Direct       | 46,524,667 | 45,261,333 | 45,494,667 | **45,494,667** |  1,263,333 |   ±4,785,131 |
+| Token Bucket               | Engine-Alone | 56,298,000 | 57,990,667 | 57,510,667 | **57,510,667** |  1,692,667 |  ±20,063,031 |
+| **Leaky Bucket**           | Adapter      | 55,924,000 | 61,310,667 | 61,584,667 | **61,310,667** |  5,660,667 |  ±23,430,487 |
+| Leaky Bucket               | Direct       | 42,325,333 | 44,661,333 | 44,368,667 | **44,368,667** |  2,336,000 |  ±32,188,146 |
+| Leaky Bucket               | Engine-Alone | 61,208,667 | 58,218,000 | 60,898,667 | **60,898,667** |  2,990,667 |  ±26,990,538 |
+| **Fixed Window**           | Adapter      | 53,650,000 | 58,290,000 | 57,078,000 | **57,078,000** |  4,640,000 |  ±36,303,980 |
+| Fixed Window               | Direct       | 45,728,000 | 38,062,667 | 45,396,667 | **45,396,667** |  7,665,333 |  ±60,518,145 |
+| Fixed Window               | Engine-Alone | 62,851,333 | 64,655,333 | 64,594,000 | **64,594,000** |  1,804,000 |   ±3,490,061 |
+| **Sliding Window Log**     | Adapter      | 51,246,000 | 50,424,667 | 49,918,667 | **50,424,667** |  1,327,333 |  ±14,748,555 |
+| Sliding Window Log         | Direct       | 43,122,667 | 42,972,000 | 43,143,333 | **43,122,667** |    171,333 |   ±4,602,407 |
+| Sliding Window Log         | Engine-Alone | 59,214,667 | 59,496,000 | 59,450,667 | **59,450,667** |    281,333 |   ±2,118,899 |
+| **Sliding Window Counter** | Adapter      | 48,306,000 | 48,655,333 | 48,725,333 | **48,655,333** |    419,333 |   ±5,849,896 |
+| Sliding Window Counter     | Direct       | 42,736,667 | 40,149,333 | 42,260,667 | **42,260,667** |  2,587,333 |  ±40,244,089 |
+| Sliding Window Counter     | Engine-Alone | 58,961,333 | 59,082,667 | 59,122,667 | **59,082,667** |    161,333 |   ±3,515,567 |
+| **DREB (proportional)**    | Adapter      | 18,695,333 | 18,878,667 | 18,560,667 | **18,695,333** |    318,000 |   ±3,137,230 |
+| DREB (proportional)        | Direct       | 14,416,667 | 14,316,000 | 14,244,667 | **14,316,000** |    172,000 |   ±2,105,262 |
+| DREB (proportional)        | Engine-Alone | 16,712,000 | 14,878,000 | 16,585,333 | **16,585,333** |  1,834,000 |  ±21,581,872 |
+| **DREB (burst-matched)**   | Adapter      | 19,033,333 | 18,332,000 | 19,041,333 | **19,033,333** |    709,333 |   ±8,592,270 |
+| DREB (burst-matched)       | Direct       | 14,335,333 | 14,265,333 | 13,834,000 | **14,265,333** |    501,333 |   ±4,778,475 |
+| DREB (burst-matched)       | Engine-Alone | 15,561,333 | 16,654,667 | 14,627,333 | **15,561,333** |  2,027,333 |  ±21,154,103 |
+| **DREB (v2 base 1.5)**     | Adapter      | 17,660,000 | 17,766,667 | 17,763,333 | **17,763,333** |    106,667 |     ±956,706 |
+| DREB (v2 base 1.5)         | Direct       | 14,745,333 | 14,702,000 | 14,704,000 | **14,704,000** |     43,333 |     ±957,376 |
+| DREB (v2 base 1.5)         | Engine-Alone | 23,316,116 | 24,068,667 | 24,794,000 | **24,068,667** |  1,477,884 |  ±18,738,618 |
 
-### Table 9.4: Multi-Threaded Throughput under many-key Contention (10^5 Keys, Indicative)
+---
 
-*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 99.9% Student-t CI across 5 intervals, Oracle JDK 21 LTS, Deterministic: No.*
+### Table 9.4: 1-Thread Throughput across Measured Paths under many-key (10^5 Keys, 3-Run Stabilized)
 
-| Algorithm | 1 Thread (ops/s) [99.9% CI] | 2 Threads (ops/s) [99.9% CI] | 4 Threads (ops/s) [99.9% CI] | 8 Threads (ops/s) [99.9% CI] | Ratio vs TB (8T) |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Token Bucket**           | 37,853,200 [±2,650,000] | 47,944,400 [±3,150,000] | 45,665,200 [±3,220,000] | 53,319,600 [±4,120,000] |   1.00x |
-| Leaky Bucket               | 36,120,400 [±2,100,000] | 49,160,400 [±3,420,000] | 44,371,200 [±2,980,000] | 42,438,000 [±3,550,000] |   0.80x |
-| Fixed Window               | 33,405,600 [±1,850,000] | 26,544,400 [±2,100,000] | 31,758,800 [±2,450,000] | 41,294,800 [±3,120,000] |   0.77x |
-| Sliding Window Log         |  3,180,463 [±  420,000] |  4,060,537 [±  490,000] |  6,876,854 [±  620,000] |  5,434,470 [±  580,000] |   0.10x |
-| Sliding Window Counter     | 28,808,800 [±3,100,000] | 49,177,200 [±3,650,000] | 53,607,600 [±3,880,000] | 43,549,200 [±3,400,000] |   0.82x |
-| DREB (proportional)        | 13,119,200 [±1,479,534] | 16,466,000 [±1,620,000] | 19,109,981 [±1,850,000] | 18,062,898 [±1,740,000] |   0.34x |
-| DREB (burst-matched)       | 13,409,200 [±1,200,000] | 16,389,200 [±1,590,000] | 15,863,600 [±1,480,000] | 17,636,400 [±1,690,000] |   0.33x |
-| DREB (v2 base 1.5)         | 12,530,800 [±1,147,033] | 16,905,206 [±1,710,000] | 16,324,800 [±1,550,000] | 17,998,400 [±1,680,000] |   0.34x |
+*Caption: Single Machine Relative Comparison, Apple M3 (8 Cores), Oracle JDK 21 LTS, 3 Separate Runs per algorithm, 5 Forks, Warmup 2 x 1s, Measurement 5 x 1s per fork. Reported: Median, Range across 3 runs, and 99.9% Student-t CI. Commit: `7301a3b`.*
 
-> [!NOTE]
-> **macOS Thread Scheduling & Indicative Scaling Label (B4):** macOS does not provide CPU thread-pinning (affinity) APIs, causing worker threads to be scheduled dynamically across Apple Silicon's 4 Performance cores and 4 Efficiency cores. For example, in disjoint-map tests, the 2-thread throughput (1.03x of 1T) is within scheduling variance and run noise. Consequently, all multi-threaded throughput values and scaling ratios are labeled as **indicative** rather than absolute architecture bounds.
+| Algorithm | Measured Path | Run 1 (ops/s) | Run 2 (ops/s) | Run 3 (ops/s) | Median (ops/s) | Range (ops/s) | 99.9% CI |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Token Bucket**           | Adapter      | 20,828,667 | 28,998,000 | 22,484,000 | **22,484,000** |  8,169,333 |  ±98,353,730 |
+| Token Bucket               | Direct       | 37,030,000 | 19,689,333 | 19,203,333 | **19,689,333** | 17,826,667 |  ±83,754,290 |
+| Token Bucket               | Engine-Alone | 16,613,419 | 11,398,000 |  6,763,644 | **11,398,000** |  9,849,776 | ±143,116,502 |
+| **Leaky Bucket**           | Adapter      | 30,174,667 | 28,662,000 | 30,778,000 | **30,174,667** |  2,116,000 |  ±25,922,955 |
+| Leaky Bucket               | Direct       | 20,827,333 | 29,502,000 | 29,716,376 | **29,502,000** |  8,889,043 | ±134,381,014 |
+| Leaky Bucket               | Engine-Alone | 10,512,282 | 16,585,333 | 11,285,333 | **11,285,333** |  6,073,052 | ±107,238,936 |
+| **Fixed Window**           | Adapter      | 26,697,333 | 32,185,333 | 31,356,000 | **31,356,000** |  5,488,000 |  ±44,913,077 |
+| Fixed Window               | Direct       | 26,890,667 | 26,112,781 | 24,657,333 | **26,112,781** |  2,233,333 | ±107,275,500 |
+| Fixed Window               | Engine-Alone | 48,364,000 | 49,070,000 | 47,761,333 | **48,364,000** |  1,308,667 |  ±18,036,898 |
+| **Sliding Window Log**     | Adapter      |  4,514,075 |  3,853,333 |  4,308,616 |  **4,308,616** |    660,741 |  ±19,296,963 |
+| Sliding Window Log         | Direct       | 23,040,667 | 21,399,145 | 22,819,241 | **22,819,241** |  1,641,522 |  ±34,269,403 |
+| Sliding Window Log         | Engine-Alone |  3,203,365 |  3,594,000 |  3,370,000 |  **3,370,000** |    390,635 |   ±6,129,506 |
+| **Sliding Window Counter** | Adapter      | 17,185,333 | 12,662,000 | 11,819,780 | **12,662,000** |  5,365,553 |  ±33,763,140 |
+| Sliding Window Counter     | Direct       | 23,236,000 | 22,952,000 | 30,072,667 | **23,236,000** |  7,120,667 |  ±97,825,548 |
+| Sliding Window Counter     | Engine-Alone | 42,655,333 | 45,094,000 | 36,830,000 | **42,655,333** |  8,264,000 |  ±47,785,179 |
+| **DREB (proportional)**    | Adapter      |  4,282,667 |  4,862,667 |  8,239,333 |  **4,862,667** |  3,956,667 |  ±27,567,288 |
+| DREB (proportional)        | Direct       |  7,506,000 |  7,258,667 |  9,168,000 |  **7,506,000** |  1,909,333 |  ±15,860,070 |
+| DREB (proportional)        | Engine-Alone | 16,114,000 | 13,752,000 | 17,051,333 | **16,114,000** |  3,299,333 |  ±59,969,025 |
+| **DREB (burst-matched)**   | Adapter      |  6,538,579 |  5,071,333 | 11,350,667 |  **6,538,579** |  6,279,333 |  ±28,918,622 |
+| DREB (burst-matched)       | Direct       |  9,434,000 |  9,313,333 | 12,231,333 |  **9,434,000** |  2,918,000 |  ±27,828,279 |
+| DREB (burst-matched)       | Engine-Alone | 11,507,333 |  9,530,667 | 11,772,000 | **11,507,333** |  2,241,333 |  ±66,363,070 |
+| **DREB (v2 base 1.5)**     | Adapter      |  3,866,667 | 10,835,333 |  6,603,333 |  **6,603,333** |  6,968,667 |  ±19,435,407 |
+| DREB (v2 base 1.5)         | Direct       |  9,822,667 |  7,019,582 |  5,786,000 |  **7,019,582** |  4,036,667 |  ±28,479,648 |
+| DREB (v2 base 1.5)         | Engine-Alone | 12,362,000 | 13,018,635 | 10,322,667 | **12,362,000** |  2,695,969 |  ±43,905,347 |
 
 ### Table 9.5: Official JMH GC Memory Allocation Profile (Raw JMH -prof gc)
 
@@ -892,4 +943,133 @@ The reported memory footprints ($130.2\,\text{B/key}$ and $154.8\,\text{B/key}$)
   - **Token Bucket (130.2 B/key):** `ConcurrentHashMap.Node` (32B) + `String` key & byte array (56B) + `ClientState` (24B) + hash table amortized array overhead (~18B) $\approx 130.2\,\text{B}$.
   - **DREB v1 (burst-matched & proportional) (154.8 B/key):** Tracks 5 primitive fields in `com.dreb.ratelimit.ClientState` (40B object), adding 16B per client state.
   - **DREB v2 (adaptive) (154.9 B/key, reported separately):** Tracks additional `double abuseScore` field in `com.dreb.v2.ClientState` (48B object).
+
+---
+
+## 10. Experiment E10: Peak Short-Window Admitted Load & 3-Metric Dominance
+
+### Hypothesis H10
+> **Hypothesis Statement:** *against abuser traffic at k in {1.1, 1.25, 1.5, 2, 4}, DREB burst-matched has lower peak short-window admitted load than any static policy that is not worse on both admitted rate and bursty-legit FRR.*
+
+#### Verdict:
+**REFUTED** (judged by paired 95% bootstrap confidence intervals over seeds 2000–2029, evaluated without tolerance margins).
+
+### Table 10.1: Experiment E10 Comprehensive Evaluation across Overload k, Burst Sizes and Window Durations W
+
+*Caption: Seeds: 2000–2029 (N=30), Candidate minus Reference bootstrap paired 95% CIs. W in units of C/R (50ms, 100ms, 250ms). Evaluated without tolerance margins.*
+
+| Initial State | Overload $k$ | Abuser Burst | Window $W$ | Verdict H10 | Best Static (Rate & FRR $\le$ DREB) | $\Delta$ PeakLoad vs DREB [95% CI] | 3-Metric Dominated? |
+| :---: | :---: | :---: | :---: | :---: | :--- | :---: | :---: |
+| coldStart | 1.10 | 0.30C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 1.10 | 0.50C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| coldStart | 1.10 | 0.70C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| coldStart | 1.10 | 0.95C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| coldStart | 1.10 | 1.20C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| coldStart | 1.25 | 0.30C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 1.25 | 0.50C | 0.05C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.008 [+0.008, +0.008] | **YES (Dominated)** |
+| coldStart | 1.25 | 0.70C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| coldStart | 1.25 | 0.95C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| coldStart | 1.25 | 1.20C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| coldStart | 1.50 | 0.30C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 1.50 | 0.50C | 0.05C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.037 [+0.037, +0.037] | **YES (Dominated)** |
+| coldStart | 1.50 | 0.70C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| coldStart | 1.50 | 0.95C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| coldStart | 1.50 | 1.20C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| coldStart | 2.00 | 0.30C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 2.00 | 0.50C | 0.05C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.072 [+0.072, +0.072] | **YES (Dominated)** |
+| coldStart | 2.00 | 0.70C | 0.05C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.230 [+0.230, +0.230] | **YES (Dominated)** |
+| coldStart | 2.00 | 0.95C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| coldStart | 2.00 | 1.20C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| coldStart | 4.00 | 0.30C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 4.00 | 0.50C | 0.05C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.072 [+0.072, +0.072] | **YES (Dominated)** |
+| coldStart | 4.00 | 0.70C | 0.05C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.272 [+0.272, +0.272] | **YES (Dominated)** |
+| coldStart | 4.00 | 0.95C | 0.05C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.422 [+0.422, +0.422] | **YES (Dominated)** |
+| coldStart | 4.00 | 1.20C | 0.05C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.402 [+0.402, +0.402] | **YES (Dominated)** |
+| preWarmed | 1.10 | 0.30C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.10 | 0.50C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.10 | 0.70C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| preWarmed | 1.10 | 0.95C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| preWarmed | 1.10 | 1.20C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| preWarmed | 1.25 | 0.30C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.25 | 0.50C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.25 | 0.70C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| preWarmed | 1.25 | 0.95C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| preWarmed | 1.25 | 1.20C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| preWarmed | 1.50 | 0.30C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.50 | 0.50C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.50 | 0.70C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.50 | 0.95C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| preWarmed | 1.50 | 1.20C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| preWarmed | 2.00 | 0.30C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 2.00 | 0.50C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 2.00 | 0.70C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 2.00 | 0.95C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | -0.100 [-0.100, -0.100] | **YES (Dominated)** |
+| preWarmed | 2.00 | 1.20C | 0.05C/R | VACUOUS (No static $\le$) | None | N/A | NO |
+| preWarmed | 4.00 | 0.30C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 4.00 | 0.50C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 4.00 | 0.70C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 4.00 | 0.95C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | -0.100 [-0.100, -0.100] | **YES (Dominated)** |
+| preWarmed | 4.00 | 1.20C | 0.05C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | -0.150 [-0.150, -0.150] | **YES (Dominated)** |
+| :---: | :---: | :---: | :---: | :---: | :--- | :---: | :---: |
+| *Window $W = 0.10C/R$* | | | | | | | |
+| coldStart | 1.10 | 0.30C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 1.25 | 0.30C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 1.25 | 0.50C | 0.10C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.008 [+0.008, +0.008] | **YES (Dominated)** |
+| coldStart | 1.50 | 0.30C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 1.50 | 0.50C | 0.10C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.037 [+0.037, +0.037] | **YES (Dominated)** |
+| coldStart | 2.00 | 0.30C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 2.00 | 0.50C | 0.10C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.072 [+0.072, +0.072] | **YES (Dominated)** |
+| coldStart | 2.00 | 0.70C | 0.10C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.230 [+0.230, +0.230] | **YES (Dominated)** |
+| coldStart | 4.00 | 0.30C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 4.00 | 0.50C | 0.10C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.072 [+0.072, +0.072] | **YES (Dominated)** |
+| coldStart | 4.00 | 0.70C | 0.10C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.272 [+0.272, +0.272] | **YES (Dominated)** |
+| coldStart | 4.00 | 0.95C | 0.10C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.422 [+0.422, +0.422] | **YES (Dominated)** |
+| coldStart | 4.00 | 1.20C | 0.10C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.402 [+0.402, +0.402] | **YES (Dominated)** |
+| preWarmed | 1.10 | 0.30C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.10 | 0.50C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.25 | 0.30C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.25 | 0.50C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.50 | 0.30C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.50 | 0.50C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.50 | 0.70C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 2.00 | 0.30C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 2.00 | 0.50C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 2.00 | 0.70C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 2.00 | 0.95C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | -0.100 [-0.100, -0.100] | **YES (Dominated)** |
+| preWarmed | 4.00 | 0.30C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 4.00 | 0.50C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 4.00 | 0.70C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 4.00 | 0.95C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | -0.100 [-0.100, -0.100] | **YES (Dominated)** |
+| preWarmed | 4.00 | 1.20C | 0.10C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | -0.150 [-0.150, -0.150] | **YES (Dominated)** |
+| :---: | :---: | :---: | :---: | :---: | :--- | :---: | :---: |
+| *Window $W = 0.25C/R$* | | | | | | | |
+| coldStart | 1.10 | 0.30C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 1.25 | 0.30C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 1.25 | 0.50C | 0.25C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.008 [+0.008, +0.008] | **YES (Dominated)** |
+| coldStart | 1.50 | 0.30C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 1.50 | 0.50C | 0.25C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.037 [+0.037, +0.037] | **YES (Dominated)** |
+| coldStart | 2.00 | 0.30C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 2.00 | 0.50C | 0.25C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.072 [+0.072, +0.072] | **YES (Dominated)** |
+| coldStart | 2.00 | 0.70C | 0.25C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.230 [+0.230, +0.230] | **YES (Dominated)** |
+| coldStart | 4.00 | 0.30C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| coldStart | 4.00 | 0.50C | 0.25C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.072 [+0.072, +0.072] | **YES (Dominated)** |
+| coldStart | 4.00 | 0.70C | 0.25C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.272 [+0.272, +0.272] | **YES (Dominated)** |
+| coldStart | 4.00 | 0.95C | 0.25C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.422 [+0.422, +0.422] | **YES (Dominated)** |
+| coldStart | 4.00 | 1.20C | 0.25C/R | SUPPORTED | DualBucket(B=0.85C,P=4.00R) | +0.402 [+0.402, +0.402] | **YES (Dominated)** |
+| preWarmed | 1.10 | 0.30C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.10 | 0.50C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.25 | 0.30C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.25 | 0.50C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.50 | 0.30C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.50 | 0.50C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 1.50 | 0.70C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 2.00 | 0.30C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 2.00 | 0.50C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 2.00 | 0.70C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 2.00 | 0.95C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | -0.100 [-0.100, -0.100] | **YES (Dominated)** |
+| preWarmed | 4.00 | 0.30C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 4.00 | 0.50C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 4.00 | 0.70C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | +0.000 [+0.000, +0.000] | **YES (Dominated)** |
+| preWarmed | 4.00 | 0.95C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | -0.100 [-0.100, -0.100] | **YES (Dominated)** |
+| preWarmed | 4.00 | 1.20C | 0.25C/R | **REFUTED** | DualBucket(B=0.85C,P=4.00R) | -0.150 [-0.150, -0.150] | **YES (Dominated)** |
 

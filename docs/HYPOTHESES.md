@@ -290,7 +290,13 @@ The following departures/approximations were introduced in intermediate reportin
 * **Dominated Definition:** Another policy has abuser admitted rate / $R \le$ and bursty-legit $\text{FRR} \le$, with at least one strictly lower, judged by paired 95% bootstrap CIs without tolerance margins.
 * **Supporting Outcome:** In every condition $k \in \{1.1, 1.25, 1.5, 2, 4\}$, no static policy dominates DREB burst-matched.
 * **Contradicting Outcome:** At any $k$, at least one static policy from families (S1), (S2), or (S3) dominates DREB burst-matched.
-* **Empirical Outcome & Verdict:** **CONTRADICTED** (judged by paired 95% bootstrap CIs, no tolerance margins). While DREB burst-matched is non-dominated at moderate overload $k \in \{1.1, 1.25, 1.5\}$, it is strictly dominated by static dual buckets at high overload $k \in \{2.0, 4.0\}$. First point of failure occurs at $C=1000$, preWarmed, $k=2.00$ where `DualBucket(B=1.00C, P=1.67R)` achieves identical abuser rate ($1.040R$, $\Delta = +0.000R$ $[+0.000R, +0.000R]$) with statistically significantly lower bursty-legit FRR ($1.43\%$ vs $1.73\%$, paired diff $+0.30\text{ pp}$ $[+0.26\text{ pp}, +0.34\text{ pp}]$). At $k=4.00$, `DualBucket(B=1.00C, P=4.00R)` achieves $0.96\%$ bursty FRR vs DREB's $2.18\%$ (paired diff $+1.22\text{ pp}$ $[+1.00\text{ pp}, +1.46\text{ pp}]$). Thus H9a fails at $k \in \{2.0, 4.0\}$.
+* **Empirical Outcome & Verdict:** **CONTRADICTED** (judged by paired 95% bootstrap CIs, no tolerance margins).
+  - *Abuser Burst Sensitivity Grid:* Evaluating across all $k \in \{1.1, 1.25, 1.5, 2, 4\} \times \text{burst} \in \{0.30C, 0.50C, 0.70C, 0.95C, 1.20C\} \times \{\text{coldStart}, \text{preWarmed}\}$, DREB burst-matched is **dominated** in 26 of 50 evaluated cells:
+    1. At small abuser bursts ($0.30C$), DREB is dominated across **all** $k$ in both coldStart and preWarmed by `DualBucket(B=1.00C, P=4.00R)`.
+    2. At burst $0.50C$, DREB is dominated at $k \in \{1.25, 1.5, 2, 4\}$ in coldStart, and at all $k \in \{1.1, 1.25, 1.5, 2, 4\}$ in preWarmed.
+    3. At $k = 4.00$, DREB is dominated across **all** burst sizes ($0.30C$–$1.20C$) in both initial states.
+    4. Only at large bursts ($\ge 0.70C$ for moderate $k \le 1.5$) does DREB maintain non-domination.
+  - *Baseline Grid (Burst 0.95C):* DREB is non-dominated at moderate overload $k \in \{1.1, 1.25, 1.5\}$, but is strictly dominated by static dual buckets at high overload $k \in \{2.0, 4.0\}$ (in preWarmed at $k=2.00$, and in both coldStart and preWarmed at $k=4.00$). Thus H9a fails across the grid.
 
 ---
 
@@ -299,7 +305,9 @@ The following departures/approximations were introduced in intermediate reportin
 
 * **Supporting Outcome:** For every static policy with $|\text{Rate}_{\text{static}} - \text{Rate}_{\text{DREB}}| \le 0.05$, DREB has strictly lower bursty-legit FRR ($\Delta \text{FRR} < 0$, upper bound of paired 95% CI $< 0$).
 * **Contradicting Outcome:** Any static policy with abuser admitted rate within 0.05 of DREB has equal or lower bursty-legit FRR ($\Delta \text{FRR} \ge 0$, CI includes zero or is positive).
-* **Empirical Outcome & Verdict:** **CONTRADICTED** (judged by paired 95% bootstrap CIs, no tolerance margins). H9b holds strongly at $k \in \{1.1, 1.25, 1.5\}$ (e.g. at $k=1.5$, static policies within 0.05 of DREB's 0.948R have bursty FRR $\ge 8.46\%$ vs DREB's $2.18\%$, a $-6.28\text{ pp}$ advantage). However, at $k \in \{2.0, 4.0\}$, multiple static policies (`DualBucket(B=1.00C)`, `TB(C=1.286C)`) have identical abuser rates ($1.040R$, $|\Delta| = 0.000 \le 0.05$) while achieving *lower* bursty FRR ($1.43\%$ vs $1.73\%$ or $0.96\%$ vs $2.18\%$), directly contradicting H9b.
+* **Empirical Outcome & Verdict:** **CONTRADICTED** (judged by paired 95% bootstrap CIs, no tolerance margins).
+  - Across the full burst grid, whenever DREB is dominated, static policies within 0.05 of DREB's admitted rate (often identical rate, $|\Delta| = 0.000$) achieve strictly *lower* bursty-legit FRR.
+  - In baseline testing ($0.95C$), H9b holds at $k \in \{1.1, 1.25, 1.5\}$, but fails at $k \in \{2.0, 4.0\}$ where static policies (`DualBucket(B=1.00C)`, `TB(C=1.286C)`) have identical abuser rates ($1.040R$, $|\Delta| = 0.000 \le 0.05$) while achieving significantly lower bursty FRR ($1.43\%$ vs $1.73\%$ or $0.96\%$ vs $2.18\%$). At burst $0.30C$, static dual buckets match DREB's admitted rate ($1.043R$) with lower FRR across all $k$. Thus H9b fails.
 
 ---
 
@@ -381,4 +389,23 @@ The following departures/approximations were introduced in intermediate reportin
 * **Supporting Outcome:** `legacyOverdraw = true` allows token deficits, whereas `legacyOverdraw = false` prevents token deficits and shows distinct rejection profiles on large request classes.
 * **Contradicting Outcome:** No difference in token deficit behavior between `legacyOverdraw = true` and `legacyOverdraw = false`.
 * **Empirical Outcome & Verdict:** **SUPPORTED (via unscaled idle credit overdraw)**. While atomic bucket clamping prevents negative token counts in memory, `legacyOverdraw = true` grants raw unscaled idle credit ($1:1$ rather than dividing by decay $\gamma = 1.5$), admitting requests up to $9C/7 = 1286$ after idleness (admitting a request of cost 1200), whereas `legacyOverdraw = false` strictly enforces effective credit scaled by idle decay, eliminating overdraw beyond $C = 1000$.
+
+---
+
+## 12. Formal Hypotheses: Experiment E10 (Peak Short-Window Admitted Load & 3-Metric Dominance)
+
+### Hypothesis H10: Peak Short-Window Admitted Load Advantage
+> **Hypothesis Statement:** against abuser traffic at k in {1.1, 1.25, 1.5, 2, 4}, DREB burst-matched has lower peak short-window admitted load than any static policy that is not worse on both admitted rate and bursty-legit FRR.
+
+* **Metric:** Peak abuser admitted cost in sliding window of length $W \in \{0.05, 0.10, 0.25\} C/R$, per seed, normalized by $C$; paired 95% bootstrap CIs over seeds 2000–2029 ($N = 30$).
+* **Candidate Set:** All static policies from families S1, S2, and S3 that are not worse than DREB on both long-term abuser admitted rate and bursty-legit FRR ($\text{Rate}_{\text{static}} - \text{Rate}_{\text{DREB}} \le 0$ and $\text{FRR}_{\text{static}} - \text{FRR}_{\text{DREB}} \le 0$, judged by paired 95% bootstrap CIs).
+* **Supporting Outcome:** For every non-worse static policy, DREB burst-matched achieves strictly lower peak admitted load:
+  $$\text{PeakLoad}_{\text{static}} - \text{PeakLoad}_{\text{DREB}} > 0 \quad (\text{paired 95% CI lower bound } > 0.0)$$
+* **Contradicting Outcome:** Any non-worse static policy achieves equal or lower peak short-window admitted load:
+  $$\text{PeakLoad}_{\text{static}} - \text{PeakLoad}_{\text{DREB}} \le 0 \quad (\text{paired 95% CI includes zero or is negative})$$
+* **Empirical Outcome & Verdict:** **REFUTED** (judged by paired 95% bootstrap CIs over seeds 2000–2029, evaluated without tolerance margins).
+  1. *Small Bursts ($0.30C$):* Across all $k \in \{1.10, 1.25, 1.50, 2.00, 4.00\}$ and all window sizes $W \in \{0.05, 0.10, 0.25\} C/R$, non-worse static dual buckets (`DualBucket(B=0.85C, P=4.00R)`) admit identical peak short-window load as DREB ($\Delta\text{PeakLoad} = +0.000$ $[+0.000, +0.000]$). Because H10 strictly requires strictly lower peak load, this equality refutes H10.
+  2. *Pre-Warmed State at High Overload ($k \ge 2.00$):* Under pre-warmed initial conditions, static dual buckets achieve *strictly lower* peak admitted load than DREB (e.g. at $k = 2.00, \text{burst} = 0.95C$, $\Delta\text{PeakLoad} = -0.100$ $[-0.100, -0.100]$) because DREB allows burst capacity plus accumulated credit to discharge simultaneously in short intervals.
+  3. *Three-Metric Dominance:* In all cells where a static policy matches or improves upon DREB on long-term rate and bursty-legit FRR, it also achieves equal or lower peak short-window load. DREB is 3-metric dominated whenever it is 2-metric dominated.
+
 

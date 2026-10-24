@@ -318,48 +318,65 @@ Comprehensive per-setting verification for H9c (evaluating all 9 combinations of
 
 Evaluating DREB burst-matched against static families S1-S3 as abuser burst size sweeps across {0.30C, 0.50C, 0.70C, 0.95C, 1.20C} with offered rate held constant at kR (interval adjusted to burst / kR):
 
-| Initial State | Overload k | Abuser Burst Size | DREB Admitted Rate / R | DREB Bursty FRR % | DREB Status vs Static | Nearest Static Policy | Nearest Rate / R | Nearest Bursty FRR % | $\Delta$ Rate vs DREB [95% CI] | $\Delta$ Bursty FRR vs DREB [95% CI] |
-| :---: | :---: | :---: | :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: |
-| coldStart  | 1.10 |  0.30C |   1.034 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.034 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.10 |  0.50C |   1.042 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.043 |   2.05% | +0.001 [+0.001, +0.001] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.10 |  0.70C |   0.950 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.040 |   2.05% | +0.090 [+0.090, +0.090] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.10 |  0.95C |   0.805 |   2.18% | **Non-Dominated** | DualBucket(B=0.80C,P=4.00R) |   0.933 |   2.70% | +0.128 [+0.128, +0.128] |  +0.52% [ +0.27%,  +0.75%] |
-| coldStart  | 1.10 |  1.20C |   0.733 |   2.18% | **Non-Dominated** | DualBucket(B=0.85C,P=2.50R) |   0.793 |   2.02% | +0.060 [+0.060, +0.060] |  -0.15% [ -0.42%,  +0.09%] |
-| coldStart  | 1.25 |  0.30C |   1.043 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.043 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.25 |  0.50C |   1.043 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.043 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.25 |  0.70C |   1.009 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.032 |   2.05% | +0.023 [+0.023, +0.023] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.25 |  0.95C |   0.862 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.031 |   2.05% | +0.169 [+0.169, +0.169] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.25 |  1.20C |   0.780 |   2.18% | **Non-Dominated** | DualBucket(B=0.80C,P=4.00R) |   0.853 |   2.70% | +0.073 [+0.073, +0.073] |  +0.52% [ +0.27%,  +0.75%] |
-| coldStart  | 1.50 |  0.30C |   1.043 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.043 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.50 |  0.50C |   1.043 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.043 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.50 |  0.70C |   1.037 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.038 |   2.05% | +0.001 [+0.001, +0.001] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.50 |  0.95C |   0.948 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.035 |   2.05% | +0.087 [+0.087, +0.087] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 1.50 |  1.20C |   0.840 |   2.18% | **Non-Dominated** | TB(C=1.00C,R=1.00R)        |   1.020 |   2.50% | +0.180 [+0.180, +0.180] |  +0.32% [ +0.08%,  +0.55%] |
-| coldStart  | 2.00 |  0.30C |   1.043 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.043 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 2.00 |  0.50C |   1.035 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.035 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 2.00 |  0.70C |   1.035 |   2.18% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.90C,P=1.67R) |   1.035 |   2.05% | +0.000 [+0.000, +0.000] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 2.00 |  0.95C |   1.039 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.040 |   2.05% | +0.002 [+0.002, +0.002] |  -0.13% [ -0.39%,  +0.11%] |
-| coldStart  | 2.00 |  1.20C |   0.963 |   2.18% | **Non-Dominated** | DualBucket(B=0.90C,P=1.67R) |   1.023 |   2.05% | +0.060 [+0.060, +0.060] |  -0.13% [ -0.39%,  +0.11%] |
-| preWarmed  | 1.10 |  0.30C |   1.034 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.034 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.10 |  0.50C |   1.043 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.043 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.10 |  0.70C |   0.969 |   1.73% | **Non-Dominated** | DualBucket(B=0.95C,P=1.67R) |   1.040 |   1.71% | +0.071 [+0.071, +0.071] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.10 |  0.95C |   0.825 |   1.73% | **Non-Dominated** | DualBucket(B=0.85C,P=4.00R) |   0.992 |   1.60% | +0.167 [+0.167, +0.167] |  -0.13% [ -0.19%,  -0.07%] |
-| preWarmed  | 1.10 |  1.20C |   0.753 |   1.73% | **Non-Dominated** | DualBucket(B=0.85C,P=4.00R) |   0.793 |   1.60% | +0.041 [+0.041, +0.041] |  -0.13% [ -0.19%,  -0.07%] |
-| preWarmed  | 1.25 |  0.30C |   1.043 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.043 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.25 |  0.50C |   1.043 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.043 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.25 |  0.70C |   1.028 |   1.73% | **Non-Dominated** | DualBucket(B=0.95C,P=1.67R) |   1.032 |   1.71% | +0.004 [+0.004, +0.004] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.25 |  0.95C |   0.881 |   1.73% | **Non-Dominated** | DualBucket(B=0.95C,P=1.67R) |   1.031 |   1.71% | +0.150 [+0.150, +0.150] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.25 |  1.20C |   0.799 |   1.73% | **Non-Dominated** | DualBucket(B=0.85C,P=4.00R) |   0.907 |   1.60% | +0.108 [+0.108, +0.108] |  -0.13% [ -0.19%,  -0.07%] |
-| preWarmed  | 1.50 |  0.30C |   1.043 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.043 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.50 |  0.50C |   1.043 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.043 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.50 |  0.70C |   1.038 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.038 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.50 |  0.95C |   0.967 |   1.73% | **Non-Dominated** | DualBucket(B=0.95C,P=1.67R) |   1.035 |   1.71% | +0.068 [+0.068, +0.068] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 1.50 |  1.20C |   0.859 |   1.73% | **Non-Dominated** | DualBucket(B=0.95C,P=1.67R) |   1.029 |   1.71% | +0.170 [+0.170, +0.170] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 2.00 |  0.30C |   1.043 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.043 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 2.00 |  0.50C |   1.035 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.035 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 2.00 |  0.70C |   1.035 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.035 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 2.00 |  0.95C |   1.040 |   1.73% | **Dominated** by `DualBucket(B=1.00C,P=4.00R)` | DualBucket(B=0.95C,P=1.67R) |   1.040 |   1.71% | +0.000 [+0.000, +0.000] |  -0.02% [ -0.06%,  +0.02%] |
-| preWarmed  | 2.00 |  1.20C |   0.982 |   1.73% | **Non-Dominated** | DualBucket(B=0.95C,P=1.67R) |   1.023 |   1.71% | +0.041 [+0.041, +0.041] |  -0.02% [ -0.06%,  +0.02%] |
+| Initial State | Overload k | Abuser Burst Size | DREB Admitted Rate / R | DREB Bursty FRR % | DREB Status vs Static | Dominating Static Policy | $\Delta$ Rate vs DREB [95% CI] | $\Delta$ Bursty FRR vs DREB [95% CI] |
+| :---: | :---: | :---: | :---: | :---: | :---: | :--- | :---: | :---: |
+| coldStart  | 1.10 |  0.30C |   1.034R |   2.18% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] |
+| coldStart  | 1.10 |  0.50C |   1.042R |   2.18% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| coldStart  | 1.10 |  0.70C |   0.950R |   2.18% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| coldStart  | 1.10 |  0.95C |   0.805R |   2.18% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| coldStart  | 1.10 |  1.20C |   0.733R |   2.18% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| coldStart  | 1.25 |  0.30C |   1.043R |   2.18% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] |
+| coldStart  | 1.25 |  0.50C |   1.043R |   2.18% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] |
+| coldStart  | 1.25 |  0.70C |   1.009R |   2.18% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| coldStart  | 1.25 |  0.95C |   0.862R |   2.18% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| coldStart  | 1.25 |  1.20C |   0.780R |   2.18% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| coldStart  | 1.50 |  0.30C |   1.043R |   2.18% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] |
+| coldStart  | 1.50 |  0.50C |   1.043R |   2.18% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] |
+| coldStart  | 1.50 |  0.70C |   1.037R |   2.18% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| coldStart  | 1.50 |  0.95C |   0.948R |   2.18% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| coldStart  | 1.50 |  1.20C |   0.840R |   2.18% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| coldStart  | 2.00 |  0.30C |   1.043R |   2.18% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] |
+| coldStart  | 2.00 |  0.50C |   1.035R |   2.18% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] |
+| coldStart  | 2.00 |  0.70C |   1.035R |   2.18% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] |
+| coldStart  | 2.00 |  0.95C |   1.039R |   2.18% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| coldStart  | 2.00 |  1.20C |   0.963R |   2.18% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| coldStart  | 4.00 |  0.30C |   1.043R |   2.18% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] |
+| coldStart  | 4.00 |  0.50C |   1.039R |   2.18% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] |
+| coldStart  | 4.00 |  0.70C |   1.040R |   2.18% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] |
+| coldStart  | 4.00 |  0.95C |   1.040R |   2.18% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] |
+| coldStart  | 4.00 |  1.20C |   1.033R |   2.18% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -1.22% [-1.48%, -1.00%] |
+| preWarmed  | 1.10 |  0.30C |   1.034R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 1.10 |  0.50C |   1.043R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 1.10 |  0.70C |   0.969R |   1.73% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| preWarmed  | 1.10 |  0.95C |   0.825R |   1.73% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| preWarmed  | 1.10 |  1.20C |   0.753R |   1.73% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| preWarmed  | 1.25 |  0.30C |   1.043R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 1.25 |  0.50C |   1.043R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 1.25 |  0.70C |   1.028R |   1.73% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| preWarmed  | 1.25 |  0.95C |   0.881R |   1.73% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| preWarmed  | 1.25 |  1.20C |   0.799R |   1.73% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| preWarmed  | 1.50 |  0.30C |   1.043R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 1.50 |  0.50C |   1.043R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 1.50 |  0.70C |   1.038R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 1.50 |  0.95C |   0.967R |   1.73% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| preWarmed  | 1.50 |  1.20C |   0.859R |   1.73% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| preWarmed  | 2.00 |  0.30C |   1.043R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 2.00 |  0.50C |   1.035R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 2.00 |  0.70C |   1.035R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 2.00 |  0.95C |   1.040R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 2.00 |  1.20C |   0.982R |   1.73% | **NON-DOMINATED** | None                          | N/A                     | N/A                     |
+| preWarmed  | 4.00 |  0.30C |   1.043R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 4.00 |  0.50C |   1.039R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 4.00 |  0.70C |   1.040R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 4.00 |  0.95C |   1.040R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+| preWarmed  | 4.00 |  1.20C |   1.033R |   1.73% | **DOMINATED**     | `DualBucket(B=1.00C,P=4.00R)` | +0.000 [+0.000, +0.000] | -0.77% [-0.82%, -0.71%] |
+
+**Reconciliation with Earlier Burst Thresholds:**
+The earlier statement claiming DREB was non-dominated for bursts $\ge 0.50C$ was strictly restricted to $(k = 1.10, \text{coldStart})$. Across the complete parameter grid:
+- At $k = 1.25$ and $k = 1.50$, bursts of size $0.50C$ are **strictly dominated** in both coldStart and preWarmed.
+- At $k = 1.50$ in preWarmed, bursts of size $0.70C$ are also **strictly dominated**.
+- At $k = 2.00$ in preWarmed, bursts up to $0.95C$ are **strictly dominated**.
+- At $k = 4.00$, DREB is **strictly dominated across all evaluated burst sizes** ($0.30C$ through $1.20C$) under both initial states.
 
 **First Burst Size Where DREB Loses (Is Dominated):**
 - **Initial State: coldStart, k = 1.10, Abuser Burst Size = 0.30C (Dominating Static: `DualBucket(B=1.00C,P=4.00R)`)**
