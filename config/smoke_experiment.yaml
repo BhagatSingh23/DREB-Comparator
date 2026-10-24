@@ -1,6 +1,7 @@
 # Smoke Experiment Configuration
 # Quick validation run (2 seeds, small sizes) to verify end-to-end execution
 profileName: smoke_experiment
+smoke: true
 libraryTag: v1.0.1-phase1
 
 matchingFamilies:
