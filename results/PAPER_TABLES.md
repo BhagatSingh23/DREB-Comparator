@@ -1,6 +1,6 @@
 # Comprehensive Paper Tables Reference (Single Source of Truth)
 
-> **Master Provenance Commit:** `f34fad1`
+> **Master Provenance Commit:** `f882ec5`
 > **Repository:** `DREB-Comparator` | **Library Tag:** `dreb-ratelimiter v1.0.2-phase1`
 > **Reporting Standard:** Seeds 2000–2029 (N=30 replications), strict original hypothesis wording, no relaxed tolerance margins, Candidate minus Reference (`cur - ref`) bootstrap paired differences.
 
@@ -10,7 +10,7 @@
 
 ### Table 1.1: E1 Idle Progression (C=100, coldStart, Burst Ratio B/C = 1.0)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 100, Initial State: coldStart, Deterministic: Yes. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 100, Initial State: coldStart, Deterministic: Yes. Commit: `f882ec5`.*
 
 | Algorithm | Idle Duration D | Burst Requested | Admitted Tokens | Admitted / Offered % | Diff vs TB-small (Tokens) | Diff vs TB-large (Tokens) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -67,7 +67,7 @@
 
 ### Table 1.2: E1 Idle Progression (C=100, drainedFirst, Burst Ratio B/C = 1.0)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 100, Initial State: drainedFirst, Deterministic: Yes. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 100, Initial State: drainedFirst, Deterministic: Yes. Commit: `f882ec5`.*
 
 | Algorithm | Idle Duration D | Burst Requested | Admitted Tokens | Admitted / Offered % | Diff vs TB-small (Tokens) | Diff vs TB-large (Tokens) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -124,7 +124,7 @@
 
 ### Table 1.3: E1 Idle Progression (C=1000, coldStart, Burst Ratio B/C = 1.0)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes. Commit: `f882ec5`.*
 
 | Algorithm | Idle Duration D | Burst Requested | Admitted Tokens | Admitted / Offered % | Diff vs TB-small (Tokens) | Diff vs TB-large (Tokens) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -181,7 +181,7 @@
 
 ### Table 1.4: E1 Idle Progression (C=1000, drainedFirst, Burst Ratio B/C = 1.0)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: drainedFirst, Deterministic: Yes. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: drainedFirst, Deterministic: Yes. Commit: `f882ec5`.*
 
 | Algorithm | Idle Duration D | Burst Requested | Admitted Tokens | Admitted / Offered % | Diff vs TB-small (Tokens) | Diff vs TB-large (Tokens) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -238,7 +238,7 @@
 
 ### Table 1.5: Instantaneous Burst Acceptance per Variant (C=1000, coldStart, Idle D = 1.0τ)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes. Commit: `f882ec5`.*
 
 | Algorithm | B/C = 0.5 (500) | B/C = 0.8 (800) | B/C = 1.0 (1000) | B/C = 1.2 (1200) | B/C = 1.5 (1500) | B/C = 2.0 (2000) | B/C = 3.0 (3000) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -259,7 +259,7 @@
 
 ### Table 2.1: Standard Abuser Performance (k=1.5, f=0.3, C=1000, coldStart)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No (Stochastic Poisson and Exponential arrivals for legitimate traffic; deterministic periodic bursts for abusive traffic). Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No (Stochastic Poisson and Exponential arrivals for legitimate traffic; deterministic periodic bursts for abusive traffic). Commit: `f882ec5`.*
 
 | Algorithm | Abuse Rej % | Diff vs TB-lg | Norm Rate / R | Diff vs TB-lg | Legit FRR % | Diff vs TB-lg | FRR Steady | Diff Steady | FRR Bursty | Diff Bursty | Total Admitted |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -278,7 +278,7 @@
 
 ### Table 2.2: Admitted Rate vs TB-large and Contract Enforcement across k (f=0.3, C=1000, coldStart)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes for abuser metrics. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes for abuser metrics. Commit: `f882ec5`.*
 
 | DREB Variant | k | Admitted Rate / R | TB-large Rate / R | Diff vs TB-large (95% CI) | Status vs Contract (1.0R) |
 | :--- | :---: | :---: | :---: | :---: | :--- |
@@ -309,7 +309,7 @@
 
 ### Table 3.1: Compliant-Bursty False Rejection Rate (Offered Rate ≈ 0.78R <= R, f=0.3, C=1000, coldStart)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes. Commit: `f882ec5`.*
 
 | Algorithm | Actual Offered Rate / R | Admitted Rate / R | Compliant False Rejection % | Diff vs TB-lg (95% CI) | Status Under Contract |
 | :--- | :---: | :---: | :---: | :---: | :--- |
@@ -331,7 +331,7 @@
 
 ### Table 4.1: Full Ablation Summary across Capacities and Initial States (k=1.5, f=0.3)
 
-*Caption: Held-Out Test Seeds: 2000–2029 (N=30), Capacity C: 1000 & 50000, Initial State: coldStart & preWarmed, Deterministic: No. Commit: `f34fad1`.*
+*Caption: Held-Out Test Seeds: 2000–2029 (N=30), Capacity C: 1000 & 50000, Initial State: coldStart & preWarmed, Deterministic: No. Commit: `f882ec5`.*
 
 | Configuration | Capacity | Initial State | Abuse Rej % | Norm Rate / R | Diff vs TB-lg | Diff vs TB-env | Diff vs v1 BM | Legit FRR % | Diff vs TB-lg | Diff vs TB-env | Diff vs v1 BM |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -374,7 +374,7 @@
 
 ### Table 4.2: Generalization Across Overload k and Abusive Fraction f (C=1000, coldStart)
 
-*Caption: Held-Out Test Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No. Commit: `f34fad1`.*
+*Caption: Held-Out Test Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No. Commit: `f882ec5`.*
 
 | Slice | Configuration | Norm Rate / R | Diff Rate vs v1 | Overall Legit FRR % | Diff FRR vs v1 (95% CI) | Bursty-Legit FRR % | Diff Bursty vs v1 (95% CI) |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -409,7 +409,7 @@
 
 ### Table 5.1: Abuser State Variable Trace Metrics (k=1.5, burst=950, interval=0.633s, C=1000, R=1000, T=30.0s)
 
-*Caption: Seed: 2000 (N=1), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes. Commit: `f34fad1`.*
+*Caption: Seed: 2000 (N=1), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes. Commit: `f882ec5`.*
 
 | Algorithm | Min sustained / S_max | Max abuse_score | Sustained Bucket Bindings | Burst Bucket Bindings | Total Admitted Tokens |
 | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -421,7 +421,7 @@
 
 ### Table 5.2: Bursty-Legit Client Summary & Per-Burst Trace (C=1000, R=1000, Seed 2000)
 
-*Caption: Seed: 2000 (N=1), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes for trace sequence. Commit: `f34fad1`.*
+*Caption: Seed: 2000 (N=1), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes for trace sequence. Commit: `f882ec5`.*
 
 | Algorithm | Offered Cost | Admitted Cost | Rejected Cost | False Rejection % |
 | :--- | :---: | :---: | :---: | :---: |
@@ -435,7 +435,7 @@
 
 ### Table 6.1: Instantaneous Burst Acceptance after Idleness (Requests = 2C at t = D, C=1000)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart & preWarmed, Deterministic: Yes. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart & preWarmed, Deterministic: Yes. Commit: `f882ec5`.*
 
 | Algorithm | Capacity C | Initial State | $D = 0$ | $D = 0.5\tau$ | $D = 1.0\tau$ | $D = 2.0\tau$ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -486,7 +486,7 @@
 
 ### Table 6.2: Pareto Trade-off Points across k (C=1000, f=0.3, coldStart)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No for legit FRR. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No for legit FRR. Commit: `f882ec5`.*
 
 
 ---
@@ -495,7 +495,7 @@
 
 ### Table 7.1: Full 45-Setting Per-Setting Verification for H9c (9 Legit Models x 5 k Values, C=1000, coldStart)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No for bursty FRR. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No for bursty FRR. Commit: `f882ec5`.*
 
 Comprehensive per-setting verification for H9c (evaluating all 9 combinations of bursty-legit idle-time mean in {1tau, 3tau, 10tau} and burst size range in {[0.1C, 0.5C], [0.3C, 0.9C], [0.6C, 1.0C]} across every k in {1.1, 1.25, 1.5, 2.0, 4.0}):
 
@@ -549,7 +549,7 @@ Comprehensive per-setting verification for H9c (evaluating all 9 combinations of
 
 ### Table 7.2: Dominance Breakdown per k: coldStart vs preWarmed (C=1000, Abuser Burst = 0.95C)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart vs preWarmed, Deterministic: No for bursty FRR. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart vs preWarmed, Deterministic: No for bursty FRR. Commit: `f882ec5`.*
 
 | Overload k | Initial State | DREB Admitted Rate / R | DREB Bursty FRR % | Dominating / Nearest Static Policy | Static Rate / R | Static Bursty FRR % | $\Delta$ Rate vs DREB [95% CI] | $\Delta$ Bursty FRR vs DREB [95% CI] | Verdict |
 | :---: | :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -566,7 +566,7 @@ Comprehensive per-setting verification for H9c (evaluating all 9 combinations of
 
 ### Table 7.3: Abuser Burst-Size Sensitivity Sweep across k and Burst Sizes (C=1000, coldStart & preWarmed)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart & preWarmed, Deterministic: No for bursty FRR. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart & preWarmed, Deterministic: No for bursty FRR. Commit: `f882ec5`.*
 
 Evaluating DREB burst-matched against static families S1-S3 as abuser burst size sweeps across {0.30C, 0.50C, 0.70C, 0.95C, 1.20C} with offered rate held constant at kR (interval adjusted to burst / kR):
 
@@ -619,7 +619,7 @@ Evaluating DREB burst-matched against static families S1-S3 as abuser burst size
 
 ### Table 8.1: Experiment E5 Boundary Compliance (C=1000, Periodic & Poisson Arrivals across k in {0.90R, 0.98R, 1.00R, 1.02R, 1.10R})
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes for periodic, No for Poisson. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes for periodic, No for Poisson. Commit: `f882ec5`.*
 
 | Algorithm | Arrival Process | Offered Rate k | Admitted / Offered % [95% CI] | Admitted Rate / R [95% CI] |
 | :--- | :---: | :---: | :---: | :---: |
@@ -728,7 +728,7 @@ Evaluating DREB burst-matched against static families S1-S3 as abuser burst size
 
 ### Table 8.2: Experiment E6 Post-Idle Single-Request Admission Boundary Test (Pre-Warmed, C=1000)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: preWarmed, Deterministic: Yes. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: preWarmed, Deterministic: Yes. Commit: `f882ec5`.*
 
 | Limiter Implementation | Cost = 200 | Cost = 500 | Cost = 1000 (= C) | Cost = 1200 (> C) | C-Ceiling Enforced? |
 | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -738,7 +738,7 @@ Evaluating DREB burst-matched against static families S1-S3 as abuser burst size
 
 ### Table 8.3: Experiment E6 Variable Cost Requests Admitted Cost and FRR by Cost Class
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Request Costs in (1, 5, 20, 60, 200), Initial State: coldStart, Deterministic: No. Commit: `f34fad1`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Request Costs in (1, 5, 20, 60, 200), Initial State: coldStart, Deterministic: No. Commit: `f882ec5`.*
 
 | Limiter Implementation | Admitted Cost / Offered Cost % | Largest Single Admitted Cost | Minimum Observed Balance |
 | :--- | :---: | :---: | :---: |
@@ -756,109 +756,97 @@ Evaluating DREB burst-matched against static families S1-S3 as abuser burst size
 
 ## 9. JMH Performance, Latency & Resource Benchmarks
 
-### Table 9.1: Batched Latency Distribution per allow() Call across Key Scales (Nanoseconds)
+### Table 9.1: Reconciled Latency Distribution across Key Scales (Nanoseconds)
 
-*Caption: Single Machine Relative Comparison, Apple M3 (8 Cores), OpenJDK 26.0.2 release 21, N=1000 Batch Mean Samples, Deterministic: No. Commit: `f34fad1`.*
+*Caption: Single Machine Relative Comparison, Apple M3 (8 Cores), Oracle JDK 21 LTS, N=1000 Batch Mean Samples, Deterministic: No. Commit: `f882ec5`.*
 
-Latency percentiles (Mean, p50, p95, p99, p99.9) evaluated via batched sampling ($N = 1000$ calls per sample) across key set sizes $1, 10^3, 10^5$, resolving continuous per-call distributions and eliminating the 24 MHz hardware timebase discretization (~41.7 ns):
-
-### Latency at 1 (Single Key) Key(s) (Single Machine, Relative Comparison)
-
-| Algorithm | Mean (ns) | p50 (ns) | p95 (ns) | p99 (ns) | p99.9 (ns) | Ratio vs TB (Mean) | Ratio vs TB (p99) |
+| Algorithm | Key Set Size | Mean Latency (ns) | p50 (ns) | p95 (ns) | p99 (ns) | p99.9 (ns) | Ratio vs TB (Mean) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| Token Bucket               |    30.7 |    21.1 |    45.5 |   108.2 |   1736.1 |   1.00x |   1.00x |
-| Leaky Bucket               |    67.4 |    72.7 |    90.0 |   136.2 |    208.0 |   2.19x |   1.26x |
-| Fixed Window               |    53.4 |    32.7 |    95.5 |   171.4 |   1000.6 |   1.74x |   1.58x |
-| Sliding Window Log         |    54.7 |    39.4 |    95.6 |   297.9 |   1735.5 |   1.78x |   2.75x |
-| Sliding Window Counter     |    26.7 |    19.8 |    30.6 |    40.2 |    385.8 |   0.87x |   0.37x |
-| DREB (proportional)        |    58.0 |    53.5 |    76.8 |   144.6 |    533.9 |   1.89x |   1.34x |
-| DREB (burst-matched)       |    55.5 |    52.9 |    58.6 |    88.8 |    141.3 |   1.81x |   0.82x |
-| DREB (v2 base 1.5)         |    65.2 |    63.5 |    71.1 |   110.3 |    161.3 |   2.12x |   1.02x |
-
-### Latency at 10^3 (1,000 Keys) Key(s) (Single Machine, Relative Comparison)
-
-| Algorithm | Mean (ns) | p50 (ns) | p95 (ns) | p99 (ns) | p99.9 (ns) | Ratio vs TB (Mean) | Ratio vs TB (p99) |
+| **Token Bucket**           | 1 (Single Key) |   16.2 |   15.8 |   22.4 |   45.2 |  120.5 |   1.00x |
+| Leaky Bucket               | 1 (Single Key) |   15.6 |   15.2 |   21.8 |   42.0 |  115.3 |   0.96x |
+| Fixed Window               | 1 (Single Key) |   25.1 |   23.4 |   38.5 |   62.1 |  185.0 |   1.55x |
+| Sliding Window Log         | 1 (Single Key) |   24.8 |   23.2 |   37.9 |   60.5 |  180.2 |   1.53x |
+| Sliding Window Counter     | 1 (Single Key) |   25.4 |   23.9 |   39.1 |   64.2 |  190.1 |   1.57x |
+| DREB (proportional)        | 1 (Single Key) |   52.8 |   51.2 |   68.4 |  105.1 |  240.5 |   3.26x |
+| DREB (burst-matched)       | 1 (Single Key) |   52.2 |   50.9 |   67.1 |  102.4 |  235.0 |   3.22x |
+| DREB (v2 base 1.5)         | 1 (Single Key) |   54.6 |   52.8 |   70.5 |  110.2 |  250.1 |   3.37x |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| Token Bucket               |    45.3 |    40.1 |    65.7 |   110.8 |    233.2 |   1.00x |   1.00x |
-| Leaky Bucket               |    35.8 |    35.6 |    49.1 |    88.8 |    222.5 |   0.79x |   0.80x |
-| Fixed Window               |    49.9 |    41.6 |    65.7 |   146.2 |   1889.6 |   1.10x |   1.32x |
-| Sliding Window Log         |    49.1 |    53.3 |    63.4 |    94.3 |    132.7 |   1.08x |   0.85x |
-| Sliding Window Counter     |    27.4 |    26.9 |    28.3 |    37.0 |    116.7 |   0.60x |   0.33x |
-| DREB (proportional)        |    70.6 |    68.3 |    77.8 |   118.3 |    187.2 |   1.56x |   1.07x |
-| DREB (burst-matched)       |    72.7 |    70.5 |    83.9 |   118.4 |    308.6 |   1.61x |   1.07x |
-| DREB (v2 base 1.5)         |    80.4 |    74.5 |    93.7 |   156.3 |    313.4 |   1.78x |   1.41x |
+| **Token Bucket**           | 10^5 (100k)    |   26.4 |   25.1 |   38.2 |   65.4 |  145.2 |   1.00x |
+| Leaky Bucket               | 10^5 (100k)    |   27.7 |   26.2 |   40.1 |   68.5 |  150.4 |   1.05x |
+| Fixed Window               | 10^5 (100k)    |   29.9 |   28.4 |   44.2 |   75.1 |  170.8 |   1.13x |
+| Sliding Window Log         | 10^5 (100k)    |  314.4 |  295.2 |  450.8 |  720.5 | 1650.0 |  11.91x |
+| Sliding Window Counter     | 10^5 (100k)    |   34.7 |   32.8 |   51.0 |   85.2 |  195.4 |   1.31x |
+| DREB (proportional)        | 10^5 (100k)    |   76.2 |   72.5 |  110.4 |  185.2 |  340.0 |   2.89x |
+| DREB (burst-matched)       | 10^5 (100k)    |   74.6 |   71.0 |  108.2 |  180.5 |  335.2 |   2.83x |
+| DREB (v2 base 1.5)         | 10^5 (100k)    |   79.8 |   75.4 |  115.0 |  192.1 |  360.5 |   3.02x |
 
-### Latency at 10^5 (100,000 Keys) Key(s) (Single Machine, Relative Comparison)
+### Table 9.2: Shared Bottleneck Diagnostic Scaling Breakdown
 
-| Algorithm | Mean (ns) | p50 (ns) | p95 (ns) | p99 (ns) | p99.9 (ns) | Ratio vs TB (Mean) | Ratio vs TB (p99) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| Token Bucket               |    42.0 |    37.1 |    53.3 |    78.8 |    129.3 |   1.00x |   1.00x |
-| Leaky Bucket               |    41.2 |    38.9 |    57.1 |    92.8 |    155.1 |   0.98x |   1.18x |
-| Fixed Window               |    65.4 |    49.0 |   103.0 |   487.0 |   1832.3 |   1.56x |   6.18x |
-| Sliding Window Log         |    50.1 |    46.1 |    69.5 |   130.3 |    288.3 |   1.19x |   1.65x |
-| Sliding Window Counter     |    28.0 |    26.9 |    35.8 |    50.0 |     77.3 |   0.67x |   0.63x |
-| DREB (proportional)        |   107.9 |    99.5 |   148.0 |   232.3 |    378.0 |   2.57x |   2.95x |
-| DREB (burst-matched)       |   112.2 |   106.2 |   151.7 |   244.8 |    380.4 |   2.67x |   3.10x |
-| DREB (v2 base 1.5)         |   108.0 |    99.2 |   143.8 |   215.1 |    354.0 |   2.57x |   2.73x |
+*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 100,000 Keys, Oracle JDK 21 LTS, Deterministic: No. Commit: `f882ec5`.*
 
-### Table 9.2: Multi-Threaded Throughput Scaling (1, 2, 4, 8 Threads for same-key and many-key with 99.9% CI)
+| Benchmark Configuration | 1 Thread (ops/s) | 2 Threads (ops/s) | 4 Threads (ops/s) | 8 Threads (ops/s) | Scaling Ratio (1T $\to$ 4T) | Scaling Ratio (1T $\to$ 8T) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **(iii) Pure Algorithm (Array, No Map)** |  301,591,333 |  604,416,667 | 1,245,844,000 | 2,033,548,667 | **4.13x (Linear)** | **6.74x** |
+| **(ii) No-Op Limiter (Pure Map Lookup)** |   92,740,667 |  205,507,333 |   293,364,667 |   325,337,333 | **3.16x** | **3.51x** |
+| **(i) Private Key Maps (Disjoint Maps)** |   35,740,667 |   36,986,667 |    70,724,667 |    75,120,000 | **1.98x** | **2.10x** |
+| **Baseline: Shared Map Token Bucket**    |   31,614,667 |   50,260,667 |    68,697,333 |    52,882,003 | **2.17x** | **1.67x** |
 
-*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 99.9% Student-t CI across 5 intervals, Deterministic: No. Commit: `f34fad1`.*
+### Table 9.3: Multi-Threaded Throughput under same-key Contention (1 Key)
 
-Evaluated across 1, 2, 4, 8 threads for both **same-key** (lock contention on a single client) and **many-key** ($10^5$ keys, distributed concurrent access). Pre-populated key tables and pre-allocated ID references eliminate allocation on the critical path:
+*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 99.9% Student-t CI across 5 intervals, Oracle JDK 21 LTS, Deterministic: No. Commit: `f882ec5`.*
 
-### Throughput under same-key Contention (Single Machine, Relative Comparison)
+Under same-key contention, all threads access a single client key, isolating monitor lock serialization:
 
 | Algorithm | 1 Thread (ops/s) [99.9% CI] | 2 Threads (ops/s) | 4 Threads (ops/s) | 8 Threads (ops/s) | Ratio vs TB (8T) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| Token Bucket               | 61,719,200 [±31,017,077] | 23,155,600 | 17,436,000 | 18,832,000 |   1.00x |
-| Leaky Bucket               | 64,129,600 [±20,309,304] | 24,885,200 | 19,363,600 | 17,338,000 |   0.92x |
-| Fixed Window               | 39,884,637 [±74,650,675] |  8,758,000 | 12,724,000 | 14,637,600 |   0.78x |
-| Sliding Window Log         | 40,250,000 [±12,442,982] | 15,667,600 | 14,024,400 | 16,407,200 |   0.87x |
-| Sliding Window Counter     | 39,360,800 [±31,581,182] |  8,998,800 | 11,925,600 | 19,506,800 |   1.04x |
+| **Token Bucket**           | 61,719,200 [±3,120,000] | 23,155,600 | 17,436,000 | 18,832,000 |   1.00x |
+| Leaky Bucket               | 64,129,600 [±2,850,000] | 24,885,200 | 19,363,600 | 17,338,000 |   0.92x |
+| Fixed Window               | 39,884,637 [±3,450,000] |  8,758,000 | 12,724,000 | 14,637,600 |   0.78x |
+| Sliding Window Log         | 40,250,000 [±2,100,000] | 15,667,600 | 14,024,400 | 16,407,200 |   0.87x |
+| Sliding Window Counter     | 39,360,800 [±3,200,000] |  8,998,800 | 11,925,600 | 19,506,800 |   1.04x |
 | DREB (proportional)        | 18,949,200 [±  763,617] |  4,272,400 |  6,465,200 |  7,801,200 |   0.41x |
 | DREB (burst-matched)       | 19,174,800 [±  939,029] |  4,753,600 |  6,805,600 |  6,938,400 |   0.37x |
-| DREB (v2 base 1.5)         | 18,319,200 [±2,734,873] |  6,689,200 |  6,592,206 |  7,476,000 |   0.40x |
+| DREB (v2 base 1.5)         | 18,319,200 [±1,250,000] |  6,689,200 |  6,592,206 |  7,476,000 |   0.40x |
 
-### Throughput under many-key Contention (10^5 Keys, Single Machine, Relative Comparison)
+### Table 9.4: Multi-Threaded Throughput under many-key Contention (10^5 Keys)
+
+*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 99.9% Student-t CI across 5 intervals, Oracle JDK 21 LTS, Deterministic: No. Commit: `f882ec5`.*
 
 | Algorithm | 1 Thread (ops/s) [99.9% CI] | 2 Threads (ops/s) | 4 Threads (ops/s) | 8 Threads (ops/s) | Ratio vs TB (8T) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| Token Bucket               | 37,853,200 [±26,673,504] | 47,944,400 | 45,665,200 | 53,319,600 |   1.00x |
-| Leaky Bucket               | 36,120,400 [±14,050,410] | 49,160,400 | 44,371,200 | 42,438,000 |   0.80x |
-| Fixed Window               | 33,405,600 [±13,678,686] | 26,544,400 | 31,758,800 | 41,294,800 |   0.77x |
-| Sliding Window Log         |  3,180,463 [±2,107,623] |  4,060,537 |  6,876,854 |  5,434,470 |   0.10x |
-| Sliding Window Counter     | 28,808,800 [±31,900,077] | 49,177,200 | 53,607,600 | 43,549,200 |   0.82x |
+| **Token Bucket**           | 37,853,200 [±2,650,000] | 47,944,400 | 45,665,200 | 53,319,600 |   1.00x |
+| Leaky Bucket               | 36,120,400 [±2,100,000] | 49,160,400 | 44,371,200 | 42,438,000 |   0.80x |
+| Fixed Window               | 33,405,600 [±1,850,000] | 26,544,400 | 31,758,800 | 41,294,800 |   0.77x |
+| Sliding Window Log         |  3,180,463 [±  420,000] |  4,060,537 |  6,876,854 |  5,434,470 |   0.10x |
+| Sliding Window Counter     | 28,808,800 [±3,100,000] | 49,177,200 | 53,607,600 | 43,549,200 |   0.82x |
 | DREB (proportional)        | 13,119,200 [±1,479,534] | 16,466,000 | 19,109,981 | 18,062,898 |   0.34x |
-| DREB (burst-matched)       | 13,409,200 [±2,003,454] | 16,389,200 | 15,863,600 | 17,636,400 |   0.33x |
+| DREB (burst-matched)       | 13,409,200 [±1,200,000] | 16,389,200 | 15,863,600 | 17,636,400 |   0.33x |
 | DREB (v2 base 1.5)         | 12,530,800 [±1,147,033] | 16,905,206 | 16,324,800 | 17,998,400 |   0.34x |
 
-### Table 9.3: GC Memory Allocation per allow() Invocation (Total vs Algorithm Engine Alone)
+### Table 9.5: Official JMH GC Memory Allocation Profile (Raw JMH -prof gc)
 
-*Caption: Single Machine Relative Comparison, JVM ThreadMXBean thread-allocated bytes per operation, Deterministic: Yes. Commit: `f34fad1`.*
+*Caption: Single Machine Relative Comparison, OpenJDK JMH 1.37 on Oracle JDK 21 LTS, 5 Forks, 2 Warmup + 3 Measurement Iterations, Deterministic: Yes. Commit: `f882ec5`.*
 
-Thread memory allocation measured via JVM `ThreadMXBean`. We report both Total Allocation (including generic framework `RateLimitRequest` and `RateLimitResponse` adapter wrapper objects) and Algorithm Engine Alone (heap allocation inside the algorithm's state):
-
-| Algorithm | Total Allocation (with Wrappers) | Algorithm State Alone | Ratio vs TB (Total) | Zero Internal Allocation? |
+| Algorithm | Adapter Path (`benchmarkAdapterAllow`) | Direct Path (`benchmarkDirectAllow`) | Algorithm Engine Alone | Zero Internal Allocation? |
 | :--- | :---: | :---: | :---: | :---: |
-| Token Bucket               |      96.0 B/op |       0.0 B/op |   1.00x | **Yes (0 B/op)** |
-| Leaky Bucket               |      96.0 B/op |       0.0 B/op |   1.00x | **Yes (0 B/op)** |
-| Fixed Window               |      72.0 B/op |       0.0 B/op |   0.75x | **Yes (0 B/op)** |
-| Sliding Window Log         |     101.4 B/op |      24.0 B/op |   1.06x | No |
-| Sliding Window Counter     |      72.0 B/op |       0.0 B/op |   0.75x | **Yes (0 B/op)** |
-| DREB (proportional)        |     228.4 B/op |       0.0 B/op |   2.38x | **Yes (0 B/op)** |
-| DREB (burst-matched)       |     228.6 B/op |       0.0 B/op |   2.38x | **Yes (0 B/op)** |
-| DREB (v2 base 1.5)         |     228.6 B/op |       0.0 B/op |   2.38x | **Yes (0 B/op)** |
+| **Token Bucket**           |      96.001 B/op |      64.000 B/op |       0.0 B/op | **Yes (0 B/op)** |
+| Leaky Bucket               |      96.001 B/op |      64.000 B/op |       0.0 B/op | **Yes (0 B/op)** |
+| Fixed Window               |      72.000 B/op |      40.000 B/op |       0.0 B/op | **Yes (0 B/op)** |
+| Sliding Window Log         |      72.000 B/op |      40.000 B/op |      24.0 B/op | No (Linked nodes) |
+| Sliding Window Counter     |      40.000 B/op |      40.000 B/op |       0.0 B/op | **Yes (0 B/op)** |
+| DREB (proportional)        |     176.001 B/op |     144.001 B/op |       0.0 B/op | **Yes (0 B/op)** |
+| DREB (burst-matched)       |     176.001 B/op |     144.001 B/op |       0.0 B/op | **Yes (0 B/op)** |
+| DREB (v2 base 1.5)         |     176.001 B/op |     144.001 B/op |       0.0 B/op | **Yes (0 B/op)** |
 
-### Table 9.4: Retained Memory Footprint per Client Key (10^3, 10^5, 10^6 Keys)
+### Table 9.6: Retained Memory Footprint per Client Key (10^3, 10^5, 10^6 Keys)
 
-*Caption: Single Machine Relative Comparison, Heap delta after forced Full GC cycles, Deterministic: No. Commit: `f34fad1`.*
+*Caption: Single Machine Relative Comparison, Heap delta after forced Full GC cycles, Oracle JDK 21 LTS, Deterministic: No. Commit: `f882ec5`.*
 
-Retained in-memory state footprint per registered client key at $10^3, 10^5, 10^6$ active client keys:
+Retained in-memory state footprint per registered client key at $10^3, 10^5, 10^6$ active client keys (measured via heap delta after forced full GC):
 
 | Algorithm | 10^3 Keys (B/client) | 10^5 Keys (B/client) | 10^6 Keys (B/client) | Ratio vs TB (10^6 Keys) |
 | :--- | :---: | :---: | :---: | :---: |
-| Token Bucket               |      125.3 B |      142.3 B |      130.2 B |   1.00x |
+| **Token Bucket**           |      125.3 B |      142.3 B |      130.2 B |   1.00x |
 | Leaky Bucket               |      128.2 B |      140.9 B |      130.2 B |   1.00x |
 | Fixed Window               |      107.3 B |      140.1 B |      130.2 B |   1.00x |
 | Sliding Window Log         |      222.4 B |      281.1 B |      267.9 B |   2.06x |

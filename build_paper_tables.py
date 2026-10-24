@@ -1,7 +1,7 @@
 import csv
 import re
 
-COMMIT_HASH = "f34fad1"
+COMMIT_HASH = "f882ec5"
 
 def main():
     doc = []
@@ -352,31 +352,45 @@ def get_jmh_section():
     with open('results/perf/README.md') as f:
         perf_content = f.read()
 
-    out.append("### Table 9.1: Batched Latency Distribution per allow() Call across Key Scales (Nanoseconds)\n\n")
-    out.append(f"*Caption: Single Machine Relative Comparison, Apple M3 (8 Cores), OpenJDK 26.0.2 release 21, N=1000 Batch Mean Samples, Deterministic: No. Commit: `{COMMIT_HASH}`.*\n\n")
+    out.append("### Table 9.1: Reconciled Latency Distribution across Key Scales (Nanoseconds)\n\n")
+    out.append(f"*Caption: Single Machine Relative Comparison, Apple M3 (8 Cores), Oracle JDK 21 LTS, N=1000 Batch Mean Samples, Deterministic: No. Commit: `{COMMIT_HASH}`.*\n\n")
 
-    sec1_match = re.search(r'## 1\. Latency Distribution per allow\(\) Call.*?\n\n(.*?)(?=\n---|\n## 2\.)', perf_content, re.DOTALL)
+    sec1_match = re.search(r'### Table 1\.1: Latency Distribution.*?\n\n(.*?)(?=\n---|\n## 2\.)', perf_content, re.DOTALL)
     if sec1_match:
         out.append(sec1_match.group(1).strip() + "\n\n")
 
-    out.append("### Table 9.2: Multi-Threaded Throughput Scaling (1, 2, 4, 8 Threads for same-key and many-key with 99.9% CI)\n\n")
-    out.append(f"*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 99.9% Student-t CI across 5 intervals, Deterministic: No. Commit: `{COMMIT_HASH}`.*\n\n")
+    out.append("### Table 9.2: Shared Bottleneck Diagnostic Scaling Breakdown\n\n")
+    out.append(f"*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 100,000 Keys, Oracle JDK 21 LTS, Deterministic: No. Commit: `{COMMIT_HASH}`.*\n\n")
 
-    sec2_match = re.search(r'## 2\. Multi-Threaded Throughput.*?\n\n(.*?)(?=\n### Architectural Scaling|\n---)', perf_content, re.DOTALL)
-    if sec2_match:
-        out.append(sec2_match.group(1).strip() + "\n\n")
+    sec21_match = re.search(r'### Table 2\.1: Shared Bottleneck Diagnostic Scaling Breakdown.*?\n\n(.*?)(?=\n### Findings|\n---)', perf_content, re.DOTALL)
+    if sec21_match:
+        out.append(sec21_match.group(1).strip() + "\n\n")
 
-    out.append("### Table 9.3: GC Memory Allocation per allow() Invocation (Total vs Algorithm Engine Alone)\n\n")
-    out.append(f"*Caption: Single Machine Relative Comparison, JVM ThreadMXBean thread-allocated bytes per operation, Deterministic: Yes. Commit: `{COMMIT_HASH}`.*\n\n")
+    out.append("### Table 9.3: Multi-Threaded Throughput under same-key Contention (1 Key)\n\n")
+    out.append(f"*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 99.9% Student-t CI across 5 intervals, Oracle JDK 21 LTS, Deterministic: No. Commit: `{COMMIT_HASH}`.*\n\n")
 
-    sec3_match = re.search(r'## 3\. GC Memory Allocation per allow\(\) Invocation\n\n(.*?)(?=\n---|\n## 4\.)', perf_content, re.DOTALL)
+    sec22_match = re.search(r'### Table 2\.2: Multi-Threaded Throughput under same-key Contention.*?\n\n(.*?)(?=\n---|\n### Table 2\.3)', perf_content, re.DOTALL)
+    if sec22_match:
+        out.append(sec22_match.group(1).strip() + "\n\n")
+
+    out.append("### Table 9.4: Multi-Threaded Throughput under many-key Contention (10^5 Keys)\n\n")
+    out.append(f"*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 99.9% Student-t CI across 5 intervals, Oracle JDK 21 LTS, Deterministic: No. Commit: `{COMMIT_HASH}`.*\n\n")
+
+    sec23_match = re.search(r'### Table 2\.3: Multi-Threaded Throughput under many-key Contention.*?\n\n(.*?)(?=\n> \[!NOTE\]|\n---)', perf_content, re.DOTALL)
+    if sec23_match:
+        out.append(sec23_match.group(1).strip() + "\n\n")
+
+    out.append("### Table 9.5: Official JMH GC Memory Allocation Profile (Raw JMH -prof gc)\n\n")
+    out.append(f"*Caption: Single Machine Relative Comparison, OpenJDK JMH 1.37 on Oracle JDK 21 LTS, 5 Forks, 2 Warmup + 3 Measurement Iterations, Deterministic: Yes. Commit: `{COMMIT_HASH}`.*\n\n")
+
+    sec3_match = re.search(r'### Table 3\.1: GC Memory Allocation Profile.*?\n\n(.*?)(?=\n### Reconciliation|\n---)', perf_content, re.DOTALL)
     if sec3_match:
         out.append(sec3_match.group(1).strip() + "\n\n")
 
-    out.append("### Table 9.4: Retained Memory Footprint per Client Key (10^3, 10^5, 10^6 Keys)\n\n")
-    out.append(f"*Caption: Single Machine Relative Comparison, Heap delta after forced Full GC cycles, Deterministic: No. Commit: `{COMMIT_HASH}`.*\n\n")
+    out.append("### Table 9.6: Retained Memory Footprint per Client Key (10^3, 10^5, 10^6 Keys)\n\n")
+    out.append(f"*Caption: Single Machine Relative Comparison, Heap delta after forced Full GC cycles, Oracle JDK 21 LTS, Deterministic: No. Commit: `{COMMIT_HASH}`.*\n\n")
 
-    sec4_match = re.search(r'## 4\. Memory Footprint per Client Key.*?\n\n(.*?)(?=\n---|\n## 5\.)', perf_content, re.DOTALL)
+    sec4_match = re.search(r'## 4\. Retained Memory Footprint per Client Key.*?\n\n(.*?)(?=\n### Reconciliation|\Z)', perf_content, re.DOTALL)
     if sec4_match:
         out.append(sec4_match.group(1).strip() + "\n\n")
 

@@ -4,33 +4,75 @@ This document records the exact system hardware, JVM runtime, operating system, 
 
 **Label Note:** *All benchmark figures and tables reflect single machine, relative comparison conditions.*
 
-## System Hardware & CPU Architecture
+---
 
-- **Operating System:** Mac OS X 26.5.2 (macOS Sequoia) aarch64
-- **CPU Model:** Apple M3
-- **Processor Topology:** 8 Physical Cores — 4 Performance Cores (P-cores @ 4.05 GHz) + 4 Efficiency Cores (E-cores @ 2.75 GHz)
-- **Cache Hierarchy:**
-  - P-cores: 128 KB L1 instruction cache + 64 KB L1 data cache per core, 16 MB shared L2 cache
-  - E-cores: 128 KB L1 instruction cache + 64 KB L1 data cache per core, 4 MB shared L2 cache
-- **Physical Memory (RAM):** 8192 MB Unified Memory (LPDDR5)
-- **Hardware Timebase Resolution:** 24 MHz ARM generic timer (`CNTVCT_EL0`), yielding fixed ~41.67 ns clock tick period
-- **Benchmark Timestamp:** 2026-10-23T23:06:13.552276Z
+## 1. Raw `java -version` Outputs
 
-## Java Runtime & Compiler Specification
+### Primary Runtime & Benchmark Execution JDK (JDK 21 LTS)
+```
+java version "21.0.9" 2025-10-21 LTS
+Java(TM) SE Runtime Environment (build 21.0.9+7-LTS-338)
+Java HotSpot(TM) 64-Bit Server VM (build 21.0.9+7-LTS-338, mixed mode, sharing)
+```
 
-- **Java Version:** OpenJDK 26.0.2 (build 26.0.2+0)
-- **JVM Vendor:** Homebrew OpenJDK 64-Bit Server VM
-- **JVM Runtime Path:** `/opt/homebrew/Cellar/openjdk/26.0.2/libexec/openjdk.jdk/Contents/Home`
-- **Bytecode Compilation Level:** `--release 21` (Java 21 LTS bytecode compatibility)
-- **Compiler Options:** `-parameters -g`
-- **JVM Runtime Flags:** `-Xmx2048m -XX:+UseG1GC`
-- **Host Power State:** AC power, high performance profile
+### System Compiler & Secondary JDK (OpenJDK 26.0.2)
+```
+openjdk version "26.0.2" 2026-07-21
+OpenJDK Runtime Environment Homebrew (build 26.0.2)
+OpenJDK 64-Bit Server VM Homebrew (build 26.0.2, mixed mode, sharing)
+```
 
-## Codebase & Library Metadata
+> **JVM Runtime Specification Note:**
+> The primary compilation target for bytecode across the entire repository is `--release 21` (Java 21 LTS compatibility).
+> Headline JMH microbenchmarks and diagnostic throughput scaling benchmarks are executed on the official Oracle JDK 21 LTS runtime (`/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home`).
+> System Maven build runs under OpenJDK 26.0.2 (`/opt/homebrew/Cellar/openjdk/26.0.2/libexec/openjdk.jdk/Contents/Home`).
 
-- **DREB Comparator Git Commit:** `5772c1a`
-- **dreb-ratelimiter Pinned Library Tag:** `v1.0.2-phase1`
+---
 
-## Timer Resolution & Batched Latency Note
+## 2. Raw `sysctl` Hardware Architecture Output
 
-On Apple Silicon, `System.nanoTime()` reads the 24 MHz ARM architecture counter, producing raw readings that step in discrete 41.67 ns multiples. Single-call microbenchmarks thus suffer from quantization noise. To eliminate this discretization artifact, latency is evaluated using batched sampling ($N = 1000$ consecutive operations per sample window), providing sub-nanosecond per-operation precision and continuous percentile distributions.
+Command: `sysctl hw.perflevel0 hw.perflevel1 hw.cachelinesize hw.l1icachesize hw.l1dcachesize hw.l2cachesize`
+
+```
+hw.perflevel0.physicalcpu: 4
+hw.perflevel0.physicalcpu_max: 4
+hw.perflevel0.logicalcpu: 4
+hw.perflevel0.logicalcpu_max: 4
+hw.perflevel0.l1icachesize: 196608
+hw.perflevel0.l1dcachesize: 131072
+hw.perflevel0.l2cachesize: 16777216
+hw.perflevel0.cpusperl2: 4
+hw.perflevel0.name: Performance
+hw.perflevel1.physicalcpu: 4
+hw.perflevel1.physicalcpu_max: 4
+hw.perflevel1.logicalcpu: 4
+hw.perflevel1.logicalcpu_max: 4
+hw.perflevel1.l1icachesize: 131072
+hw.perflevel1.l1dcachesize: 65536
+hw.perflevel1.l2cachesize: 4194304
+hw.perflevel1.cpusperl2: 4
+hw.perflevel1.name: Efficiency
+hw.cachelinesize: 128
+hw.l1icachesize: 131072
+hw.l1dcachesize: 65536
+hw.l2cachesize: 4194304
+```
+
+---
+
+## 3. Raw `pmset -g therm` Thermal State Output
+
+Command: `pmset -g therm`
+
+```
+Note: No thermal warning level has been recorded
+Note: No performance warning level has been recorded
+Note: No CPU power status has been recorded
+```
+
+---
+
+## 4. Hardware Timebase Resolution Note
+
+On Apple Silicon (ARM64), `System.nanoTime()` reads the virtual counter register `CNTVCT_EL0` running at a fixed 24 MHz frequency ($1 / 24\,\text{MHz} \approx 41.67\,\text{ns}$). Single-call microbenchmarks without batching record discrete integer multiples of 41.67 ns ($41.7\,\text{ns}, 83.3\,\text{ns}, 125.0\,\text{ns}$).
+To eliminate timer quantization noise and obtain continuous percentile distributions, latency is evaluated using batched sampling ($N = 1000$ calls per timing window).
