@@ -5,14 +5,21 @@
 ### Hypothesis H9a
 > **Statement:** *at each abuser overload k in {1.1, 1.25, 1.5, 2, 4}, DREB burst-matched is not dominated by any static policy from the families below (dominated = another policy has abuser admitted rate / R <= and bursty-legit FRR <=, with at least one strictly lower, judged by paired 95% CIs).*
 
-#### Evaluation per Overload $k$:
+#### Evaluation per Overload $k$ (Baseline Grid & Legit Sensitivity, Abuser Burst = 0.95C):
 - **k = 1.10:** **SUPPORTED** — DREB is not dominated by any of the 84 static policies.
 - **k = 1.25:** **SUPPORTED** — DREB is not dominated by any of the 84 static policies.
 - **k = 1.50:** **SUPPORTED** — DREB is not dominated by any of the 84 static policies.
 - **k = 2.00:** **CONTRADICTED** — DREB is strictly dominated by at least one static policy (e.g. DualBucket with large B).
 - **k = 4.00:** **CONTRADICTED** — DREB is strictly dominated by at least one static policy (e.g. DualBucket with large B).
 
-#### Verdict:
+> [!IMPORTANT]
+> **Sensitivity to Abuser Burst Size (With vs. Without `if (sc.isAbuserSensitivity()) continue;`):**
+> - **WITH filter (Abuser Burst = 0.95C only):** Non-dominated holds at $k \in \{1.10, 1.25, 1.50\}$. DREB is dominated only at $k \in \{2.00, 4.00\}$.
+> - **WITHOUT filter (Evaluating Across All Abuser Burst Sizes $\in \{0.30C, 0.50C, 0.70C, 0.95C, 1.20C\}$):** DREB is **DOMINATED at ALL $k \in \{1.10, 1.25, 1.50, 2.00, 4.00\}$**.
+> - **Which verdicts change?** $k = 1.10, 1.25, 1.50$ change from **Non-Dominated (Supported)** to **Dominated (Contradicted)**.
+> - **Mechanism:** When the abuser sends smaller bursts ($0.30C$ or $0.50C$) spaced closely together, abuser admission reaches $\approx 1.04R$ regardless of burst bucket capacity. Under these small abuser bursts, static `DualBucket(B=1.00C, P=4.00R)` admits the identical rate while providing lower bursty-legit FRR ($2.05\%$ vs $2.18\%$ coldStart, paired diff $-0.13\text{ pp}$; $1.71\%$ vs $1.73\%$ preWarmed, paired diff $-0.02\text{ pp}$). Non-dominated status for $k \le 1.50$ strictly requires large abuser bursts ($\ge 0.70C$). See Section 6 below for the full sweep table.
+
+#### Overall H9a Verdict:
 **CONTRADICTED** (judged by paired 95% bootstrap CIs without tolerance margins).
 While H9a is **SUPPORTED** for moderate over-offered rates $k \in \{1.1, 1.25, 1.5\}$ (where no static policy matches DREB's trade-off), it is **CONTRADICTED** at high over-offered rates $k \in \{2.0, 4.0\}$. At $k \ge 2.0$, abuser admission saturates the sustained rate envelope ($1.040R$) regardless of burst bucket size; static policies like `DualBucket(B=1.00C, P=5R/3)` or `DualBucket(B=1.00C, P=4R)` achieve identical abuser admission with statistically significantly lower bursty-legit FRR ($1.43\%$ vs $2.18\%$, paired difference $+0.75\text{ pp}$ $[+0.52\text{ pp}, +0.99\text{ pp}]$).
 

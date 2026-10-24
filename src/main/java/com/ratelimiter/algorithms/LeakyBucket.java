@@ -56,6 +56,25 @@ public class LeakyBucket implements RateLimiter {
     }
 
     @Override
+    public boolean allowEngineAlone(String clientId, long timestampMs, int cost) {
+        ClientState state = states.computeIfAbsent(clientId, k -> new ClientState(bucketCapacity, timestampMs));
+        synchronized (state) {
+            long elapsed = timestampMs - state.lastCheckTimestamp;
+            if (elapsed > 0) {
+                double leaked = elapsed * refillRate / 1000.0;
+                state.allowance = Math.min(bucketCapacity, state.allowance + leaked);
+                state.lastCheckTimestamp = timestampMs;
+            }
+            if (state.allowance >= cost) {
+                state.allowance -= cost;
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    @Override
     public String name() {
         return "LeakyBucket";
     }

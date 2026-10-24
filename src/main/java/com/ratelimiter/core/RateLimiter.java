@@ -48,4 +48,18 @@ public interface RateLimiter {
     default void initializeState(String clientId, String initialState, double timestampSec) {
         // default no-op
     }
+
+    /**
+     * Primitive engine evaluation returning boolean without RateLimitRequest/Response wrapping.
+     * Default implementation delegates to allow(new RateLimitRequest(...)).isAllowed()
+     * but algorithm implementations override to execute pure zero-allocation math.
+     *
+     * @param clientId    client identifier
+     * @param timestampMs timestamp in milliseconds
+     * @param cost        token cost of request
+     * @return true if allowed, false if rejected
+     */
+    default boolean allowEngineAlone(String clientId, long timestampMs, int cost) {
+        return allow(new RateLimitRequest(clientId, timestampMs, cost)).isAllowed();
+    }
 }

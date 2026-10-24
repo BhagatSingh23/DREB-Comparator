@@ -9,21 +9,21 @@ import com.dreb.ratelimit.Clock;
  */
 public final class ThreadLocalClock implements Clock {
 
-    private final ThreadLocal<Double> currentTime = ThreadLocal.withInitial(() -> 0.0);
+    private final ThreadLocal<double[]> currentTime = ThreadLocal.withInitial(() -> new double[1]);
 
     public ThreadLocalClock() {
     }
 
     public ThreadLocalClock(double initialTime) {
-        currentTime.set(initialTime);
+        currentTime.get()[0] = initialTime;
     }
 
     public void set(double timestampSeconds) {
-        currentTime.set(timestampSeconds);
+        currentTime.get()[0] = timestampSeconds;
     }
 
     @Override
     public double now() {
-        return currentTime.get();
+        return currentTime.get()[0];
     }
 }

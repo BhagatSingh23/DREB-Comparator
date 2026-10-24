@@ -73,6 +73,12 @@ public final class CustomRateLimiterV2 implements RateLimiter {
     }
 
     @Override
+    public boolean allowEngineAlone(String clientId, long timestampMs, int cost) {
+        clock.set(timestampMs / 1000.0);
+        return dreb.allow(clientId, cost) == Decision.ALLOW;
+    }
+
+    @Override
     public String name() {
         if (params.strategy() == DrebParameters.Strategy.V2_ADAPTIVE_BASE_1_5) {
             return "Custom (v2-adaptive-base1.5)";

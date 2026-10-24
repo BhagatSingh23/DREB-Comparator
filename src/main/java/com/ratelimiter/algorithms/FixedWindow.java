@@ -57,6 +57,24 @@ public class FixedWindow implements RateLimiter {
     }
 
     @Override
+    public boolean allowEngineAlone(String clientId, long timestampMs, int cost) {
+        ClientState state = states.computeIfAbsent(clientId, k -> new ClientState());
+        synchronized (state) {
+            long currentWindow = (timestampMs / windowSizeMs) * windowSizeMs;
+            if (state.windowStart != currentWindow) {
+                state.windowStart = currentWindow;
+                state.count = 0;
+            }
+            if (state.count + cost <= maxRequests) {
+                state.count += cost;
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    @Override
     public String name() {
         return "FixedWindow";
     }

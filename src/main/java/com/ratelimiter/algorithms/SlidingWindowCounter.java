@@ -65,6 +65,31 @@ public class SlidingWindowCounter implements RateLimiter {
     }
 
     @Override
+    public boolean allowEngineAlone(String clientId, long timestampMs, int cost) {
+        ClientState state = states.computeIfAbsent(clientId, k -> new ClientState());
+        synchronized (state) {
+            long currentWindowKey = (timestampMs / windowSizeMs) * windowSizeMs;
+            if (state.currentWindowKey != currentWindowKey) {
+                if (currentWindowKey - state.currentWindowKey == windowSizeMs) {
+                    state.previousCount = state.currentCount;
+                } else {
+                    state.previousCount = 0;
+                }
+                state.currentWindowKey = currentWindowKey;
+                state.currentCount = 0;
+            }
+            double overlapFraction = 1.0 - ((double)(timestampMs - currentWindowKey) / windowSizeMs);
+            long estimatedCount = (long) (state.previousCount * overlapFraction) + state.currentCount;
+            if (estimatedCount + cost <= maxRequests) {
+                state.currentCount += cost;
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    @Override
     public String name() {
         return "SlidingWindowCounter";
     }

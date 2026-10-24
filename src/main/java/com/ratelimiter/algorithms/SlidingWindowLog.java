@@ -73,6 +73,28 @@ public class SlidingWindowLog implements RateLimiter {
     }
 
     @Override
+    public boolean allowEngineAlone(String clientId, long timestampMs, int cost) {
+        ClientState state = states.computeIfAbsent(clientId, k -> new ClientState());
+        synchronized (state) {
+            long windowStart = timestampMs - windowSizeMs;
+            while (!state.log.isEmpty() && state.log.peekFirst().timestamp <= windowStart) {
+                state.currentCount -= state.log.pollFirst().count;
+            }
+            if (state.currentCount + cost <= maxRequests) {
+                if (!state.log.isEmpty() && state.log.peekLast().timestamp == timestampMs) {
+                    state.log.peekLast().count += cost;
+                } else {
+                    state.log.addLast(new Entry(timestampMs, cost));
+                }
+                state.currentCount += cost;
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    @Override
     public String name() {
         return "SlidingWindowLog";
     }

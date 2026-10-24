@@ -162,6 +162,7 @@
                         <include>**/correctness/**/*Properties.java</include>
                         <include>**/edgecases/**Test.java</include>
                         <include>**/edgecases/**Tests.java</include>
+                        <include>**/experiments/**Test.java</include>
                     </includes>
                     <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
                 </configuration>

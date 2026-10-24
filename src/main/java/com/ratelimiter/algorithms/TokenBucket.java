@@ -56,6 +56,25 @@ public class TokenBucket implements RateLimiter {
     }
 
     @Override
+    public boolean allowEngineAlone(String clientId, long timestampMs, int cost) {
+        ClientState state = states.computeIfAbsent(clientId, k -> new ClientState(bucketCapacity, timestampMs));
+        synchronized (state) {
+            long elapsed = timestampMs - state.lastRefillTimestamp;
+            if (elapsed > 0) {
+                double tokensToAdd = elapsed * refillRate / 1000.0;
+                state.tokens = Math.min(bucketCapacity, state.tokens + tokensToAdd);
+                state.lastRefillTimestamp = timestampMs;
+            }
+            if (state.tokens + 1e-9 >= cost) {
+                state.tokens -= cost;
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    @Override
     public String name() {
         return "TokenBucket";
     }

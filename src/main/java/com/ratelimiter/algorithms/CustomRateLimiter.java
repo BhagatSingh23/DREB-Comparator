@@ -124,6 +124,12 @@ public final class CustomRateLimiter implements RateLimiter {
     }
 
     @Override
+    public boolean allowEngineAlone(String clientId, long timestampMs, int cost) {
+        clock.set(timestampMs / 1000.0);
+        return dreb.allow(clientId, cost) == Decision.ALLOW;
+    }
+
+    @Override
     public String name() {
         if (BURST_CEILING_MATCHED.equals(mappingStrategy)) {
             return "Custom (burst-matched)";

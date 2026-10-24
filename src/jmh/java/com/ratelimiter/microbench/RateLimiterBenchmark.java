@@ -95,4 +95,15 @@ public class RateLimiterBenchmark {
         bh.consume(response);
         return response;
     }
+
+    /**
+     * Pure engine path: returns primitive boolean with no RateLimitRequest,
+     * no RateLimitResponse, and no peekState snapshot.
+     */
+    @Benchmark
+    public boolean benchmarkEngineAlone(ThreadState ts, Blackhole bh) {
+        boolean allowed = limiter.allowEngineAlone("bench-client", ts.counter++, 1);
+        bh.consume(allowed);
+        return allowed;
+    }
 }

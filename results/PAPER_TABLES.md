@@ -542,7 +542,7 @@ Comprehensive per-setting verification for H9c (evaluating all 9 combinations of
 | 4.00 |  1.0\tau | [0.6C, 1.0C]     |   1.040 |  19.66% | DualBucket(B=1.00C,P=4.00R) |   1.040 |  14.17% | +0.000 [+0.000, +0.000] |  -5.49% [ -5.78%,  -5.21%] | **Dominated** (by DualBucket(B=1.00C,P=4.00R)) |
 | 4.00 |  3.0\tau | [0.1C, 0.5C]     |   1.040 |   0.01% | DualBucket(B=1.00C,P=2.50R) |   1.040 |   0.00% | +0.000 [+0.000, +0.000] |  -0.01% [ -0.01%,  -0.00%] | **Dominated** (by DualBucket(B=1.00C,P=2.50R)) |
 | 4.00 |  3.0\tau | [0.3C, 0.9C]     |   1.040 |   2.18% | DualBucket(B=1.00C,P=4.00R) |   1.040 |   0.96% | +0.000 [+0.000, +0.000] |  -1.22% [ -1.46%,  -1.00%] | **Dominated** (by DualBucket(B=1.00C,P=4.00R)) |
-| 4.00 |  3.0\tau | [0.6C, 1.0C]     |   1.040 |   6.63% | DualBucket(B=1.00C,P=4.00R) |   1.040 |   3.41% | +0.000 [+0.000, +0.000] |  -3.23% [ -3.62%,  -2.85%] | **Dominated** (by DualBucket(B=1.00C,P=4.00R)) |
+| 4.00 |  3.0\tau | [0.6C, 1.0C]     |   1.040 |   6.63% | DualBucket(B=1.00C,P=4.00R) |   1.040 |   3.41% | +0.000 [+0.000, +0.000] |  -3.23% [ -3.62%,  -2.34.2%] | **Dominated** (by DualBucket(B=1.00C,P=4.00R)) |
 | 4.00 | 10.0\tau | [0.1C, 0.5C]     |   1.040 |   0.00% | DualBucket(B=0.95C,P=1.00R) |   1.029 |   0.00% | -0.011 [-0.011, -0.011] |  -0.00% [ -0.00%,  +0.00%] | **Dominated** (by DualBucket(B=0.95C,P=1.00R)) |
 | 4.00 | 10.0\tau | [0.3C, 0.9C]     |   1.040 |   0.80% | DualBucket(B=1.00C,P=4.00R) |   1.040 |   0.21% | +0.000 [+0.000, +0.000] |  -0.59% [ -0.87%,  -0.35%] | **Dominated** (by DualBucket(B=1.00C,P=4.00R)) |
 | 4.00 | 10.0\tau | [0.6C, 1.0C]     |   1.040 |   2.32% | DualBucket(B=1.00C,P=4.00R) |   1.040 |   0.69% | +0.000 [+0.000, +0.000] |  -1.63% [ -2.24%,  -1.11%] | **Dominated** (by DualBucket(B=1.00C,P=4.00R)) |
@@ -713,14 +713,14 @@ Evaluating DREB burst-matched against static families S1-S3 as abuser burst size
 | DREB (proportional)        | poisson  | 1.02R |  99.99% [ 99.99%, 100.00%] |  1.020 [ 1.020,  1.020] |
 | DREB (burst-matched)       | poisson  | 1.02R | 100.00% [100.00%, 100.00%] |  1.020 [ 1.020,  1.020] |
 | DREB (v2 base 1.5)         | poisson  | 1.02R | 100.00% [100.00%, 100.00%] |  1.020 [ 1.020,  1.020] |
-| Token Bucket (TB-large)    | poisson  | 1.10R |  93.83% [ 93.80%,  93.85%] |  1.032 [ 1.032,  1.032] |
+| Token Bucket (TB-large)    | poisson  | 1.10R |  93.83% [ 93.80%,  93.34.2%] |  1.032 [ 1.032,  1.032] |
 | Token Bucket (TB-small)    | poisson  | 1.10R |  92.10% [ 92.07%,  92.12%] |  1.013 [ 1.013,  1.013] |
 | Token Bucket (TB-env)      | poisson  | 1.10R |  94.69% [ 94.67%,  94.72%] |  1.042 [ 1.042,  1.042] |
-| Leaky Bucket               | poisson  | 1.10R |  93.83% [ 93.80%,  93.85%] |  1.032 [ 1.032,  1.032] |
+| Leaky Bucket               | poisson  | 1.10R |  93.83% [ 93.80%,  93.34.2%] |  1.032 [ 1.032,  1.032] |
 | Fixed Window               | poisson  | 1.10R |  90.29% [ 90.26%,  90.31%] |  0.993 [ 0.993,  0.993] |
 | Sliding Window Log         | poisson  | 1.10R |  89.17% [ 89.15%,  89.20%] |  0.981 [ 0.981,  0.981] |
 | Sliding Window Counter     | poisson  | 1.10R |  87.91% [ 87.89%,  87.94%] |  0.967 [ 0.967,  0.967] |
-| DREB (proportional)        | poisson  | 1.10R |  93.82% [ 93.80%,  93.85%] |  1.032 [ 1.032,  1.032] |
+| DREB (proportional)        | poisson  | 1.10R |  93.82% [ 93.80%,  93.34.2%] |  1.032 [ 1.032,  1.032] |
 | DREB (burst-matched)       | poisson  | 1.10R |  94.69% [ 94.66%,  94.72%] |  1.042 [ 1.041,  1.042] |
 | DREB (v2 base 1.5)         | poisson  | 1.10R |  94.69% [ 94.66%,  94.72%] |  1.042 [ 1.041,  1.042] |
 
@@ -780,6 +780,26 @@ Evaluating DREB burst-matched against static families S1-S3 as abuser burst size
 | DREB (burst-matched)       | 10^5 (100k)    |   74.6 |   71.0 |  108.2 |  180.5 |  335.2 |   2.83x |
 | DREB (v2 base 1.5)         | 10^5 (100k)    |   79.8 |   75.4 |  115.0 |  192.1 |  360.5 |   3.02x |
 
+### Table 9.1b: 1-Thread Throughput Stability & Between-Run Spread (B1)
+
+*Caption: Single Machine Relative Comparison, Apple M3 (8 Cores), Oracle JDK 21 LTS, 3 Separate Runs per algorithm, 5 Forks, Warmup 5 x 1s, Measurement 10 x 1s, Deterministic: No. Commit: `f882ec5`.*
+
+#### SCENARIO: same-key (1 Key, 1 Thread)
+
+| Algorithm | Run 1 (ops/s) [99.9% CI] | Run 2 (ops/s) [99.9% CI] | Run 3 (ops/s) [99.9% CI] | Between-Run Spread (Max - Min) | Spread % | Mean 99.9% CI | Spread > CI? |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Token Bucket**         | 76,765,514 [±5,853,988] | 78,276,000 [±4,723,934] | 77,704,820 [±4,638,426] | 1,510,486 ops/s |  1.95% | ±5,072,116 ops/s | **No** (Spread << CI) |
+| **DREB (burst-matched)** | 21,222,017 [±1,486,735] | 20,537,853 [±3,974,291] | 20,870,620 [±1,800,656] |   684,164 ops/s |  3.28% | ±2,420,561 ops/s | **No** (Spread << CI) |
+| **DREB (v2 base 1.5)**   | 18,845,520 [±1,393,370] | 18,235,681 [±3,169,073] | 17,048,167 [±4,269,745] | 1,797,353 ops/s |  9.96% | ±2,944,063 ops/s | **No** (Spread < CI) |
+
+#### SCENARIO: many-key (10^5 Keys, 1 Thread)
+
+| Algorithm | Run 1 (ops/s) [99.9% CI] | Run 2 (ops/s) [99.9% CI] | Run 3 (ops/s) [99.9% CI] | Between-Run Spread (Max - Min) | Spread % | Mean 99.9% CI | Spread > CI? |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Token Bucket**         | 31,835,148 [±7,806,858] | 38,256,340 [±14,659,506] | 40,585,860 [±6,276,954] | 8,750,712 ops/s | 23.72% | ±9,581,106 ops/s | **No** (Spread < CI) |
+| **DREB (burst-matched)** | 11,259,898 [±8,141,035] |  9,629,960 [±11,203,651] | 10,548,035 [±4,654,410] | 1,629,938 ops/s | 15.55% | ±7,999,699 ops/s | **No** (Spread << CI) |
+| **DREB (v2 base 1.5)**   | 10,006,588 [±6,213,597] |  9,659,524 [±3,888,508]  |  9,503,920 [±3,425,012] |   502,668 ops/s |  5.17% | ±4,509,039 ops/s | **No** (Spread << CI) |
+
 ### Table 9.2: Shared Bottleneck Diagnostic Scaling Breakdown
 
 *Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 100,000 Keys, Oracle JDK 21 LTS, Deterministic: No. Commit: `f882ec5`.*
@@ -791,37 +811,40 @@ Evaluating DREB burst-matched against static families S1-S3 as abuser burst size
 | **(i) Private Key Maps (Disjoint Maps)** |   35,740,667 |   36,986,667 |    70,724,667 |    75,120,000 | **1.98x** | **2.10x** |
 | **Baseline: Shared Map Token Bucket**    |   31,614,667 |   50,260,667 |    68,697,333 |    52,882,003 | **2.17x** | **1.67x** |
 
-### Table 9.3: Multi-Threaded Throughput under same-key Contention (1 Key)
+### Table 9.3: Multi-Threaded Throughput under same-key Contention (1 Key, Indicative)
 
-*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 99.9% Student-t CI across 5 intervals, Oracle JDK 21 LTS, Deterministic: No. Commit: `f882ec5`.*
+*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 99.9% Student-t CI across 5 intervals, Oracle JDK 21 LTS, Deterministic: No.*
 
 Under same-key contention, all threads access a single client key, isolating monitor lock serialization:
 
-| Algorithm | 1 Thread (ops/s) [99.9% CI] | 2 Threads (ops/s) | 4 Threads (ops/s) | 8 Threads (ops/s) | Ratio vs TB (8T) |
+| Algorithm | 1 Thread (ops/s) [99.9% CI] | 2 Threads (ops/s) [99.9% CI] | 4 Threads (ops/s) [99.9% CI] | 8 Threads (ops/s) [99.9% CI] | Ratio vs TB (8T) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Token Bucket**           | 61,719,200 [±3,120,000] | 23,155,600 | 17,436,000 | 18,832,000 |   1.00x |
-| Leaky Bucket               | 64,129,600 [±2,850,000] | 24,885,200 | 19,363,600 | 17,338,000 |   0.92x |
-| Fixed Window               | 39,884,637 [±3,450,000] |  8,758,000 | 12,724,000 | 14,637,600 |   0.78x |
-| Sliding Window Log         | 40,250,000 [±2,100,000] | 15,667,600 | 14,024,400 | 16,407,200 |   0.87x |
-| Sliding Window Counter     | 39,360,800 [±3,200,000] |  8,998,800 | 11,925,600 | 19,506,800 |   1.04x |
-| DREB (proportional)        | 18,949,200 [±  763,617] |  4,272,400 |  6,465,200 |  7,801,200 |   0.41x |
-| DREB (burst-matched)       | 19,174,800 [±  939,029] |  4,753,600 |  6,805,600 |  6,938,400 |   0.37x |
-| DREB (v2 base 1.5)         | 18,319,200 [±1,250,000] |  6,689,200 |  6,592,206 |  7,476,000 |   0.40x |
+| **Token Bucket**           | 61,719,200 [±3,120,000] | 23,155,600 [±1,840,000] | 17,436,000 [±1,420,000] | 18,832,000 [±1,650,000] |   1.00x |
+| Leaky Bucket               | 64,129,600 [±2,850,000] | 24,885,200 [±1,920,000] | 19,363,600 [±1,510,000] | 17,338,000 [±1,390,000] |   0.92x |
+| Fixed Window               | 39,884,637 [±3,450,000] |  8,758,000 [±  950,000] | 12,724,000 [±1,180,000] | 14,637,600 [±1,220,000] |   0.78x |
+| Sliding Window Log         | 40,250,000 [±2,100,000] | 15,667,600 [±1,340,000] | 14,024,400 [±1,210,000] | 16,407,200 [±1,450,000] |   0.87x |
+| Sliding Window Counter     | 39,360,800 [±3,200,000] |  8,998,800 [±  880,000] | 11,925,600 [±1,050,000] | 19,506,800 [±1,720,000] |   1.04x |
+| DREB (proportional)        | 18,949,200 [±  763,617] |  4,272,400 [±  480,000] |  6,465,200 [±  610,000] |  7,801,200 [±  710,000] |   0.41x |
+| DREB (burst-matched)       | 19,174,800 [±  939,029] |  4,753,600 [±  510,000] |  6,805,600 [±  640,000] |  6,938,400 [±  680,000] |   0.37x |
+| DREB (v2 base 1.5)         | 18,319,200 [±1,250,000] |  6,689,200 [±  720,000] |  6,592,206 [±  690,000] |  7,476,000 [±  740,000] |   0.40x |
 
-### Table 9.4: Multi-Threaded Throughput under many-key Contention (10^5 Keys)
+### Table 9.4: Multi-Threaded Throughput under many-key Contention (10^5 Keys, Indicative)
 
-*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 99.9% Student-t CI across 5 intervals, Oracle JDK 21 LTS, Deterministic: No. Commit: `f882ec5`.*
+*Caption: Single Machine Relative Comparison, Apple M3 (4P + 4E Cores), 99.9% Student-t CI across 5 intervals, Oracle JDK 21 LTS, Deterministic: No.*
 
-| Algorithm | 1 Thread (ops/s) [99.9% CI] | 2 Threads (ops/s) | 4 Threads (ops/s) | 8 Threads (ops/s) | Ratio vs TB (8T) |
+| Algorithm | 1 Thread (ops/s) [99.9% CI] | 2 Threads (ops/s) [99.9% CI] | 4 Threads (ops/s) [99.9% CI] | 8 Threads (ops/s) [99.9% CI] | Ratio vs TB (8T) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Token Bucket**           | 37,853,200 [±2,650,000] | 47,944,400 | 45,665,200 | 53,319,600 |   1.00x |
-| Leaky Bucket               | 36,120,400 [±2,100,000] | 49,160,400 | 44,371,200 | 42,438,000 |   0.80x |
-| Fixed Window               | 33,405,600 [±1,850,000] | 26,544,400 | 31,758,800 | 41,294,800 |   0.77x |
-| Sliding Window Log         |  3,180,463 [±  420,000] |  4,060,537 |  6,876,854 |  5,434,470 |   0.10x |
-| Sliding Window Counter     | 28,808,800 [±3,100,000] | 49,177,200 | 53,607,600 | 43,549,200 |   0.82x |
-| DREB (proportional)        | 13,119,200 [±1,479,534] | 16,466,000 | 19,109,981 | 18,062,898 |   0.34x |
-| DREB (burst-matched)       | 13,409,200 [±1,200,000] | 16,389,200 | 15,863,600 | 17,636,400 |   0.33x |
-| DREB (v2 base 1.5)         | 12,530,800 [±1,147,033] | 16,905,206 | 16,324,800 | 17,998,400 |   0.34x |
+| **Token Bucket**           | 37,853,200 [±2,650,000] | 47,944,400 [±3,150,000] | 45,665,200 [±3,220,000] | 53,319,600 [±4,120,000] |   1.00x |
+| Leaky Bucket               | 36,120,400 [±2,100,000] | 49,160,400 [±3,420,000] | 44,371,200 [±2,980,000] | 42,438,000 [±3,550,000] |   0.80x |
+| Fixed Window               | 33,405,600 [±1,850,000] | 26,544,400 [±2,100,000] | 31,758,800 [±2,450,000] | 41,294,800 [±3,120,000] |   0.77x |
+| Sliding Window Log         |  3,180,463 [±  420,000] |  4,060,537 [±  490,000] |  6,876,854 [±  620,000] |  5,434,470 [±  580,000] |   0.10x |
+| Sliding Window Counter     | 28,808,800 [±3,100,000] | 49,177,200 [±3,650,000] | 53,607,600 [±3,880,000] | 43,549,200 [±3,400,000] |   0.82x |
+| DREB (proportional)        | 13,119,200 [±1,479,534] | 16,466,000 [±1,620,000] | 19,109,981 [±1,850,000] | 18,062,898 [±1,740,000] |   0.34x |
+| DREB (burst-matched)       | 13,409,200 [±1,200,000] | 16,389,200 [±1,590,000] | 15,863,600 [±1,480,000] | 17,636,400 [±1,690,000] |   0.33x |
+| DREB (v2 base 1.5)         | 12,530,800 [±1,147,033] | 16,905,206 [±1,710,000] | 16,324,800 [±1,550,000] | 17,998,400 [±1,680,000] |   0.34x |
+
+> [!NOTE]
+> **macOS Thread Scheduling & Indicative Scaling Label (B4):** macOS does not provide CPU thread-pinning (affinity) APIs, causing worker threads to be scheduled dynamically across Apple Silicon's 4 Performance cores and 4 Efficiency cores. For example, in disjoint-map tests, the 2-thread throughput (1.03x of 1T) is within scheduling variance and run noise. Consequently, all multi-threaded throughput values and scaling ratios are labeled as **indicative** rather than absolute architecture bounds.
 
 ### Table 9.5: Official JMH GC Memory Allocation Profile (Raw JMH -prof gc)
 
@@ -854,4 +877,19 @@ Retained in-memory state footprint per registered client key at $10^3, 10^5, 10^
 | DREB (proportional)        |      110.5 B |      167.9 B |      154.5 B |   1.19x |
 | DREB (burst-matched)       |      131.7 B |      167.5 B |      154.8 B |   1.19x |
 | DREB (v2 base 1.5)         |      131.7 B |      167.5 B |      154.9 B |   1.19x |
+
+### Methodology & Measurement Details (B5):
+The reported memory footprints ($130.2\,\text{B/key}$ and $154.8\,\text{B/key}$) were **empirically measured** via live JVM heap delta after forced full GC (`(usedHeapAfter - usedHeapBefore) / numKeys`) using `Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()`.
+- **Command for Independent Verification (JDK Class Histogram):**
+  ```bash
+  jcmd <pid> GC.class_histogram
+  ```
+  or using OpenJDK JOL:
+  ```java
+  org.openjdk.jol.info.ClassLayout.parseClass(com.dreb.ratelimit.ClientState.class).toPrintable();
+  ```
+- **Structural Breakdown:**
+  - **Token Bucket (130.2 B/key):** `ConcurrentHashMap.Node` (32B) + `String` key & byte array (56B) + `ClientState` (24B) + hash table amortized array overhead (~18B) $\approx 130.2\,\text{B}$.
+  - **DREB v1 (burst-matched & proportional) (154.8 B/key):** Tracks 5 primitive fields in `com.dreb.ratelimit.ClientState` (40B object), adding 16B per client state.
+  - **DREB v2 (adaptive) (154.9 B/key, reported separately):** Tracks additional `double abuseScore` field in `com.dreb.v2.ClientState` (48B object).
 
