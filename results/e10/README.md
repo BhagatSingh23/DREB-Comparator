@@ -277,7 +277,7 @@ Across all 5 overload levels $k \in \{1.10, 1.25, 1.50, 2.00, 4.00\}$, DREB burs
 
 ### Warmup Exclusion Survival & First-Burst Attribution:
 1. **Does the E10 advantage survive the warmup exclusion?**
-   **No, the E10 advantage does not survive warmup exclusion in either initial state.** In `coldStart`, the 1-to-4 cell advantages per slice observed in full duration ($t \in [0, 60\,\text{s}]$) drop to exactly 0 cells under steady state ($t \ge 5\,\text{s}$). In `preWarmed`, all cells likewise become exact ties.
+   **No, the E10 advantage does not survive warmup exclusion in either initial state.** In `coldStart`, the 1-to-4 cell advantages per slice observed in full duration ($t \in [0, 30\,\text{s}]$) drop to exactly 0 cells under steady state ($t \ge 5\,\text{s}$). In `preWarmed`, all cells likewise become exact ties.
 2. **How much of the advantage is attributable to the first burst?**
    **100% of DREB's peak load advantage over non-worse static policies is attributable to the first burst ($t < 5\,\text{s}$)**.
 3. **Mechanistic Cause:**
