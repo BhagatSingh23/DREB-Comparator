@@ -72,6 +72,10 @@ results/e9/*
 !results/perf/**
 !results/e10/
 !results/e10/**
+!results/e11/
+!results/e11/**
+!results/e12/
+!results/e12/**
 !results/PAPER_TABLES.md
 
 *.patch

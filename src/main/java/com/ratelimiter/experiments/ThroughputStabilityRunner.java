@@ -57,6 +57,12 @@ public class ThroughputStabilityRunner {
             case "DREB (burst-matched)" -> new CustomRateLimiter(config, CustomRateLimiter.BURST_CEILING_MATCHED);
             case "DREB (v2 base 1.5)" -> new CustomRateLimiterV2(
                     DrebParameters.forV2Base15(config.getBucketCapacity(), config.getRefillRate()));
+            case "Static Dual Bucket (B=3C/7)", "DualBucket (B=3C/7)", "static_dual_bucket" -> new CustomRateLimiter("DualBucket (B=3C/7)",
+                    3.0 * config.getBucketCapacity() / 7.0,
+                    5.0 * config.getRefillRate() / 3.0,
+                    9.0 * config.getBucketCapacity() / 7.0,
+                    config.getRefillRate(),
+                    0.0, 0.0, 1.5);
             default -> throw new IllegalArgumentException("Unknown algorithm: " + algo);
         };
     }

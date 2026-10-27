@@ -33,7 +33,8 @@ public class UnifiedRateLimiterBenchmark {
             "sliding_window_counter",
             "dreb_proportional",
             "dreb_burst_matched",
-            "dreb_v2_base15"
+            "dreb_v2_base15",
+            "static_dual_bucket"
     })
     public String algorithm;
 
@@ -88,6 +89,12 @@ public class UnifiedRateLimiterBenchmark {
             case "dreb_burst_matched" -> new CustomRateLimiter(config, CustomRateLimiter.BURST_CEILING_MATCHED);
             case "dreb_v2_base15" -> new CustomRateLimiterV2(
                     DrebParameters.forV2Base15(config.getBucketCapacity(), config.getRefillRate()));
+            case "static_dual_bucket" -> new CustomRateLimiter("DualBucket (B=3C/7)",
+                    3.0 * config.getBucketCapacity() / 7.0,
+                    5.0 * config.getRefillRate() / 3.0,
+                    9.0 * config.getBucketCapacity() / 7.0,
+                    config.getRefillRate(),
+                    0.0, 0.0, 1.5);
             default -> throw new IllegalArgumentException("Unknown algorithm: " + algo);
         };
     }

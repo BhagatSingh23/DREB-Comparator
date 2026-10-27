@@ -10,7 +10,8 @@ ALGO_DISPLAY = {
     "sliding_window_counter": "Sliding Window Counter",
     "dreb_proportional": "DREB (proportional)",
     "dreb_burst_matched": "DREB (burst-matched)",
-    "dreb_v2_base15": "DREB (v2 base 1.5)"
+    "dreb_v2_base15": "DREB (v2 base 1.5)",
+    "static_dual_bucket": "DualBucket (B=3C/7)"
 }
 
 ALGO_ORDER = [
@@ -21,7 +22,8 @@ ALGO_ORDER = [
     "sliding_window_counter",
     "dreb_proportional",
     "dreb_burst_matched",
-    "dreb_v2_base15"
+    "dreb_v2_base15",
+    "static_dual_bucket"
 ]
 
 PATH_DISPLAY = {
@@ -60,7 +62,13 @@ def main():
         if not os.path.exists(p):
             print(f"File not found: {p}", file=sys.stderr)
             sys.exit(1)
-        runs.append(load_run(p))
+        res = load_run(p)
+        db_p = f"results/perf/raw_runs/jmh_static_db_run{r}.json"
+        if os.path.exists(db_p):
+            db_res = load_run(db_p)
+            for k, v in db_res.items():
+                res[k] = v
+        runs.append(res)
     
     print("### Table 2.2: 1-Thread Throughput across Measured Paths under same-key (1 Key, 3-Run Stabilized)\n")
     print("| Algorithm | Measured Path | Run 1 (ops/s) | Run 2 (ops/s) | Run 3 (ops/s) | Median (ops/s) | Range (ops/s) | ns / decision (1/thrpt) |")

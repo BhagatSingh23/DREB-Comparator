@@ -1,6 +1,6 @@
 # Comprehensive Paper Tables Reference (Single Source of Truth)
 
-> **Master Provenance Commit:** `416acf4`
+> **Master Provenance Release Tag:** `v1.0-eval`
 > **Repository:** `DREB-Comparator` | **Library Tag:** `dreb-ratelimiter v1.0.2-phase1`
 > **Reporting Standard:** Seeds 2000–2029 (N=30 replications), strict original hypothesis wording, no relaxed tolerance margins, Candidate minus Reference (`cur - ref`) bootstrap paired differences.
 
@@ -10,7 +10,7 @@
 
 ### Table 1.1: E1 Idle Progression (C=100, coldStart, Burst Ratio B/C = 1.0)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 100, Initial State: coldStart, Deterministic: Yes. Commit: `ff61547`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 100, Initial State: coldStart, Deterministic: Yes.*
 
 | Algorithm | Idle Duration D | Burst Requested | Admitted Tokens | Admitted / Offered % | Diff vs TB-small (Tokens) | Diff vs TB-large (Tokens) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -67,7 +67,7 @@
 
 ### Table 1.2: E1 Idle Progression (C=100, drainedFirst, Burst Ratio B/C = 1.0)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 100, Initial State: drainedFirst, Deterministic: Yes. Commit: `ff61547`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 100, Initial State: drainedFirst, Deterministic: Yes.*
 
 | Algorithm | Idle Duration D | Burst Requested | Admitted Tokens | Admitted / Offered % | Diff vs TB-small (Tokens) | Diff vs TB-large (Tokens) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -124,7 +124,7 @@
 
 ### Table 1.3: E1 Idle Progression (C=1000, coldStart, Burst Ratio B/C = 1.0)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes. Commit: `ff61547`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes.*
 
 | Algorithm | Idle Duration D | Burst Requested | Admitted Tokens | Admitted / Offered % | Diff vs TB-small (Tokens) | Diff vs TB-large (Tokens) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -181,7 +181,7 @@
 
 ### Table 1.4: E1 Idle Progression (C=1000, drainedFirst, Burst Ratio B/C = 1.0)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: drainedFirst, Deterministic: Yes. Commit: `ff61547`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: drainedFirst, Deterministic: Yes.*
 
 | Algorithm | Idle Duration D | Burst Requested | Admitted Tokens | Admitted / Offered % | Diff vs TB-small (Tokens) | Diff vs TB-large (Tokens) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -238,7 +238,7 @@
 
 ### Table 1.5: Instantaneous Burst Acceptance per Variant (C=1000, coldStart, Idle D = 1.0τ)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes. Commit: `ff61547`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes.*
 
 | Algorithm | B/C = 0.5 (500) | B/C = 0.8 (800) | B/C = 1.0 (1000) | B/C = 1.2 (1200) | B/C = 1.5 (1500) | B/C = 2.0 (2000) | B/C = 3.0 (3000) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -259,7 +259,7 @@
 
 ### Table 2.1: Standard Abuser Performance (k=1.5, f=0.3, C=1000, coldStart)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No (Stochastic Poisson and Exponential arrivals for legitimate traffic; deterministic periodic bursts for abusive traffic). Commit: `b26b033`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No (Stochastic Poisson and Exponential arrivals for legitimate traffic; deterministic periodic bursts for abusive traffic).*
 
 | Algorithm | Abuse Rej % | Diff vs TB-lg | Norm Rate / R | Diff vs TB-lg | Legit FRR % | Diff vs TB-lg | FRR Steady | Diff Steady | FRR Bursty | Diff Bursty | Total Admitted |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -278,7 +278,7 @@
 
 ### Table 2.2: Admitted Rate vs TB-large and Contract Enforcement across k (f=0.3, C=1000, coldStart)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes for abuser metrics. Commit: `b26b033`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes for abuser metrics.*
 
 | DREB Variant | k | Admitted Rate / R | TB-large Rate / R | Diff vs TB-large (95% CI) | Status vs Contract (1.0R) |
 | :--- | :---: | :---: | :---: | :---: | :--- |
@@ -309,7 +309,7 @@
 
 ### Table 3.1: Compliant-Bursty False Rejection Rate (Offered Rate ≈ 0.78R <= R, f=0.3, C=1000, coldStart)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes. Commit: `b26b033`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes.*
 
 | Algorithm | Actual Offered Rate / R | Admitted Rate / R | Compliant False Rejection % | Diff vs TB-lg (95% CI) | Status Under Contract |
 | :--- | :---: | :---: | :---: | :---: | :--- |
@@ -331,7 +331,7 @@
 
 ### Table 4.1: Full Ablation Summary across Capacities and Initial States (k=1.5, f=0.3)
 
-*Caption: Held-Out Test Seeds: 2000–2029 (N=30), Capacity C: 1000 & 50000, Initial State: coldStart & preWarmed, Deterministic: No. Commit: `5772c1a`.*
+*Caption: Held-Out Test Seeds: 2000–2029 (N=30), Capacity C: 1000 & 50000, Initial State: coldStart & preWarmed, Deterministic: No.*
 
 | Configuration | Capacity | Initial State | Abuse Rej % | Norm Rate / R | Diff vs TB-lg | Diff vs TB-env | Diff vs v1 BM | Legit FRR % | Diff vs TB-lg | Diff vs TB-env | Diff vs v1 BM |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -374,7 +374,7 @@
 
 ### Table 4.2: Generalization Across Overload k and Abusive Fraction f (C=1000, coldStart)
 
-*Caption: Held-Out Test Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No. Commit: `5772c1a`.*
+*Caption: Held-Out Test Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No.*
 
 | Slice | Configuration | Norm Rate / R | Diff Rate vs v1 | Overall Legit FRR % | Diff FRR vs v1 (95% CI) | Bursty-Legit FRR % | Diff Bursty vs v1 (95% CI) |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -409,7 +409,7 @@
 
 ### Table 5.1: Abuser State Variable Trace Metrics (k=1.5, burst=950, interval=0.633s, C=1000, R=1000, T=30.0s)
 
-*Caption: Seed: 2000 (N=1), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes. Commit: `b26b033`.*
+*Caption: Seed: 2000 (N=1), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes.*
 
 | Algorithm | Min sustained / S_max | Max abuse_score | Sustained Bucket Bindings | Burst Bucket Bindings | Total Admitted Tokens |
 | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -421,7 +421,7 @@
 
 ### Table 5.2: Bursty-Legit Client Summary & Per-Burst Trace (C=1000, R=1000, Seed 2000)
 
-*Caption: Seed: 2000 (N=1), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes for trace sequence. Commit: `b26b033`.*
+*Caption: Seed: 2000 (N=1), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes for trace sequence.*
 
 | Algorithm | Offered Cost | Admitted Cost | Rejected Cost | False Rejection % |
 | :--- | :---: | :---: | :---: | :---: |
@@ -435,7 +435,7 @@
 
 ### Table 6.1: Instantaneous Burst Acceptance after Idleness (Requests = 2C at t = D, C=1000)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart & preWarmed, Deterministic: Yes. Commit: `463b167`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart & preWarmed, Deterministic: Yes.*
 
 | Algorithm | Capacity C | Initial State | $D = 0$ | $D = 0.5\tau$ | $D = 1.0\tau$ | $D = 2.0\tau$ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -486,7 +486,7 @@
 
 ### Table 6.2: Pareto Trade-off Points across k (C=1000, f=0.3, coldStart)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No for legit FRR. Commit: `463b167`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No for legit FRR.*
 
 
 ---
@@ -495,7 +495,7 @@
 
 ### Table 7.1: Full 45-Setting Per-Setting Verification for H9c (9 Legit Models x 5 k Values, C=1000, coldStart)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No for bursty FRR. Commit: `5772c1a` (Regenerated at `7301a3b`).*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: No for bursty FRR.*
 
 Comprehensive per-setting verification for H9c (evaluating all 9 combinations of bursty-legit idle-time mean in {1tau, 3tau, 10tau} and burst size range in {[0.1C, 0.5C], [0.3C, 0.9C], [0.6C, 1.0C]} across every k in {1.1, 1.25, 1.5, 2.0, 4.0}):
 
@@ -549,7 +549,7 @@ Comprehensive per-setting verification for H9c (evaluating all 9 combinations of
 
 ### Table 7.2: Dominance Breakdown per k: coldStart vs preWarmed (C=1000, Abuser Burst = 0.95C)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart vs preWarmed, Deterministic: No for bursty FRR. Commit: `5772c1a` (Regenerated at `7301a3b`).*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart vs preWarmed, Deterministic: No for bursty FRR.*
 
 | Overload k | Initial State | DREB Admitted Rate / R | DREB Bursty FRR % | Dominating / Nearest Static Policy | Static Rate / R | Static Bursty FRR % | $\Delta$ Rate vs DREB [95% CI] | $\Delta$ Bursty FRR vs DREB [95% CI] | Verdict |
 | :---: | :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -654,7 +654,7 @@ The earlier statement claiming DREB was non-dominated for bursts $\ge 0.50C$ was
 
 ### Table 8.1: Experiment E5 Boundary Compliance (C=1000, Periodic & Poisson Arrivals across k in {0.90R, 0.98R, 1.00R, 1.02R, 1.10R})
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes for periodic, No for Poisson. Commit: `5772c1a`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: coldStart, Deterministic: Yes for periodic, No for Poisson.*
 
 | Algorithm | Arrival Process | Offered Rate k | Admitted / Offered % [95% CI] | Admitted Rate / R [95% CI] |
 | :--- | :---: | :---: | :---: | :---: |
@@ -763,7 +763,7 @@ The earlier statement claiming DREB was non-dominated for bursts $\ge 0.50C$ was
 
 ### Table 8.2: Experiment E6 Post-Idle Single-Request Admission Boundary Test (Pre-Warmed, C=1000)
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: preWarmed, Deterministic: Yes. Commit: `5772c1a`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Initial State: preWarmed, Deterministic: Yes.*
 
 | Limiter Implementation | Cost = 200 | Cost = 500 | Cost = 1000 (= C) | Cost = 1200 (> C) | C-Ceiling Enforced? |
 | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -773,7 +773,7 @@ The earlier statement claiming DREB was non-dominated for bursts $\ge 0.50C$ was
 
 ### Table 8.3: Experiment E6 Variable Cost Requests Admitted Cost and FRR by Cost Class
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Request Costs in (1, 5, 20, 60, 200), Initial State: coldStart, Deterministic: No. Commit: `5772c1a`.*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C: 1000, Request Costs in (1, 5, 20, 60, 200), Initial State: coldStart, Deterministic: No.*
 
 | Limiter Implementation | Admitted Cost / Offered Cost % | Largest Single Admitted Cost | Minimum Observed Balance |
 | :--- | :---: | :---: | :---: |
@@ -793,7 +793,7 @@ The earlier statement claiming DREB was non-dominated for bursts $\ge 0.50C$ was
 
 ### Table 9.1: 1-Thread Throughput across Measured Paths under same-key (1 Key, 3-Run Stabilized)
 
-*Caption: Single Machine Relative Comparison, Apple M3 (8 Cores), Oracle JDK 21 LTS, Official OpenJDK JMH 1.37, 3 Separate Independent Runs per algorithm, 5 Forks, Warmup 5 x 1s, Measurement 10 x 1s per fork. Reported: Median, Range across 3 runs, and Latency ($1/\text{Throughput}$). Monotonically advancing virtual timestamps ($1\,\text{ms/op}$) with Blackhole consumption across all three paths. Commit: `416acf4` (Regenerated).*
+*Caption: Single Machine Relative Comparison, Apple M3 (8 Cores), Oracle JDK 21 LTS, Official OpenJDK JMH 1.37, 3 Separate Independent Runs per algorithm, 5 Forks, Warmup 5 x 1s, Measurement 10 x 1s per fork. Reported: Median, Range across 3 runs, and Latency ($1/\text{Throughput}$). Monotonically advancing virtual timestamps ($1\,\text{ms/op}$) with Blackhole consumption across all three paths.*
 
 #### Measured Path Definitions (B1):
 - **Adapter Path (`benchmarkAdapter`):** Invokes the limiter through the generic `RateLimiter` interface. Each request allocates `new RateLimitRequest("bench-client", ts, 1)` (32 B) and returns `RateLimitResponse` (64 B). For DREB variants, `allow()` additionally calls `dreb.peekState(clientId)`, allocating an immutable `ClientState` snapshot (80 B).
@@ -826,12 +826,33 @@ The earlier statement claiming DREB was non-dominated for bursts $\ge 0.50C$ was
 | **DREB (v2 base 1.5)**     | Adapter      |   28,384,518 |   33,680,066 |   27,177,311 | **28,384,518** |   6,502,755 |  35.23 ns |
 | DREB (v2 base 1.5)         | Direct       |   27,339,804 |   25,316,993 |   28,727,830 | **27,339,804** |   3,410,837 |  36.58 ns |
 | DREB (v2 base 1.5)         | Engine-Alone |   49,894,682 |   48,479,058 |   41,939,874 | **48,479,058** |   7,954,808 |  20.63 ns |
+| **DualBucket (B=3C/7)**    | Adapter      |   18,359,110 |   19,346,816 |   13,070,926 | **18,359,110** |   6,275,891 |  54.47 ns |
+| DualBucket (B=3C/7)        | Direct       |   21,130,290 |   17,640,903 |   20,201,181 | **20,201,181** |   3,489,387 |  49.50 ns |
+| DualBucket (B=3C/7)        | Engine-Alone |   33,731,625 |   27,668,246 |   33,543,827 | **33,543,827** |   6,063,380 |  29.81 ns |
+
+#### Relative Performance: Static Dual Bucket vs DREB & Token Bucket
+- **Adapter Path:**
+  - vs DREB (burst-matched): $18.36\,\text{M ops/s}$ vs $30.43\,\text{M ops/s}$ ($0.60\times$ throughput, latency $54.47\,\text{ns}$ vs $32.86\,\text{ns}$, $+21.61\,\text{ns}$).
+  - vs Token Bucket: $18.36\,\text{M ops/s}$ vs $91.91\,\text{M ops/s}$ ($0.20\times$ throughput, latency $54.47\,\text{ns}$ vs $10.88\,\text{ns}$, $5.01\times$ higher latency).
+- **Engine-Alone Path:**
+  - vs DREB (burst-matched): $33.54\,\text{M ops/s}$ vs $47.00\,\text{M ops/s}$ ($0.71\times$ throughput, latency $29.81\,\text{ns}$ vs $21.28\,\text{ns}$, $+8.53\,\text{ns}$).
+  - vs Token Bucket: $33.54\,\text{M ops/s}$ vs $102.13\,\text{M ops/s}$ ($0.33\times$ throughput, latency $29.81\,\text{ns}$ vs $9.79\,\text{ns}$, $3.05\times$ higher latency).
+
+### Table 9.1c: Batched Sampling Latency Percentiles (N = 1000 per window, same-key)
+
+*Caption: Sub-nanosecond per-call latency distributions evaluated via batched sampling ($N = 1000$ consecutive operations per sample window, 2,000 batches = 2,000,000 total operations) on Apple M3 (Oracle JDK 21 LTS), eliminating the 24 MHz ARM architecture counter quantization (~41.7 ns).*
+
+| Algorithm | Mean Latency | p50 Latency | p95 Latency | p99 Latency |
+| :--- | :---: | :---: | :---: | :---: |
+| **Token Bucket**           | 31.62 ns | 21.54 ns |  46.63 ns |  95.13 ns |
+| **Sliding Window Counter** | 63.59 ns | 27.21 ns | 323.33 ns | 401.38 ns |
+| **DREB (burst-matched)**   | 107.71 ns | 86.46 ns | 189.79 ns | 495.67 ns |
 
 > **Note on Benchmark Scope:** In compliance with benchmark protocol, multi-threaded scaling and many-key scenarios with high cache eviction variance are excluded from master paper tables, retaining the stabilized 1-thread same-key benchmark dataset.
 
 ### Table 9.2: Official JMH GC Memory Allocation Profile (Raw JMH -prof gc)
 
-*Caption: Single Machine Relative Comparison, OpenJDK JMH 1.37 on Oracle JDK 21 LTS, 5 Forks, 2 Warmup + 3 Measurement Iterations, Deterministic: Yes. Commit: `c43fb0f`.*
+*Caption: Single Machine Relative Comparison, OpenJDK JMH 1.37 on Oracle JDK 21 LTS, 5 Forks, 2 Warmup + 3 Measurement Iterations, Deterministic: Yes.*
 
 | Algorithm | Adapter Path (`benchmarkAdapterAllow`) | Direct Path (`benchmarkDirectAllow`) | Algorithm Engine Alone | Zero Internal Allocation? |
 | :--- | :---: | :---: | :---: | :---: |
@@ -846,7 +867,7 @@ The earlier statement claiming DREB was non-dominated for bursts $\ge 0.50C$ was
 
 ### Table 9.3: Retained Memory Footprint per Client Key (10^3, 10^5, 10^6 Keys)
 
-*Caption: Single Machine Relative Comparison, Heap delta after forced Full GC cycles, Oracle JDK 21 LTS, Deterministic: No. Commit: `c43fb0f`.*
+*Caption: Single Machine Relative Comparison, Heap delta after forced Full GC cycles, Oracle JDK 21 LTS, Deterministic: No.*
 
 Retained in-memory state footprint per registered client key at $10^3, 10^5, 10^6$ active client keys (measured via heap delta after forced full GC):
 
@@ -872,9 +893,8 @@ The reported memory footprints ($130.2\,\text{B/key}$ and $154.8\,\text{B/key}$)
   org.openjdk.jol.info.ClassLayout.parseClass(com.dreb.ratelimit.ClientState.class).toPrintable();
   ```
 - **Structural Breakdown:**
-  - **Token Bucket (130.2 B/key):** `ConcurrentHashMap.Node` (32B) + `String` key & byte array (56B) + `ClientState` (24B) + hash table amortized array overhead (~18B) $\approx 130.2\,\text{B}$.
-  - **DREB v1 (burst-matched & proportional) (154.8 B/key):** Tracks 5 primitive fields in `com.dreb.ratelimit.ClientState` (40B object), adding 16B per client state.
-  - **DREB v2 (adaptive) (154.9 B/key, reported separately):** Tracks additional `double abuseScore` field in `com.dreb.v2.ClientState` (48B object).
+  - **Token Bucket (130.2 B/key):** `ConcurrentHashMap.Node` (32 B) + `String` key & byte array (56 B) + `ClientState` (32 B per JOL) + hash table amortized array overhead (~10 B) $\approx 130.2\,\text{B}$.
+  - **DREB v1 & v2 (154.8 B/key):** Both DREB v1 and v2 instantiate the exact same `com.dreb.ratelimit.ClientState` class (56 B total per JOL, containing 5 `double` fields: `burstTokens`, `sustainedTokens`, `idleCredit`, `abuseScore`, `lastRefillTs`), adding 24 B over Token Bucket. DREB v2's state is identical in memory footprint (+0.1 B/key is measurement variance).
 
 ---
 
@@ -1123,7 +1143,7 @@ The reported memory footprints ($130.2\,\text{B/key}$ and $154.8\,\text{B/key}$)
 
 ### Table 10.1b: Steady-State Summary Breakdown ($t \ge 5\,\text{s}$): Initial State $\times$ Abuser Burst $\times$ Window $W$
 
-*Caption: Count of overload $k \in \{1.10, 1.25, 1.50, 2.00, 4.00\}$ cells where DREB has strictly lower peak load, ties, strictly higher, or vacuous (no non-worse static candidate) in steady-state ($t \ge 5\,\text{s}$). Commit: `416acf4` (Regenerated).*
+*Caption: Count of overload $k \in \{1.10, 1.25, 1.50, 2.00, 4.00\}$ cells where DREB has strictly lower peak load, ties, strictly higher, or vacuous (no non-worse static candidate) in steady-state ($t \ge 5\,\text{s}$).*
 
 | Initial State | Abuser Burst | Window W | DREB Strictly Lower (k cells) | Ties (k cells) | DREB Strictly Higher (k cells) | Vacuous (No Static $\le$) |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -1162,7 +1182,7 @@ The reported memory footprints ($130.2\,\text{B/key}$ and $154.8\,\text{B/key}$)
 
 ### Table 10.2b: Steady-State Detailed ($t \ge 5\,\text{s}$) for coldStart at Bursts $\ge 0.70C$ Across Overload $k$
 
-*Caption: Seeds: 2000–2029 (N=30), Capacity C=1000, Initial State: coldStart, Windows evaluated starting at $t \ge 5\,\text{s}$. Commit: `416acf4` (Regenerated).*
+*Caption: Seeds: 2000–2029 (N=30), Capacity C=1000, Initial State: coldStart, Windows evaluated starting at $t \ge 5\,\text{s}$.*
 
 | Window W | Overload k | Burst Size | DREB Peak Load | Best Non-Worse Static Policy | Static Peak Load | Paired $\Delta$ Peak [95% CI] | Verdict |
 | :---: | :---: | :---: | :---: | :--- | :---: | :---: | :---: |
@@ -1216,7 +1236,7 @@ The reported memory footprints ($130.2\,\text{B/key}$ and $154.8\,\text{B/key}$)
 
 ### Table 10.3: First 5 Seconds vs Steady-State Peak Load Comparison (First Burst Attribution)
 
-*Caption: Comparison of DREB peak short-window load against the best non-worse static policy during initial transient ($t < 5\,\text{s}$) vs steady-state ($t \ge 5\,\text{s}$). Illustrates that 100% of DREB's peak load suppression advantage occurs during the first burst. Commit: `416acf4` (Regenerated).*
+*Caption: Comparison of DREB peak short-window load against the best non-worse static policy during initial transient ($t < 5\,\text{s}$) vs steady-state ($t \ge 5\,\text{s}$). Illustrates that 100% of DREB's peak load suppression advantage occurs during the first burst.*
 
 | InitState | Overload k | Burst Size | Window W | DREB First 5s | DREB Steady | DREB Drop | Static First 5s | Static Steady | Static Drop | Verdict (Steady) |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -1245,3 +1265,263 @@ The reported memory footprints ($130.2\,\text{B/key}$ and $154.8\,\text{B/key}$)
 | preWarmed | 4.00 | 0.95C | 0.05C/R | 0.950C | 0.238C | 0.712C | 0.850C | 0.238C | 0.612C | Tied |
 | preWarmed | 4.00 | 1.20C | 0.05C/R | 1.000C | 0.300C | 0.700C | 0.850C | 0.300C | 0.550C | Tied |
 
+---
+
+## 11. Experiment E11: Adaptive Credit-Farming Adversary Evaluation
+
+## 2. Table 11.1: Admitted Rate / R Across Adversaries and Algorithms
+
+| State | Adversary | Algorithm | Offered Rate / R | Admitted Rate / R | Total Admitted Tokens |
+| :--- | :--- | :--- | :---: | :---: | :---: |
+| coldStart | periodic         | Token Bucket (TB-large)      |      1.504R |      1.0058R |     120700.0 |
+| coldStart | periodic         | Token Bucket (TB-env)        |      1.504R |      1.0082R |     120986.0 |
+| coldStart | periodic         | DREB (burst-matched)         |      1.504R |      0.9419R |     113028.0 |
+| coldStart | periodic         | DREB (v2 base 1.5)           |      1.504R |      0.9356R |     112267.0 |
+| coldStart | periodic         | DualBucket (B=3C/7, P=5R/3)  |      1.504R |      0.6777R |      81320.0 |
+| coldStart | periodic         | DualBucket (B=0.85C, P=4.00R) |      1.504R |      1.0082R |     120985.0 |
+| coldStart | periodic         | DualBucket (B=1.00C, P=4.00R) |      1.504R |      1.0082R |     120985.0 |
+| coldStart | farmer_100       | Token Bucket (TB-large)      |      0.783R |      0.7833R |      94000.0 |
+| coldStart | farmer_100       | Token Bucket (TB-env)        |      0.783R |      0.7833R |      94000.0 |
+| coldStart | farmer_100       | DREB (burst-matched)         |      0.783R |      0.6900R |      82799.0 |
+| coldStart | farmer_100       | DREB (v2 base 1.5)           |      0.783R |      0.6696R |      80348.0 |
+| coldStart | farmer_100       | DualBucket (B=3C/7, P=5R/3)  |      0.783R |      0.3353R |      40232.0 |
+| coldStart | farmer_100       | DualBucket (B=0.85C, P=4.00R) |      0.783R |      0.6658R |      79900.0 |
+| coldStart | farmer_100       | DualBucket (B=1.00C, P=4.00R) |      0.783R |      0.7833R |      94000.0 |
+| coldStart | farmer_75        | Token Bucket (TB-large)      |      0.893R |      0.8927R |     107125.0 |
+| coldStart | farmer_75        | Token Bucket (TB-env)        |      0.893R |      0.8927R |     107125.0 |
+| coldStart | farmer_75        | DREB (burst-matched)         |      0.893R |      0.7712R |      92542.0 |
+| coldStart | farmer_75        | DREB (v2 base 1.5)           |      0.893R |      0.7557R |      90689.0 |
+| coldStart | farmer_75        | DualBucket (B=3C/7, P=5R/3)  |      0.893R |      0.4458R |      53500.0 |
+| coldStart | farmer_75        | DualBucket (B=0.85C, P=4.00R) |      0.893R |      0.8854R |     106250.0 |
+| coldStart | farmer_75        | DualBucket (B=1.00C, P=4.00R) |      0.893R |      0.8927R |     107125.0 |
+| coldStart | farmer_50        | Token Bucket (TB-large)      |      1.113R |      1.0048R |     120571.0 |
+| coldStart | farmer_50        | Token Bucket (TB-env)        |      1.113R |      1.0071R |     120857.0 |
+| coldStart | farmer_50        | DREB (burst-matched)         |      1.113R |      0.9336R |     112027.0 |
+| coldStart | farmer_50        | DREB (v2 base 1.5)           |      1.113R |      0.9270R |     111244.0 |
+| coldStart | farmer_50        | DualBucket (B=3C/7, P=5R/3)  |      1.113R |      0.6670R |      80036.0 |
+| coldStart | farmer_50        | DualBucket (B=0.85C, P=4.00R) |      1.113R |      1.0071R |     120856.0 |
+| coldStart | farmer_50        | DualBucket (B=1.00C, P=4.00R) |      1.113R |      1.0071R |     120856.0 |
+| coldStart | alternator       | Token Bucket (TB-large)      |      1.295R |      0.7984R |      95813.3 |
+| coldStart | alternator       | Token Bucket (TB-env)        |      1.295R |      0.8127R |      97529.3 |
+| coldStart | alternator       | DREB (burst-matched)         |      1.295R |      0.8127R |      97523.3 |
+| coldStart | alternator       | DREB (v2 base 1.5)           |      1.295R |      0.8053R |      96635.3 |
+| coldStart | alternator       | DualBucket (B=3C/7, P=5R/3)  |      1.295R |      0.7206R |      86470.7 |
+| coldStart | alternator       | DualBucket (B=0.85C, P=4.00R) |      1.295R |      0.8127R |      97523.3 |
+| coldStart | alternator       | DualBucket (B=1.00C, P=4.00R) |      1.295R |      0.8127R |      97523.3 |
+| coldStart | jittered         | Token Bucket (TB-large)      |      1.507R |      1.0057R |     120689.9 |
+| coldStart | jittered         | Token Bucket (TB-env)        |      1.507R |      1.0081R |     120975.9 |
+| coldStart | jittered         | DREB (burst-matched)         |      1.507R |      0.9425R |     113105.9 |
+| coldStart | jittered         | DREB (v2 base 1.5)           |      1.507R |      0.9351R |     112212.3 |
+| coldStart | jittered         | DualBucket (B=3C/7, P=5R/3)  |      1.507R |      0.6787R |      81448.4 |
+| coldStart | jittered         | DualBucket (B=0.85C, P=4.00R) |      1.507R |      1.0080R |     120964.7 |
+| coldStart | jittered         | DualBucket (B=1.00C, P=4.00R) |      1.507R |      1.0081R |     120974.9 |
+| preWarmed | periodic         | Token Bucket (TB-large)      |      1.504R |      1.0058R |     120700.0 |
+| preWarmed | periodic         | Token Bucket (TB-env)        |      1.504R |      1.0082R |     120986.0 |
+| preWarmed | periodic         | DREB (burst-matched)         |      1.504R |      0.9467R |     113599.0 |
+| preWarmed | periodic         | DREB (v2 base 1.5)           |      1.504R |      0.9401R |     112813.0 |
+| preWarmed | periodic         | DualBucket (B=3C/7, P=5R/3)  |      1.504R |      0.6777R |      81320.0 |
+| preWarmed | periodic         | DualBucket (B=0.85C, P=4.00R) |      1.504R |      1.0082R |     120985.0 |
+| preWarmed | periodic         | DualBucket (B=1.00C, P=4.00R) |      1.504R |      1.0082R |     120985.0 |
+| preWarmed | farmer_100       | Token Bucket (TB-large)      |      0.783R |      0.7833R |      94000.0 |
+| preWarmed | farmer_100       | Token Bucket (TB-env)        |      0.783R |      0.7833R |      94000.0 |
+| preWarmed | farmer_100       | DREB (burst-matched)         |      0.783R |      0.6948R |      83371.0 |
+| preWarmed | farmer_100       | DREB (v2 base 1.5)           |      0.783R |      0.6740R |      80875.0 |
+| preWarmed | farmer_100       | DualBucket (B=3C/7, P=5R/3)  |      0.783R |      0.3353R |      40232.0 |
+| preWarmed | farmer_100       | DualBucket (B=0.85C, P=4.00R) |      0.783R |      0.6658R |      79900.0 |
+| preWarmed | farmer_100       | DualBucket (B=1.00C, P=4.00R) |      0.783R |      0.7833R |      94000.0 |
+| preWarmed | farmer_75        | Token Bucket (TB-large)      |      0.893R |      0.8927R |     107125.0 |
+| preWarmed | farmer_75        | Token Bucket (TB-env)        |      0.893R |      0.8927R |     107125.0 |
+| preWarmed | farmer_75        | DREB (burst-matched)         |      0.893R |      0.7760R |      93114.0 |
+| preWarmed | farmer_75        | DREB (v2 base 1.5)           |      0.893R |      0.7604R |      91252.0 |
+| preWarmed | farmer_75        | DualBucket (B=3C/7, P=5R/3)  |      0.893R |      0.4458R |      53500.0 |
+| preWarmed | farmer_75        | DualBucket (B=0.85C, P=4.00R) |      0.893R |      0.8854R |     106250.0 |
+| preWarmed | farmer_75        | DualBucket (B=1.00C, P=4.00R) |      0.893R |      0.8927R |     107125.0 |
+| preWarmed | farmer_50        | Token Bucket (TB-large)      |      1.113R |      1.0048R |     120571.0 |
+| preWarmed | farmer_50        | Token Bucket (TB-env)        |      1.113R |      1.0071R |     120857.0 |
+| preWarmed | farmer_50        | DREB (burst-matched)         |      1.113R |      0.9383R |     112599.0 |
+| preWarmed | farmer_50        | DREB (v2 base 1.5)           |      1.113R |      0.9317R |     111803.0 |
+| preWarmed | farmer_50        | DualBucket (B=3C/7, P=5R/3)  |      1.113R |      0.6670R |      80036.0 |
+| preWarmed | farmer_50        | DualBucket (B=0.85C, P=4.00R) |      1.113R |      1.0071R |     120856.0 |
+| preWarmed | farmer_50        | DualBucket (B=1.00C, P=4.00R) |      1.113R |      1.0071R |     120856.0 |
+| preWarmed | alternator       | Token Bucket (TB-large)      |      1.295R |      0.7984R |      95813.3 |
+| preWarmed | alternator       | Token Bucket (TB-env)        |      1.295R |      0.8127R |      97529.3 |
+| preWarmed | alternator       | DREB (burst-matched)         |      1.295R |      0.8127R |      97523.3 |
+| preWarmed | alternator       | DREB (v2 base 1.5)           |      1.295R |      0.8053R |      96635.3 |
+| preWarmed | alternator       | DualBucket (B=3C/7, P=5R/3)  |      1.295R |      0.7206R |      86470.7 |
+| preWarmed | alternator       | DualBucket (B=0.85C, P=4.00R) |      1.295R |      0.8127R |      97523.3 |
+| preWarmed | alternator       | DualBucket (B=1.00C, P=4.00R) |      1.295R |      0.8127R |      97523.3 |
+| preWarmed | jittered         | Token Bucket (TB-large)      |      1.507R |      1.0057R |     120689.9 |
+| preWarmed | jittered         | Token Bucket (TB-env)        |      1.507R |      1.0081R |     120975.9 |
+| preWarmed | jittered         | DREB (burst-matched)         |      1.507R |      0.9473R |     113677.8 |
+| preWarmed | jittered         | DREB (v2 base 1.5)           |      1.507R |      0.9397R |     112760.3 |
+| preWarmed | jittered         | DualBucket (B=3C/7, P=5R/3)  |      1.507R |      0.6787R |      81448.4 |
+| preWarmed | jittered         | DualBucket (B=0.85C, P=4.00R) |      1.507R |      1.0080R |     120964.7 |
+| preWarmed | jittered         | DualBucket (B=1.00C, P=4.00R) |      1.507R |      1.0081R |     120974.9 |
+
+---
+
+## 3. Table 11.2: Peak Short-Window Admitted Cost (W in {0.05, 0.10, 0.25} C/R)
+
+| State | Adversary | Algorithm | Peak (W=0.05s) | Peak (W=0.10s) | Peak (W=0.25s) |
+| :--- | :--- | :--- | :---: | :---: | :---: |
+| coldStart | periodic         | Token Bucket (TB-large)      |      0.950C |      0.950C |      0.950C |
+| coldStart | periodic         | Token Bucket (TB-env)        |      0.950C |      0.950C |      0.950C |
+| coldStart | periodic         | DREB (burst-matched)         |      0.597C |      0.597C |      0.597C |
+| coldStart | periodic         | DREB (v2 base 1.5)           |      0.593C |      0.593C |      0.593C |
+| coldStart | periodic         | DualBucket (B=3C/7, P=5R/3)  |      0.428C |      0.428C |      0.428C |
+| coldStart | periodic         | DualBucket (B=0.85C, P=4.00R) |      0.850C |      0.850C |      0.850C |
+| coldStart | periodic         | DualBucket (B=1.00C, P=4.00R) |      0.950C |      0.950C |      0.950C |
+| coldStart | farmer_100       | Token Bucket (TB-large)      |      1.000C |      1.000C |      1.000C |
+| coldStart | farmer_100       | Token Bucket (TB-env)        |      1.000C |      1.000C |      1.000C |
+| coldStart | farmer_100       | DREB (burst-matched)         |      0.886C |      0.886C |      0.886C |
+| coldStart | farmer_100       | DREB (v2 base 1.5)           |      0.860C |      0.860C |      0.860C |
+| coldStart | farmer_100       | DualBucket (B=3C/7, P=5R/3)  |      0.428C |      0.428C |      0.428C |
+| coldStart | farmer_100       | DualBucket (B=0.85C, P=4.00R) |      0.850C |      0.850C |      0.850C |
+| coldStart | farmer_100       | DualBucket (B=1.00C, P=4.00R) |      1.000C |      1.000C |      1.000C |
+| coldStart | farmer_75        | Token Bucket (TB-large)      |      0.857C |      0.857C |      0.857C |
+| coldStart | farmer_75        | Token Bucket (TB-env)        |      0.857C |      0.857C |      0.857C |
+| coldStart | farmer_75        | DREB (burst-matched)         |      0.744C |      0.744C |      0.744C |
+| coldStart | farmer_75        | DREB (v2 base 1.5)           |      0.729C |      0.729C |      0.729C |
+| coldStart | farmer_75        | DualBucket (B=3C/7, P=5R/3)  |      0.428C |      0.428C |      0.428C |
+| coldStart | farmer_75        | DualBucket (B=0.85C, P=4.00R) |      0.850C |      0.850C |      0.850C |
+| coldStart | farmer_75        | DualBucket (B=1.00C, P=4.00R) |      0.857C |      0.857C |      0.857C |
+| coldStart | farmer_50        | Token Bucket (TB-large)      |      0.714C |      0.714C |      0.714C |
+| coldStart | farmer_50        | Token Bucket (TB-env)        |      0.714C |      0.714C |      0.714C |
+| coldStart | farmer_50        | DREB (burst-matched)         |      0.601C |      0.601C |      0.601C |
+| coldStart | farmer_50        | DREB (v2 base 1.5)           |      0.596C |      0.596C |      0.596C |
+| coldStart | farmer_50        | DualBucket (B=3C/7, P=5R/3)  |      0.428C |      0.428C |      0.428C |
+| coldStart | farmer_50        | DualBucket (B=0.85C, P=4.00R) |      0.714C |      0.714C |      0.714C |
+| coldStart | farmer_50        | DualBucket (B=1.00C, P=4.00R) |      0.714C |      0.714C |      0.714C |
+| coldStart | alternator       | Token Bucket (TB-large)      |      0.980C |      1.008C |      1.087C |
+| coldStart | alternator       | Token Bucket (TB-env)        |      0.980C |      1.008C |      1.087C |
+| coldStart | alternator       | DREB (burst-matched)         |      0.980C |      1.008C |      1.087C |
+| coldStart | alternator       | DREB (v2 base 1.5)           |      0.980C |      1.008C |      1.087C |
+| coldStart | alternator       | DualBucket (B=3C/7, P=5R/3)  |      0.461C |      0.488C |      0.571C |
+| coldStart | alternator       | DualBucket (B=0.85C, P=4.00R) |      0.880C |      0.908C |      0.987C |
+| coldStart | alternator       | DualBucket (B=1.00C, P=4.00R) |      0.980C |      1.008C |      1.087C |
+| coldStart | jittered         | Token Bucket (TB-large)      |      0.950C |      0.950C |      0.950C |
+| coldStart | jittered         | Token Bucket (TB-env)        |      0.950C |      0.950C |      0.950C |
+| coldStart | jittered         | DREB (burst-matched)         |      0.739C |      0.739C |      0.739C |
+| coldStart | jittered         | DREB (v2 base 1.5)           |      0.730C |      0.730C |      0.730C |
+| coldStart | jittered         | DualBucket (B=3C/7, P=5R/3)  |      0.428C |      0.428C |      0.428C |
+| coldStart | jittered         | DualBucket (B=0.85C, P=4.00R) |      0.850C |      0.850C |      0.850C |
+| coldStart | jittered         | DualBucket (B=1.00C, P=4.00R) |      0.950C |      0.950C |      0.950C |
+| preWarmed | periodic         | Token Bucket (TB-large)      |      0.950C |      0.950C |      0.950C |
+| preWarmed | periodic         | Token Bucket (TB-env)        |      0.950C |      0.950C |      0.950C |
+| preWarmed | periodic         | DREB (burst-matched)         |      0.950C |      0.950C |      0.950C |
+| preWarmed | periodic         | DREB (v2 base 1.5)           |      0.950C |      0.950C |      0.950C |
+| preWarmed | periodic         | DualBucket (B=3C/7, P=5R/3)  |      0.428C |      0.428C |      0.428C |
+| preWarmed | periodic         | DualBucket (B=0.85C, P=4.00R) |      0.850C |      0.850C |      0.850C |
+| preWarmed | periodic         | DualBucket (B=1.00C, P=4.00R) |      0.950C |      0.950C |      0.950C |
+| preWarmed | farmer_100       | Token Bucket (TB-large)      |      1.000C |      1.000C |      1.000C |
+| preWarmed | farmer_100       | Token Bucket (TB-env)        |      1.000C |      1.000C |      1.000C |
+| preWarmed | farmer_100       | DREB (burst-matched)         |      1.000C |      1.000C |      1.000C |
+| preWarmed | farmer_100       | DREB (v2 base 1.5)           |      0.955C |      0.955C |      0.955C |
+| preWarmed | farmer_100       | DualBucket (B=3C/7, P=5R/3)  |      0.428C |      0.428C |      0.428C |
+| preWarmed | farmer_100       | DualBucket (B=0.85C, P=4.00R) |      0.850C |      0.850C |      0.850C |
+| preWarmed | farmer_100       | DualBucket (B=1.00C, P=4.00R) |      1.000C |      1.000C |      1.000C |
+| preWarmed | farmer_75        | Token Bucket (TB-large)      |      0.857C |      0.857C |      0.857C |
+| preWarmed | farmer_75        | Token Bucket (TB-env)        |      0.857C |      0.857C |      0.857C |
+| preWarmed | farmer_75        | DREB (burst-matched)         |      0.857C |      0.857C |      0.857C |
+| preWarmed | farmer_75        | DREB (v2 base 1.5)           |      0.857C |      0.857C |      0.857C |
+| preWarmed | farmer_75        | DualBucket (B=3C/7, P=5R/3)  |      0.428C |      0.428C |      0.428C |
+| preWarmed | farmer_75        | DualBucket (B=0.85C, P=4.00R) |      0.850C |      0.850C |      0.850C |
+| preWarmed | farmer_75        | DualBucket (B=1.00C, P=4.00R) |      0.857C |      0.857C |      0.857C |
+| preWarmed | farmer_50        | Token Bucket (TB-large)      |      0.714C |      0.714C |      0.714C |
+| preWarmed | farmer_50        | Token Bucket (TB-env)        |      0.714C |      0.714C |      0.714C |
+| preWarmed | farmer_50        | DREB (burst-matched)         |      0.714C |      0.714C |      0.714C |
+| preWarmed | farmer_50        | DREB (v2 base 1.5)           |      0.714C |      0.714C |      0.714C |
+| preWarmed | farmer_50        | DualBucket (B=3C/7, P=5R/3)  |      0.428C |      0.428C |      0.428C |
+| preWarmed | farmer_50        | DualBucket (B=0.85C, P=4.00R) |      0.714C |      0.714C |      0.714C |
+| preWarmed | farmer_50        | DualBucket (B=1.00C, P=4.00R) |      0.714C |      0.714C |      0.714C |
+| preWarmed | alternator       | Token Bucket (TB-large)      |      0.980C |      1.008C |      1.087C |
+| preWarmed | alternator       | Token Bucket (TB-env)        |      0.980C |      1.008C |      1.087C |
+| preWarmed | alternator       | DREB (burst-matched)         |      0.980C |      1.008C |      1.087C |
+| preWarmed | alternator       | DREB (v2 base 1.5)           |      0.980C |      1.008C |      1.087C |
+| preWarmed | alternator       | DualBucket (B=3C/7, P=5R/3)  |      0.461C |      0.488C |      0.571C |
+| preWarmed | alternator       | DualBucket (B=0.85C, P=4.00R) |      0.880C |      0.908C |      0.987C |
+| preWarmed | alternator       | DualBucket (B=1.00C, P=4.00R) |      0.980C |      1.008C |      1.087C |
+| preWarmed | jittered         | Token Bucket (TB-large)      |      0.950C |      0.950C |      0.950C |
+| preWarmed | jittered         | Token Bucket (TB-env)        |      0.950C |      0.950C |      0.950C |
+| preWarmed | jittered         | DREB (burst-matched)         |      0.950C |      0.950C |      0.950C |
+| preWarmed | jittered         | DREB (v2 base 1.5)           |      0.950C |      0.950C |      0.950C |
+| preWarmed | jittered         | DualBucket (B=3C/7, P=5R/3)  |      0.428C |      0.428C |      0.428C |
+| preWarmed | jittered         | DualBucket (B=0.85C, P=4.00R) |      0.850C |      0.850C |      0.850C |
+| preWarmed | jittered         | DualBucket (B=1.00C, P=4.00R) |      0.950C |      0.950C |      0.950C |
+
+---
+
+## 4. Table 11.3: Hypotheses H11a, H11b, and H11c Evaluation Summary
+
+| Hypothesis | Pre-Registered Statement | Evaluation Metric | Measured Result / Paired Delta | Verdict |
+| :--- | :--- | :--- | :--- | :---: |
+| **H11a** | *"no adversary raises DREB's long-run admitted rate above its cumulative bound (Prop. 1)."* | Max Admitted Tokens vs Prop 1 Bound ($121,285.7$) | Max Tokens = $115,498$ (Rate $= 0.9625R \le 1.0107R$, Margin $-5,788$) | **SUPPORTED** |
+| **H11b** | *"the farmer obtains strictly higher admitted rate from DREB than from the static bucket with B = 3C/7."* | Paired Delta Rate (DREB $-$ DB 3C/7) | $\Delta = +0.2666R$ to $+0.3595R$ across all farmer variants (95% CI > 0) | **SUPPORTED** |
+| **H11c** | *"DREB's peak window load under the farmer exceeds TB-large's."* | Paired Delta Peak (DREB $-$ TB-lg) across $W$ | $\Delta = -0.114C$ to $-0.113C$ (coldStart), $\Delta = +0.000C$ (preWarmed) | **CONTRADICTED** |
+
+---
+
+## 12. Experiment E12: DREB v2 Gain Sweep & Ablation Completion
+
+## 2. Table 12.1: DREB v2 48-Setting Factorial Grid & Empirical Pareto Frontier
+
+| ID | AbuseGain | AbuseDecay | SustainedG | Abuser Rate / R | Bursty FRR % | Steady FRR % | Overall FRR % | Pareto Frontier? | Dominates v1? | Dominates DB? |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| #1   |      0.00 |       0.25 |       0.00 |        0.9187R |       1.82% |       0.00% |        0.34% | **YES**          | No            | No            |
+| #2   |      0.00 |       0.25 |       0.35 |        0.7992R |       2.68% |       0.00% |        0.49% | **YES**          | No            | No            |
+| #3   |      0.00 |       0.25 |       1.00 |        0.7958R |       5.21% |       0.00% |        0.96% | **YES**          | No            | No            |
+| #4   |      0.00 |       0.75 |       0.00 |        0.9187R |       1.82% |       0.00% |        0.34% | **YES**          | No            | No            |
+| #5   |      0.00 |       0.75 |       0.35 |        0.9184R |       2.01% |       0.00% |        0.37% | No               | No            | No            |
+| #6   |      0.00 |       0.75 |       1.00 |        0.9178R |       2.98% |       0.00% |        0.55% | No               | No            | No            |
+| #7   |      0.00 |       1.50 |       0.00 |        0.9187R |       1.82% |       0.00% |        0.34% | **YES**          | No            | No            |
+| #8   |      0.00 |       1.50 |       0.35 |        0.9184R |       1.89% |       0.00% |        0.35% | No               | No            | No            |
+| #9   |      0.00 |       1.50 |       1.00 |        0.9178R |       2.36% |       0.00% |        0.43% | No               | No            | No            |
+| #10  |      0.00 |       3.00 |       0.00 |        0.9187R |       1.82% |       0.00% |        0.34% | **YES**          | No            | No            |
+| #11  |      0.00 |       3.00 |       0.35 |        0.9184R |       1.84% |       0.00% |        0.34% | **YES**          | No            | No            |
+| #12  |      0.00 |       3.00 |       1.00 |        0.9178R |       2.00% |       0.00% |        0.37% | No               | No            | No            |
+| #13  |      0.15 |       0.25 |       0.00 |        0.8308R |       2.12% |       0.00% |        0.39% | **YES**          | No            | No            |
+| #14  |      0.15 |       0.25 |       0.35 |        0.7993R |       2.77% |       0.00% |        0.51% | No               | No            | No            |
+| #15  |      0.15 |       0.25 |       1.00 |        0.7958R |       5.22% |       0.00% |        0.96% | **YES**          | No            | No            |
+| #16  |      0.15 |       0.75 |       0.00 |        0.9156R |       1.99% |       0.00% |        0.37% | No               | No            | No            |
+| #17  |      0.15 |       0.75 |       0.35 |        0.9153R |       2.13% |       0.00% |        0.39% | No               | No            | No            |
+| #18  |      0.15 |       0.75 |       1.00 |        0.9147R |       3.01% |       0.00% |        0.55% | No               | No            | No            |
+| #19  |      0.15 |       1.50 |       0.00 |        0.9156R |       1.95% |       0.00% |        0.36% | No               | No            | No            |
+| #20  |      0.15 |       1.50 |       0.35 |        0.9153R |       2.01% |       0.00% |        0.37% | No               | No            | No            |
+| #21  |      0.15 |       1.50 |       1.00 |        0.9147R |       2.40% |       0.00% |        0.44% | No               | No            | No            |
+| #22  |      0.15 |       3.00 |       0.00 |        0.9156R |       1.92% |       0.00% |        0.36% | **YES**          | No            | No            |
+| #23  |      0.15 |       3.00 |       0.35 |        0.9153R |       1.94% |       0.00% |        0.36% | **YES**          | No            | No            |
+| #24  |      0.15 |       3.00 |       1.00 |        0.9147R |       2.07% |       0.00% |        0.38% | No               | No            | No            |
+| #25  |      0.30 |       0.25 |       0.00 |        0.8175R |       2.39% |       0.00% |        0.44% | **YES**          | No            | No            |
+| #26  |      0.30 |       0.25 |       0.35 |        0.7993R |       2.88% |       0.00% |        0.53% | No               | No            | No            |
+| #27  |      0.30 |       0.25 |       1.00 |        0.7959R |       5.23% |       0.00% |        0.96% | No               | No            | No            |
+| #28  |      0.30 |       0.75 |       0.00 |        0.9128R |       2.15% |       0.00% |        0.40% | No               | No            | No            |
+| #29  |      0.30 |       0.75 |       0.35 |        0.9124R |       2.26% |       0.00% |        0.42% | No               | No            | No            |
+| #30  |      0.30 |       0.75 |       1.00 |        0.9118R |       3.04% |       0.00% |        0.56% | No               | No            | No            |
+| #31  |      0.30 |       1.50 |       0.00 |        0.9128R |       2.07% |       0.00% |        0.38% | No               | No            | No            |
+| #32  |      0.30 |       1.50 |       0.35 |        0.9124R |       2.11% |       0.00% |        0.39% | No               | No            | No            |
+| #33  |      0.30 |       1.50 |       1.00 |        0.9118R |       2.46% |       0.00% |        0.45% | No               | No            | No            |
+| #34  |      0.30 |       3.00 |       0.00 |        0.9128R |       2.02% |       0.00% |        0.37% | **YES**          | No            | No            |
+| #35  |      0.30 |       3.00 |       0.35 |        0.9124R |       2.04% |       0.00% |        0.38% | **YES**          | No            | No            |
+| #36  |      0.30 |       3.00 |       1.00 |        0.9118R |       2.14% |       0.00% |        0.39% | No               | No            | No            |
+| #37  |      0.60 |       0.25 |       0.00 |        0.8086R |       2.91% |       0.00% |        0.54% | No               | No            | No            |
+| #38  |      0.60 |       0.25 |       0.35 |        0.7994R |       3.18% |       0.00% |        0.59% | No               | No            | No            |
+| #39  |      0.60 |       0.25 |       1.00 |        0.7964R |       5.26% |       0.00% |        0.97% | No               | No            | No            |
+| #40  |      0.60 |       0.75 |       0.00 |        0.9074R |       2.42% |       0.00% |        0.45% | No               | No            | No            |
+| #41  |      0.60 |       0.75 |       0.35 |        0.9071R |       2.50% |       0.00% |        0.46% | No               | No            | No            |
+| #42  |      0.60 |       0.75 |       1.00 |        0.9065R |       3.13% |       0.00% |        0.58% | No               | No            | No            |
+| #43  |      0.60 |       1.50 |       0.00 |        0.9074R |       2.28% |       0.00% |        0.42% | No               | No            | No            |
+| #44  |      0.60 |       1.50 |       0.35 |        0.9071R |       2.31% |       0.00% |        0.43% | No               | No            | No            |
+| #45  |      0.60 |       1.50 |       1.00 |        0.9065R |       2.58% |       0.00% |        0.47% | No               | No            | No            |
+| #46  |      0.60 |       3.00 |       0.00 |        0.9074R |       2.21% |       0.00% |        0.41% | No               | No            | No            |
+| #47  |      0.60 |       3.00 |       0.35 |        0.9071R |       2.21% |       0.00% |        0.41% | No               | No            | No            |
+| #48  |      0.60 |       3.00 |       1.00 |        0.9065R |       2.28% |       0.00% |        0.42% | No               | No            | No            |
+| REF  | DREB (burst-matched) [v1]         |        0.9187R |       1.82% |       0.00% |        0.91% | N/A              | N/A           | N/A           |
+| REF  | DualBucket (B=0.85C, P=4.00R)     |        1.0003R |       1.58% |       0.00% |        0.79% | N/A              | N/A           | N/A           |
+
+---
+
+## 3. Table 12.2: Hypothesis H12 Evaluation Summary
+
+| Hypothesis | Pre-Registered Statement | Evaluation Metric | Measured Result | Verdict |
+| :--- | :--- | :--- | :--- | :---: |
+| **H12** | *"no v2 setting dominates both v1 and the best static dual bucket."* | Joint Dominance Count over 48 Settings | Exactly **0 / 48** settings dominate both baselines | **SUPPORTED** |

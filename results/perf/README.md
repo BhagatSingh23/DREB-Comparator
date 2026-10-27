@@ -1,7 +1,7 @@
 # Rate Limiter Performance, Latency & Resource Utilization Report
 
 > **Benchmark Classification:** Single machine, relative comparison across 8 in-memory rate limiting algorithms using official JMH microbenchmarks, diagnostic scaling experiments, and JVM resource profiling on Oracle JDK 21 LTS (`build 21.0.9+7-LTS-338`).
-> **Master Provenance Commit:** `7301a3b`
+> **Master Provenance Release Tag:** `v1.0-eval`
 
 Hardware architecture, sysctl outputs, and JVM runtime details are recorded in [ENVIRONMENT.md](ENVIRONMENT.md).
 
@@ -82,6 +82,31 @@ To rigorously identify the shared bottleneck limiting multi-threaded scaling (wh
 | **DREB (v2 base 1.5)**     | Adapter      |   28,384,518 |   33,680,066 |   27,177,311 | **28,384,518** |   6,502,755 |  35.23 ns |
 | DREB (v2 base 1.5)         | Direct       |   27,339,804 |   25,316,993 |   28,727,830 | **27,339,804** |   3,410,837 |  36.58 ns |
 | DREB (v2 base 1.5)         | Engine-Alone |   49,894,682 |   48,479,058 |   41,939,874 | **48,479,058** |   7,954,808 |  20.63 ns |
+| **DualBucket (B=3C/7)**    | Adapter      |   18,359,110 |   19,346,816 |   13,070,926 | **18,359,110** |   6,275,891 |  54.47 ns |
+| DualBucket (B=3C/7)        | Direct       |   21,130,290 |   17,640,903 |   20,201,181 | **20,201,181** |   3,489,387 |  49.50 ns |
+| DualBucket (B=3C/7)        | Engine-Alone |   33,731,625 |   27,668,246 |   33,543,827 | **33,543,827** |   6,063,380 |  29.81 ns |
+
+---
+
+### Relative Performance: Static Dual Bucket vs DREB & Token Bucket
+- **Adapter Path:**
+  - vs DREB (burst-matched): $18.36\,\text{M ops/s}$ vs $30.43\,\text{M ops/s}$ ($0.60\times$ throughput, latency $54.47\,\text{ns}$ vs $32.86\,\text{ns}$, $+21.61\,\text{ns}$).
+  - vs Token Bucket: $18.36\,\text{M ops/s}$ vs $91.91\,\text{M ops/s}$ ($0.20\times$ throughput, latency $54.47\,\text{ns}$ vs $10.88\,\text{ns}$, $5.01\times$ higher latency).
+- **Engine-Alone Path:**
+  - vs DREB (burst-matched): $33.54\,\text{M ops/s}$ vs $47.00\,\text{M ops/s}$ ($0.71\times$ throughput, latency $29.81\,\text{ns}$ vs $21.28\,\text{ns}$, $+8.53\,\text{ns}$).
+  - vs Token Bucket: $33.54\,\text{M ops/s}$ vs $102.13\,\text{M ops/s}$ ($0.33\times$ throughput, latency $29.81\,\text{ns}$ vs $9.79\,\text{ns}$, $3.05\times$ higher latency).
+
+---
+
+### Table 2.2b: Batched Sampling Latency Percentiles (N = 1000 per window, same-key)
+
+*Caption: Sub-nanosecond per-call latency distributions evaluated via batched sampling ($N = 1000$ consecutive operations per sample window, 2,000 batches = 2,000,000 total operations) on Apple M3 (Oracle JDK 21 LTS), eliminating the 24 MHz ARM architecture counter quantization (~41.7 ns).*
+
+| Algorithm | Mean Latency | p50 Latency | p95 Latency | p99 Latency |
+| :--- | :---: | :---: | :---: | :---: |
+| **Token Bucket**           | 31.62 ns | 21.54 ns |  46.63 ns |  95.13 ns |
+| **Sliding Window Counter** | 63.59 ns | 27.21 ns | 323.33 ns | 401.38 ns |
+| **DREB (burst-matched)**   | 107.71 ns | 86.46 ns | 189.79 ns | 495.67 ns |
 
 ---
 

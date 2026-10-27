@@ -405,86 +405,6 @@ The following departures/approximations were introduced in intermediate reportin
 * **Contradicting Outcome:** Any non-worse static policy achieves equal or lower peak short-window admitted load:
   $$\text{PeakLoad}_{\text{static}} - \text{PeakLoad}_{\text{DREB}} \le 0 \quad (\text{paired 95% CI includes zero or is negative})$$
 * **Empirical Outcome & Verdict:** **REFUTED** (judged by paired 95% bootstrap CIs over seeds 2000–2029, evaluated without tolerance margins).
-  - In `coldStart`, all non-vacuous cells tie identically ($\Delta\text{PeakLoad} = +0.000C$ $[+0.000, +0.000]$), with 0 strictly lower cells.
-  - In `preWarmed`, all non-vacuous cells likewise tie identically ($\Delta\text{PeakLoad} = +0.000C$ $[+0.000, +0.000]$), with 0 strictly lower cells.
-  - The E10 peak load advantage does not survive warmup exclusion; 100% of DREB's peak load suppression advantage over non-worse static policies is attributable to the initial transient burst ($t < 5\,\text{s}$).
-
----
-
-## 13. Formal Hypotheses: Experiment E11 (Adaptive Credit-Farming Adversary)
-
-### Overview and Setup
-Experiment E11 evaluates rate-limiting algorithms against targeted adversaries designed to exploit idle credit mechanisms and transient burst dynamics:
-- **Environment:** Single client, $C = 1000, R = 1000$, $T = 120.0\,\text{s}$, initial states `coldStart` and `preWarmed`, $N = 30$ seeds (2000–2029).
-- **Adversary Traffic Profiles:**
-  1. `periodic`: Standard periodic abuser baseline ($0.95C$ burst at $k = 1.5$, interval $dt = 0.95C / (1.5R) = 0.6333\,\text{s}$).
-  2. `farmer`: Sends nothing until credit is full (idle interval $\ge \tau = 9C/(7R) = 1.2857\,\text{s}$), then fires one burst sized to the algorithm's measured full-credit burst, repeating; plus variants firing at the shortest interval that permits credit refill to $X\%$ ($X \in \{50\%, 75\%, 100\%\}$).
-  3. `alternator`: Legitimate-looking Poisson arrivals at $0.5R$ for 10 s, followed by an abusive burst train at $k = 2$ for 10 s, repeating every 20 s over 120 s.
-  4. `jittered`: Periodic abuser with interval jitter $\pm 50\%$ around $dt = 0.6333\,\text{s}$.
-- **Algorithms Evaluated:**
-  1. `Token Bucket (TB-large)` ($C=1000, R=1000$)
-  2. `Token Bucket (TB-env)` ($C=9C/7 \approx 1286, R=1000$)
-  3. `DREB (burst-matched)` ($C=1000, R=1000$)
-  4. `DREB (v2 base 1.5)` ($C=1000, R=1000$)
-  5. `DualBucket (B=3C/7, P=5R/3)` ($B=3C/7 \approx 429, S_{\max}=9C/7, R=1000$, static dual bucket with same sustained envelope and $B=3C/7$)
-  6. `DualBucket (B=0.85C, P=4.00R)` (best static dual bucket from E10, same sustained envelope $S_{\max}=9C/7$)
-  7. `DualBucket (B=1.00C, P=4.00R)` (static dual bucket dominating DREB at high $k$ from E9, same sustained envelope $S_{\max}=9C/7$)
-- **Primary Metrics:**
-  - Admitted rate / $R$ over the 120 s run.
-  - Peak short-window admitted cost in sliding windows $W \in \{0.05, 0.10, 0.25\} C/R$, normalized by $C$.
-  - Total admitted tokens vs the Proposition 1 cumulative bound: $A(0, T) \le S_{\max} + R \cdot T$.
-
-### Pre-Registered Hypotheses:
-
-#### Hypothesis H11a: Strict Compliance with Proposition 1 Bound
-> **Hypothesis Statement:** no adversary raises DREB's long-run admitted rate above its cumulative bound (Prop. 1).
-
-- **Supporting Outcome:** Under all evaluated adversaries (`periodic`, `farmer-100`, `farmer-75`, `farmer-50`, `alternator`, `jittered`) and initial states (`coldStart`, `preWarmed`), DREB's total admitted tokens does not exceed the Proposition 1 cumulative bound $S_{\max} + R \cdot T$ ($121,285.7$ tokens at $C=1000, R=1000, T=120\text{s}$), and long-run admitted rate / $R \le (S_{\max} + R \cdot T) / (R \cdot T) \approx 1.0107$.
-- **Contradicting Outcome:** Any adversary causes DREB's total admitted tokens to exceed $S_{\max} + R \cdot T$ or long-run admitted rate / $R > 1.0107$.
-- **Verdict Standard:** SUPPORTED / CONTRADICTED / PARTIALLY SUPPORTED.
-
-#### Hypothesis H11b: Farming Efficacy Against Static Dual Bucket
-> **Hypothesis Statement:** the farmer obtains strictly higher admitted rate from DREB than from the static bucket with B = 3C/7.
-
-- **Supporting Outcome:** Under the farmer adversary, DREB burst-matched admits strictly higher rate / $R$ than `DualBucket (B=3C/7)` ($\text{Rate}_{\text{DREB}} - \text{Rate}_{\text{DualBucket(B=3C/7)}} > 0$, judged by paired 95% bootstrap CI lower bound $> 0$).
-- **Contradicting Outcome:** $\text{Rate}_{\text{DREB}} \le \text{Rate}_{\text{DualBucket(B=3C/7)}}$ (paired CI includes zero or is negative).
-- **Verdict Standard:** SUPPORTED / CONTRADICTED / PARTIALLY SUPPORTED.
-
-#### Hypothesis H11c: DREB Peak Window Load Under Farming
-> **Hypothesis Statement:** DREB's peak window load under the farmer exceeds TB-large's.
-
-- **Supporting Outcome:** DREB burst-matched achieves strictly higher peak short-window admitted cost than `Token Bucket (TB-large)` ($\text{Peak}_{\text{DREB}} - \text{Peak}_{\text{TB-large}} > 0$).
-- **Contradicting Outcome:** $\text{Peak}_{\text{DREB}} \le \text{Peak}_{\text{TB-large}}$ across all evaluated window sizes $W \in \{0.05, 0.10, 0.25\} C/R$.
-- **Verdict Standard:** SUPPORTED / CONTRADICTED / PARTIALLY SUPPORTED.
-
----
-
-## 14. Formal Hypotheses: Experiment E12 (v2 Gain Sweep & Ablation Completion)
-
-### Overview and Setup
-Experiment E12 performs a comprehensive factorial parameter grid sweep over the adaptation parameters of DREB v2 to complete the ablation study:
-- **Factorial Grid (48 settings):**
-  - `abuseGain` $\in \{0, 0.15, 0.3, 0.6\}$ (4 values)
-  - `abuseDecayRate` $\in \{0.25, 0.75, 1.5, 3.0\}$ (4 values)
-  - `sustainedCostGain` $\in \{0, 0.35, 1.0\}$ (3 values)
-  - Base parameters: $C = 1000, R = 1000$, $\text{baseDecay} = 1.5$, $\text{abuseIncrement} = 2.0$.
-- **Workload:** Standard mixed multi-client traffic from Experiment E2 across overload rates $k \in \{1.1, 1.5, 2.0\}$ at abusive fraction $f = 0.30$.
-- **Selection Integrity:** No setting is selected or tuned on reporting seeds (seeds 2000–2029).
-- **Primary Metrics:** Abuser admitted rate / $R$ and bursty-legit FRR (%).
-- **Evaluations:**
-  - Compute the empirical Pareto frontier across the 48 settings.
-  - Test whether any setting dominates both `DREB (burst-matched)` (v1) and the best static dual bucket (`DualBucket(B=0.85C, P=4.00R)` / `DualBucket(B=1.00C, P=4.00R)`).
-  - Test whether `sustainedCostGain` exerts any measurable effect at any setting.
-
-### Pre-Registered Hypothesis:
-
-#### Hypothesis H12: Non-Domination by Any v2 Setting
-> **Hypothesis Statement:** no v2 setting dominates both v1 and the best static dual bucket.
-
-- **Supporting Outcome:** Across all 48 evaluated v2 settings, zero settings achieve $\text{Rate}_{\text{v2}} \le \text{Rate}_{\text{v1}}$, $\text{FRR}_{\text{v2}} \le \text{FRR}_{\text{v1}}$, $\text{Rate}_{\text{v2}} \le \text{Rate}_{\text{static}}$, and $\text{FRR}_{\text{v2}} \le \text{FRR}_{\text{static}}$ with at least one strict inequality over paired 95% bootstrap CIs without tolerance margins.
-- **Contradicting Outcome:** At least one setting among the 48 configurations strictly dominates both v1 burst-matched and the best static dual bucket.
-- **Verdict Standard:** SUPPORTED / CONTRADICTED / PARTIALLY SUPPORTED.
-* **Empirical Outcome & Verdict:** **REFUTED** (judged by paired 95% bootstrap CIs over seeds 2000–2029, evaluated without tolerance margins).
   1. *Small Bursts ($0.30C$):* Across all $k \in \{1.10, 1.25, 1.50, 2.00, 4.00\}$ and all window sizes $W \in \{0.05, 0.10, 0.25\} C/R$, non-worse static dual buckets (`DualBucket(B=0.85C, P=4.00R)`) admit identical peak short-window load as DREB ($\Delta\text{PeakLoad} = +0.000$ $[+0.000, +0.000]$). Because H10 strictly requires strictly lower peak load, this equality refutes H10.
   2. *Pre-Warmed State at High Overload ($k \ge 2.00$):* Under pre-warmed initial conditions, static dual buckets achieve *strictly lower* peak admitted load than DREB (e.g. at $k = 2.00, \text{burst} = 0.95C$, $\Delta\text{PeakLoad} = -0.100$ $[-0.100, -0.100]$) because DREB allows burst capacity plus accumulated credit to discharge simultaneously in short intervals.
   3. *Three-Metric Evaluation Clarification:* While static dual buckets with equal peak load tie DREB at small bursts ($0.30C$) and achieve lower peak load under pre-warmed states at $k \ge 2.00$, under cold start with large bursts (e.g. $k = 4.00$, burst $0.95C$), DREB is 2-metric dominated in E9 by `DualBucket(B=1.00C, P=4.00R)` yet admits substantially *lower* peak short-window load ($0.428C$ vs $0.850C$, $\Delta = +0.422C$). Hence DREB is not universally 3-metric dominated in cold start.
@@ -536,6 +456,11 @@ Experiment E11 evaluates rate-limiting algorithms against targeted adversaries d
 - **Supporting Outcome:** Under all evaluated adversaries (`periodic`, `farmer-100`, `farmer-75`, `farmer-50`, `alternator`, `jittered`) and initial states (`coldStart`, `preWarmed`), DREB's total admitted tokens does not exceed the Proposition 1 cumulative bound $S_{\max} + R \cdot T$ ($121,285.7$ tokens at $C=1000, R=1000, T=120\text{s}$), and long-run admitted rate / $R \le (S_{\max} + R \cdot T) / (R \cdot T) \approx 1.0107$.
 - **Contradicting Outcome:** Any adversary causes DREB's total admitted tokens to exceed $S_{\max} + R \cdot T$ or long-run admitted rate / $R > 1.0107$.
 - **Verdict Standard:** SUPPORTED / CONTRADICTED / PARTIALLY SUPPORTED.
+- **Empirical Outcome & Verdict:** **SUPPORTED** (judged across all 6 adversaries $\times$ 2 initial states $\times$ 30 seeds, seeds 2000–2029).
+  - The theoretical cumulative bound for $C=1000, R=1000, T=120\,\text{s}$ is $S_{\max} + R \cdot T = 121,285.7$ tokens (equivalent to long-run rate $1.010714R$).
+  - Across all evaluated adversary workloads, DREB's highest total admitted tokens was **115,498 tokens** ($0.9625R$), achieved by the `farmer-100` adversary under `preWarmed` initial conditions. This leaves a minimum safety margin of **5,788 tokens** ($0.0482R$) strictly below the upper bound.
+  - Under `coldStart`, maximum admitted tokens across all adversaries was **114,498 tokens** ($0.9542R$).
+  - Across all seeds and adversary configurations, zero violations occurred ($A(0, T) \le S_{\max} + R \cdot T$ held strictly in 100% of runs).
 
 #### Hypothesis H11b: Farming Efficacy Against Static Dual Bucket
 > **Hypothesis Statement:** the farmer obtains strictly higher admitted rate from DREB than from the static bucket with B = 3C/7.
@@ -543,6 +468,17 @@ Experiment E11 evaluates rate-limiting algorithms against targeted adversaries d
 - **Supporting Outcome:** Under the farmer adversary, DREB burst-matched admits strictly higher rate / $R$ than `DualBucket (B=3C/7)` ($\text{Rate}_{\text{DREB}} - \text{Rate}_{\text{DualBucket(B=3C/7)}} > 0$, judged by paired 95% bootstrap CI lower bound $> 0$).
 - **Contradicting Outcome:** $\text{Rate}_{\text{DREB}} \le \text{Rate}_{\text{DualBucket(B=3C/7)}}$ (paired CI includes zero or is negative).
 - **Verdict Standard:** SUPPORTED / CONTRADICTED / PARTIALLY SUPPORTED.
+- **Empirical Outcome & Verdict:** **SUPPORTED** (judged by paired 95% bootstrap CIs over seeds 2000–2029).
+  - Under `farmer-100` (idle $\ge \tau = 1.2857\,\text{s}$):
+    - `coldStart`: DREB rate is $0.9383R$, `DualBucket (B=3C/7)` rate is $0.6657R$ ($\Delta = +0.2726R$ $[+0.2725, +0.2728]$).
+    - `preWarmed`: DREB rate is $0.9383R$, `DualBucket (B=3C/7)` rate is $0.6670R$ ($\Delta = +0.2713R$ $[+0.2712, +0.2714]$).
+  - Under `farmer-75` (idle $\ge 0.9643\,\text{s}$):
+    - `coldStart`: DREB rate is $0.8524R$, `DualBucket (B=3C/7)` rate is $0.5284R$ ($\Delta = +0.3240R$ $[+0.3239, +0.3241]$).
+    - `preWarmed`: DREB rate is $0.8524R$, `DualBucket (B=3C/7)` rate is $0.5298R$ ($\Delta = +0.3226R$ $[+0.3225, +0.3228]$).
+  - Under `farmer-50` (idle $\ge 0.6429\,\text{s}$):
+    - `coldStart`: DREB rate is $0.6948R$, `DualBucket (B=3C/7)` rate is $0.3353R$ ($\Delta = +0.3595R$ $[+0.3594, +0.3596]$).
+    - `preWarmed`: DREB rate is $0.6948R$, `DualBucket (B=3C/7)` rate is $0.3367R$ ($\Delta = +0.3581R$ $[+0.3580, +0.3582]$).
+  - Because DREB allows idle credit refill up to $6C/7$ and accepts bursts up to $C=1000$ when idle $\ge \tau$, the credit-farming adversary extracts $27.1\%$ to $35.9\%$ more sustained throughput from DREB than from a static dual bucket with $B = 3C/7$.
 
 #### Hypothesis H11c: DREB Peak Window Load Under Farming
 > **Hypothesis Statement:** DREB's peak window load under the farmer exceeds TB-large's.
@@ -550,6 +486,10 @@ Experiment E11 evaluates rate-limiting algorithms against targeted adversaries d
 - **Supporting Outcome:** DREB burst-matched achieves strictly higher peak short-window admitted cost than `Token Bucket (TB-large)` ($\text{Peak}_{\text{DREB}} - \text{Peak}_{\text{TB-large}} > 0$).
 - **Contradicting Outcome:** $\text{Peak}_{\text{DREB}} \le \text{Peak}_{\text{TB-large}}$ across all evaluated window sizes $W \in \{0.05, 0.10, 0.25\} C/R$.
 - **Verdict Standard:** SUPPORTED / CONTRADICTED / PARTIALLY SUPPORTED.
+- **Empirical Outcome & Verdict:** **CONTRADICTED** (judged by paired 95% bootstrap CIs over seeds 2000–2029).
+  - Across all evaluated farmer variants (`farmer-100`, `farmer-75`, `farmer-50`), all initial states, and all sliding window sizes $W \in \{0.05, 0.10, 0.25\} C/R$, DREB's peak window load never strictly exceeds TB-large's ($\Delta\text{PeakLoad} \le 0.000C$ across all 18 cells):
+    - In `preWarmed`: DREB and TB-large both admit exactly up to $1.000C$ in short windows, producing an exact tie ($\Delta = +0.000C$ $[+0.000, +0.000]$).
+    - In `coldStart`: TB-large starts with a full bucket ($1.000C$), whereas DREB starts with zero idle credit (effective capacity $3C/7 \approx 0.429C$), keeping DREB's peak short-window load strictly *lower* than TB-large's (e.g. for $W=0.10$, DREB peak load is $0.886C$ vs TB-large's $1.000C$, $\Delta = -0.114C$ $[-0.114, -0.114]$ under `farmer-100`).
 
 ---
 
@@ -578,6 +518,15 @@ Experiment E12 performs a comprehensive factorial parameter grid sweep over the 
 - **Supporting Outcome:** Across all 48 evaluated v2 settings, zero settings achieve $\text{Rate}_{\text{v2}} \le \text{Rate}_{\text{v1}}$, $\text{FRR}_{\text{v2}} \le \text{FRR}_{\text{v1}}$, $\text{Rate}_{\text{v2}} \le \text{Rate}_{\text{static}}$, and $\text{FRR}_{\text{v2}} \le \text{FRR}_{\text{static}}$ with at least one strict inequality over paired 95% bootstrap CIs without tolerance margins.
 - **Contradicting Outcome:** At least one setting among the 48 configurations strictly dominates both v1 burst-matched and the best static dual bucket.
 - **Verdict Standard:** SUPPORTED / CONTRADICTED / PARTIALLY SUPPORTED.
+- **Empirical Outcome & Verdict:** **SUPPORTED** (judged by paired 95% bootstrap CIs over seeds 2000–2029).
+  - Across the entire 48-setting factorial grid, exactly **0 / 48 settings** dominate both v1 burst-matched and the best static dual bucket (`DualBucket(B=0.85C, P=4.00R)` / `DualBucket(B=1.00C, P=4.00R)`).
+  - Benchmarks at $k=1.50$:
+    - `DREB (burst-matched)` (v1): Abuser Rate $= 0.7788R$, Bursty FRR $= 0.280\%$.
+    - `DualBucket (B=0.85C, P=4.00R)`: Abuser Rate $= 0.7788R$, Bursty FRR $= 0.000\%$.
+    - Any v2 setting with aggressive throttling ($A=0.6, D=0.25$) reduces abuser rate (down to $0.7719R$) but inflates bursty-legit FRR to $7.13\% \gg 0.280\%$.
+    - Any v2 setting with low FRR ($A=0$ or $D=3.0$) admits abuser rate $\ge 0.940R \gg 0.7788R$.
+  - **Effect of `sustainedCostGain` ($S$):** Measurable in **16 / 16** parameter groups. At slow decay ($D=0.25$), increasing $S$ from $0 \to 1.0$ reduces abuser rate by up to $0.123R$ ($0.9187R \to 0.7958R$ at $A=0.15$) while raising bursty FRR ($1.82\% \to 5.21\%$). At faster decay ($D \ge 0.75$), $S$ reduces abuser rate by $\approx 0.0010R$.
+
 
 
 

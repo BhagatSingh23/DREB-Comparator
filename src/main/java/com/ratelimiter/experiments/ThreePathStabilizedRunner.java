@@ -16,7 +16,8 @@ public class ThreePathStabilizedRunner {
             "Sliding Window Counter",
             "DREB (proportional)",
             "DREB (burst-matched)",
-            "DREB (v2 base 1.5)"
+            "DREB (v2 base 1.5)",
+            "DualBucket (B=3C/7)"
     };
 
     private static final String[] PATHS = {"Adapter", "Direct", "Engine-Alone"};
